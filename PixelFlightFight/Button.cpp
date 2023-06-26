@@ -1,6 +1,5 @@
 #include"Button.h"
 #include<iostream>
-
 Label::Label(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {
 	pos.x = x;
 	pos.y = y;
@@ -20,11 +19,19 @@ Label::LabelContainer::~LabelContainer()
 Vector2 Label::getSize() {
 	return Vector2(width, height);
 }
-Button::Button(int x, int y, int width, int height, const LPCTSTR& text, int (*FuncPtr)()) :Label(x, y, width, height), text(text), FuncPtr(FuncPtr), ischange(false) {
+Button::Button(int (*FuncPtr)(), int x, int y, int width, int height, const std::wstring& text) :Label(x, y, width, height), text(text), FuncPtr(FuncPtr), ischange(false) {
 	this->FuncPtr = FuncPtr;
 }
 Button :: ~Button() {
 
+}
+Label::~Label() {
+
+}
+Label::Label(LPCTSTR text) {
+
+}
+Label::Label(IMAGE image) {
 }
 void Button::RenderRoWindows() {
 	setlinestyle(PS_SOLID, 2);	//PS_SOLID是指一条由特定颜色的实线，该线的宽度由调用GDI API的参数所指定的宽度决定。
@@ -37,7 +44,7 @@ void Button::RenderRoWindows() {
 
 	// 绘制文本
 	RECT rect = { x, y, x + width, y + height };
-	drawtext(text, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+	drawtext(text.c_str(), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 }
 bool Button::state(const ExMessage& msg) {
@@ -53,7 +60,7 @@ bool Button::state(const ExMessage& msg) {
 
 		// 绘制文本
 		RECT rect = { x, y, x + width, y + height };
-		drawtext(text, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		drawtext(text.c_str(), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 		ischange = true;
 
@@ -71,7 +78,7 @@ bool Button::state(const ExMessage& msg) {
 
 		// 绘制文本
 		RECT rect = { x, y, x + width, y + height };
-		drawtext(text, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		drawtext(text.c_str(), &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 		Click();
 		return true;

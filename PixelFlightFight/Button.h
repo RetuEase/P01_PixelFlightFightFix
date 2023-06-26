@@ -1,5 +1,5 @@
 #pragma once
-#include "Globals.h"
+#include"Globals.h"
 int OnButtonClick();
 
 class Label
@@ -12,7 +12,7 @@ protected:
 	union LabelContainer
 	{
 		IMAGE image;
-		LPCTSTR text;
+		std::wstring text;
 
 		LabelContainer();
 		~LabelContainer();
@@ -24,19 +24,27 @@ public:
 	Coordinate getPos();//获取pos
 	Vector2 getSize();
 	virtual void RenderRoWindows() = 0;//渲染到绘图区，这里动态绑定一下
+	Label(IMAGE image);
+	Label(LPCTSTR text);
+	~Label();
+
 };
 
 class Button : public Label
 {
 public:
-	Button(int x = 0, int y = 0, int width = 100, int height = 60, const LPCTSTR& text = _T("按钮"), int (*FuncPtr)());
+	Button(int (*FuncPtr)(), int x = 0, int y = 0, int width = 100, int height = 60, const std::wstring& text = L"按钮");
 	void RenderRoWindows();//显示按钮
 	bool state(const ExMessage& msg);//显示按钮点击状态，点和未点击
 	bool On(const ExMessage& msg);//是否点击到按钮
 	int Click();//检测到鼠标在这个按钮上点击时调用
+	~Button();
 
 protected:
-	LPCTSTR text;
+	std::wstring text;
 	bool ischange;//按钮状态是否改变
 	int (*FuncPtr)();
+
+
+
 };
