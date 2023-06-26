@@ -134,6 +134,7 @@
     <ClInclude Include="Scroll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
