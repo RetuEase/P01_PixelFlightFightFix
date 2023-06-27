@@ -60,7 +60,6 @@ public:
 	void Destroy(Coordinate pos);			// 被破坏一个像素
 	void Fracture();						// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 	void setCore(std::vector<Coordinate> core);	//设置核心部位
-
 };
 
 class PlayerPlane : public Plane
