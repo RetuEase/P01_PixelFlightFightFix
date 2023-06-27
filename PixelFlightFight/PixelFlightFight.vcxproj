@@ -133,13 +133,11 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Scroll.h" />
     <ClInclude Include="Workshop.h" />
-    <ClInclude Include="Instance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameLoop.cpp" />
-    <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Scroll.cpp" />
     <ClCompile Include="Workshop.cpp" />
