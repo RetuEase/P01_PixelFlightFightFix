@@ -2,8 +2,9 @@
 #include "Globals.h"
 #include "Workshop.h"
 #include "GameLoop.h"
-#include "Entity.h"
+//#include "Entity.h"
 
+class Bullet;
 // 战斗卷轴类（卷轴知晓关于战斗的一切）
 class Scroll
 {
@@ -63,4 +64,6 @@ public:
 	void DrawEnemy(Coordinate enemyPos, int scrollOffset);
 	void InitiateInstance(PlaneTemplate pt, Coordinate pos);	// 生成实体到卷轴和仓库
 	void DeleteInstance(InsId id);								// 从卷轴和仓库删除实体	
+
+
 };

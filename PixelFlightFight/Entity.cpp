@@ -3,6 +3,8 @@
 #include <unordered_set>
 #include <queue>
 #include <iostream>
+
+
 using namespace std;
 
 Sprite::Sprite()
@@ -93,6 +95,7 @@ void Bullet::CollisionDetection()
 	//重叠而不会湮灭的不消除
 
 	Scroll scroll = Scroll::GetInstance();	//调用Scroll单例
+	
 	//先判断自己是否在待消除列表里
 	if (waitingEliminatedInsId.find(insId) != waitingEliminatedInsId.end())
 	{

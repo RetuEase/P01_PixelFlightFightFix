@@ -1,8 +1,9 @@
 #pragma once
 #include "Globals.h"
 #include "Scroll.h"
-//原来的Instance.h
 
+//原来的Instance.h
+class Scroll;
 // 图形，无绝对坐标
 class Sprite
 {
