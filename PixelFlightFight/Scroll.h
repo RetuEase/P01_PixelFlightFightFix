@@ -10,7 +10,6 @@ class Scroll
 {
 public:
 	//friend GameLoop;
-	friend void Bullet::CollisionDetection();
 	struct ScrollTile
 	{
 		std::vector<InsId> tileContainer;	// 这一像素包含了些什么实体 id
