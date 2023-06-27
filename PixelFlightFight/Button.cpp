@@ -29,6 +29,7 @@ Label::~Label() {
 
 }
 Label::Label(LPCTSTR text) {
+	container.text="kaishi";
 
 }
 void Button::RenderToWindows() {
@@ -51,7 +52,7 @@ bool Button::state(const ExMessage& msg) {
 		// …Ë÷√—˘ Ω
 		setlinestyle(PS_SOLID, 2);
 		setfillcolor(LIGHTBLUE);
-		settextstyle(25, 0, L"Œ¢»Ì—≈∫⁄");
+		settextstyle(30, 0, L"Œ¢»Ì—≈∫⁄");
 
 		// ªÊ÷∆∞¥≈•
 		fillrectangle(x, y, x + width, y + height);
@@ -85,7 +86,7 @@ bool Button::state(const ExMessage& msg) {
 	{
 		if (ischange)
 		{
-			RenderRoWindows();
+			RenderToWindows();
 			ischange = false;
 		}
 		return false;

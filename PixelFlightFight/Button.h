@@ -24,7 +24,7 @@ public:
 	Label(int x = 0, int y = 0, int width = 100, int height = 60);//pos.x=x
 	Coordinate getPos();//获取pos
 	Vector2 getSize();
-	virtual void RenderRoWindows() = 0;//渲染到绘图区，这里动态绑定一下
+	virtual void RenderToWindows()=0;//渲染到绘图区，这里动态绑定一下
 	Label(IMAGE image);
 	Label(LPCTSTR text);
 	~Label();

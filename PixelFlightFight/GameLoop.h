@@ -5,7 +5,7 @@
 class GameLoop
 {
 	int flag;					// 所处界面编号
-	bool keyDown[KEY_COUNT];	// 按键的按下状态
+	//bool keyDown[KEY_COUNT];	// 按键的按下状态
 	GameLoop();
 public:
 	~GameLoop();
