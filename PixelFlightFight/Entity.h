@@ -20,7 +20,7 @@ public:
 // 实体，有绝对坐标
 class Bullet : public Sprite
 {
-protected:
+public:
 	int type;			// 子弹还是飞机
 	InsId insId;		// 实体 ID
 	EntityType entityType;//飞机类型
@@ -30,7 +30,7 @@ protected:
 
 	Coordinate pos;		// 参考点处于 Scroll 中的绝对坐标
 	Speed autoSpeed;	// 惯性速度
-public:
+
 	friend Scroll;
 	Bullet();
 	Bullet(Coordinate pos);
@@ -46,7 +46,7 @@ public:
 	/************************重中之重!**********************************/
 	void CollisionDetection();	// 碰撞检测，移动后需要进行碰撞检测
 	/******************************************************************/
-	int GetEntityType();
+	void Resource();
 };
 
 class Plane : public Bullet
@@ -60,6 +60,7 @@ public:
 	void Destroy(Coordinate pos);			// 被破坏一个像素
 	void Fracture();						// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 	void setCore(std::vector<Coordinate> core);	//设置核心部位
+
 };
 
 class PlayerPlane : public Plane

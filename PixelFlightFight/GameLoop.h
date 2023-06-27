@@ -11,7 +11,6 @@ public:
 	~GameLoop();
 	static GameLoop& GetInstance();	// 返回单例
 	void Run();						// 开始循环
-
 private:
 	void MainMenuLoop();		// 主界面
 	void SelectLevelLoop();		// 选关界面

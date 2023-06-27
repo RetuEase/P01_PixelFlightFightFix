@@ -87,7 +87,6 @@ void Bullet::RenderToScroll()
 /***********重中之重***********/
 //加了个全局变量 哈希表<自己的ID,和自己相撞的ID> 待消除实体列表
 std::unordered_map<InsId, InsId> waitingEliminatedInsId;
-
 void Bullet::CollisionDetection()
 {
 	//检测碰撞检测
@@ -137,7 +136,7 @@ void Bullet::CollisionDetection()
 				std::pair<InsId, Bullet> pair;
 				std::pair<InsId, Bullet> endPair = *scroll.instanceRepo.end();
 				//如果自身是子弹，则只会碰撞敌机
-				if (GetEntityType() == EntityType::_EntityBullet) {
+				if (entityType == EntityType::_EntityBullet) {
 					for (int i = 0; i < tv.size(); i++)
 					{
 						InsId tid = tv[i];
@@ -146,7 +145,7 @@ void Bullet::CollisionDetection()
 						if (pair != endPair)
 						{
 							pair = *iter;
-							if (pair.second.GetEntityType() == EntityType::_EntityEnemy)
+							if (pair.second.entityType == EntityType::_EntityEnemy)
 							{
 								scroll.DeleteInstance(pair.second.insId);
 								scroll.DeleteInstance(insId);
@@ -157,7 +156,7 @@ void Bullet::CollisionDetection()
 					}
 				}
 				//如果自身是敌机，则会碰撞子弹和自机
-				if (GetEntityType() == EntityType::_EntityEnemy) {
+				if (entityType == EntityType::_EntityEnemy) {
 					for (int i = 0; i < tv.size(); i++)
 					{
 						InsId tid = tv[i];
@@ -166,7 +165,7 @@ void Bullet::CollisionDetection()
 						if (pair != endPair)
 						{
 							pair = *iter;
-							if (pair.second.GetEntityType() == EntityType::_EntityBullet || pair.second.GetEntityType() == EntityType::_EntityPlayer)
+							if (pair.second.entityType == EntityType::_EntityBullet || pair.second.entityType == EntityType::_EntityPlayer)
 							{
 								scroll.DeleteInstance(pair.second.insId);
 								scroll.DeleteInstance(insId);
@@ -193,7 +192,7 @@ void Bullet::CollisionDetection()
 				std::pair<InsId, Bullet> pair;
 				std::pair<InsId, Bullet> endPair = *scroll.instanceRepo.end();
 				//如果自身是子弹，则只会碰撞敌机
-				if (GetEntityType() == EntityType::_EntityBullet) {
+				if (entityType == EntityType::_EntityBullet) {
 					for (int i = 0; i < tv.size(); i++)
 					{
 						InsId tid = tv[i];
@@ -201,7 +200,7 @@ void Bullet::CollisionDetection()
 						pair = *iter;
 						if (pair != endPair) {
 
-							if (pair.second.GetEntityType() == EntityType::_EntityEnemy)
+							if (pair.second.entityType == EntityType::_EntityEnemy)
 							{
 								waitingEliminatedInsId.insert({ insId,pair.second.insId });
 								return;
@@ -211,7 +210,7 @@ void Bullet::CollisionDetection()
 					}
 				}
 				//如果自身是敌机，则会碰撞子弹和自机
-				if (GetEntityType() == EntityType::_EntityEnemy) {
+				if (entityType == EntityType::_EntityEnemy) {
 					for (int i = 0; i < tv.size(); i++)
 					{
 						InsId tid = tv[i];
@@ -219,7 +218,7 @@ void Bullet::CollisionDetection()
 						pair = *iter;
 						if (pair != endPair) {
 							pair = *iter;
-							if (pair.second.GetEntityType() == EntityType::_EntityBullet || pair.second.GetEntityType() == EntityType::_EntityPlayer)
+							if (pair.second.entityType == EntityType::_EntityBullet || pair.second.entityType == EntityType::_EntityPlayer)
 							{
 								waitingEliminatedInsId.insert({ insId,pair.second.insId });
 								return;
@@ -233,7 +232,10 @@ void Bullet::CollisionDetection()
 		}
 	}
 }
-
+void Bullet::Resource()
+{
+	std::shared_ptr<Bullet> p1(this);
+}
 Plane::Plane()
 {
 }
