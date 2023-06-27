@@ -59,6 +59,9 @@
 using InsId = int;
 using PlaneId = long long;
 
+//实体类型
+enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer };
+
 // 二维结构
 struct Vector2
 {
