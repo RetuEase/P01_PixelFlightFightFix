@@ -1,5 +1,7 @@
 #pragma once
 #include "Globals.h"
+#include "Scroll.h"
+//原来的Instance.h
 
 // 图形，无绝对坐标
 class Sprite
@@ -20,6 +22,7 @@ class Bullet : public Sprite
 protected:
 	int type;			// 子弹还是飞机
 	InsId insId;		// 实体 ID
+	EntityType entityType;//飞机类型
 
 	int tileCountMax;	// 拥有的像素上限
 	int tileCount;		// 剩余的像素
@@ -27,6 +30,7 @@ protected:
 	Coordinate pos;		// 参考点处于 Scroll 中的绝对坐标
 	Speed autoSpeed;	// 惯性速度
 public:
+	friend Scroll;
 	Bullet();
 	Bullet(Coordinate pos);
 	Bullet(Coordinate pos, std::unordered_map<Coordinate, COLORREF> spriteMap);
@@ -41,6 +45,7 @@ public:
 	/************************重中之重!**********************************/
 	void CollisionDetection();	// 碰撞检测，移动后需要进行碰撞检测
 	/******************************************************************/
+	int GetEntityType();
 };
 
 class Plane : public Bullet
