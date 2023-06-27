@@ -76,10 +76,10 @@ void Scroll::ControlPlayer()
 {
 	Coordinate speed = Coordinate(0, 0);
 
-	if (kbhit())
+	if (_kbhit())
 	{
 
-		int key = getch();
+		int key = _getch();
 
 
 		switch (key)
