@@ -1,11 +1,6 @@
 #include "Scroll.h"
-#include "Globals.h"
-#include <graphics.h> // 包含easyX库的头文件
-#include"Globals.h"
-#include"Instance.h"
-#include <conio.h>
 
-
+/********************暮炊雪********************/
 Scroll::Scroll()
 {
 	// 构造函数的实现
@@ -34,10 +29,10 @@ Scroll::~Scroll()
 	// 释放子弹资源
 	for (auto& entry : instanceRepo)
 	{
-		Instance& instance = entry.second;
-		if (instance.GetEntityType() == EntityType::Bullet)
+		Bullet& bullet = entry.second;
+		if (bullet.GetEntityType() == EntityType::_EntityBullet)
 		{
-			Bullet& bullet = static_cast<Bullet&>(instance);
+			Bullet& bullet = static_cast<Bullet&>(bullet);
 			// 根据具体的资源释放方式释放子弹资源
 			delete bullet.bulletResource;
 		}
@@ -46,10 +41,10 @@ Scroll::~Scroll()
 	// 释放敌机资源
 	for (auto& entry : instanceRepo)
 	{
-		Instance& instance = entry.second;
-		if (instance.GetEntityType() == EntityType::Enemy)
+		Bullet& bullet = entry.second;
+		if (bullet.GetEntityType() == EntityType::_EntityEnemy)
 		{
-			Plane& enemy = static_cast<Plane&>(instance);
+			Plane& enemy = static_cast<Plane&>(bullet);
 			// 根据具体的资源释放方式释放敌机资源
 			delete enemy.enemyResource;
 		}
@@ -58,8 +53,8 @@ Scroll::~Scroll()
 	// 释放我方飞机资源
 	for (auto& entry : instanceRepo)
 	{
-		Instance& instance = entry.second;
-		if (instance.GetEntityType() == EntityType::Player)
+		Bullet& bullet = entry.second;
+		if (bullet.GetEntityType() == EntityType::_EntityPlayer)
 		{
 			PlayerPlane& player = static_cast<PlayerPlane&>(instance);
 			// 根据具体的资源释放方式释放我方飞机资源
@@ -118,40 +113,40 @@ void Scroll::AllMove()
 	// 遍历实体列表，执行移动和碰撞检测
 	for (auto& entry : instanceRepo)
 	{
-		Instance& instance = entry.second;
+		Bullet& bullet = entry.second;
 
 		// 判断实体类型
-		if (instance.GetEntityType() == EntityType::Player)
+		if (bullet.GetEntityType() == EntityType::_EntityPlayer)
 		{
 			// 我方飞机的移动控制
-			PlayerPlane& player = static_cast<PlayerPlane&>(instance);
+			PlayerPlane& player = static_cast<PlayerPlane&>(bullet);
 			player.ManualMove(speed); // 假设speed为玩家控制的速度
 		}
-		else if (instance.GetEntityType() == EntityType::Bullet)
+		else if (bullet.GetEntityType() == EntityType::_EntityBullet)
 		{
 			// 子弹的移动
-			Bullet& bullet = static_cast<Bullet&>(instance);
+			Bullet& bullet = static_cast<Bullet&>(bullet);
 			bullet.AutoMove();
 
 			// 判断子弹是否与敌机发生碰撞
 			bullet.CollisionDetection();
 		}
-		else if (instance.GetEntityType() == EntityType::Enemy)
+		else if (bullet.GetEntityType() == EntityType::_EntityEnemy)
 		{
 			// 敌机的移动
-			Plane& enemy = static_cast<Plane&>(instance);
+			Plane& enemy = static_cast<Plane&>(bullet);
 			enemy.AutoMove();
 
 			// 判断敌机与子弹的碰撞
 			enemy.CollisionDetection();
 
 			// 判断敌机与我方飞机的碰撞
-			PlayerPlane& player = static_cast<PlayerPlane&>(instanceRepo[EntityType::Player]);
+			PlayerPlane& player = static_cast<PlayerPlane&>(instanceRepo[EntityType::_EntityPlayer]);
 			player.CollisionDetection();
 		}
 
 		// 将实体渲染到scrollMap中
-		instance.RenderToScroll();
+		bullet.RenderToScroll();
 	}
 }
 
@@ -181,16 +176,16 @@ void Scroll::RenderToWindows()
 	}
 
 	// 获取玩家飞机位置
-	PlayerPlane& player = static_cast<PlayerPlane&>(instanceRepo[EntityType::Player]);
+	PlayerPlane& player = static_cast<PlayerPlane&>(instanceRepo[EntityType::_EntityPlayer]);
 	Coordinate playerPos = player.GetPosition();
 
 	// 绘制敌机
 	for (auto& entry : instanceRepo)
 	{
-		Instance& instance = entry.second;
-		if (instance.GetEntityType() == EntityType::Enemy)
+		Bullet& bullet = entry.second;
+		if (bullet.GetEntityType() == EntityType::_EntityEnemy)
 		{
-			Plane& enemy = static_cast<Plane&>(instance);
+			Plane& enemy = static_cast<Plane&>(bullet);
 			Coordinate enemyPos = enemy.GetPosition();
 			// 根据实际位置绘制敌机
 			DrawEnemy(enemyPos, scrollOffset);
@@ -241,17 +236,17 @@ void Scroll::InitiateInstance(PlaneTemplate pt, Coordinate pos)
 	// 可以在这里根据给定的PlaneTemplate和位置信息生成实体，并将其添加到卷轴和仓库中
 
 	// 创建实体并初始化
-	Instance instance;
-	instance.SetPlaneTemplate(pt);
-	instance.SetPosition(pos);
-	instance.SetInsId(insIdCounter++);
+	Bullet bullet;
+	bullet.SetPlaneTemplate(pt);
+	bullet.SetPosition(pos);
+	bullet.SetInsId(insIdCounter++);
 
 	// 将实体添加到卷轴
-	Coordinate coordinate = instance.GetCoordinate();
-	scrollMap[coordinate].tileContainer.push_back(instance.GetInsId());
+	Coordinate coordinate = bullet.GetCoordinate();
+	scrollMap[coordinate].tileContainer.push_back(bullet.GetInsId());
 
 	// 将实体添加到仓库
-	instanceRepo[instance.GetInsId()] = instance;
+	instanceRepo[bullet.GetInsId()] = bullet;
 }
 
 void Scroll::DeleteInstance(InsId id)
@@ -269,4 +264,3 @@ void Scroll::DeleteInstance(InsId id)
 	// 从仓库中删除实体
 	instanceRepo.erase(id);
 }
-
