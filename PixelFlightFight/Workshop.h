@@ -20,10 +20,10 @@ public:
 class PlaneTemplate : public Sprite
 {
 	friend PlaneCanvas;
-
 	std::vector<Coordinate> core;		// 哪些是核心像素
 	int coreCountMax;					// 核心像素上限
 	Speed speed;						// 子弹/飞机速度
+
 public:
 	PlaneTemplate();					// core 默认为1
 	PlaneTemplate(int coreCount);		// 指定核心像素数量（除了 BOSS 都是1）

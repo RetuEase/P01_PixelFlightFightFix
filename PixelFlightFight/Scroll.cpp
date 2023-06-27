@@ -237,7 +237,7 @@ void Scroll::InitiateInstance(PlaneTemplate pt, Coordinate pos)
 
 	// 创建实体并初始化
 	Bullet bullet;
-	bullet.SetPlaneTemplate(pt);
+	bullet.SetPlaneTemplate(pt);			//差一个以PlaneTemplate创建Bullet实体
 	bullet.pos=pos;
 	bullet.insId=insIdCounter++;
 

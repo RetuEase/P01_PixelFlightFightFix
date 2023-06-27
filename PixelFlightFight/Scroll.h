@@ -5,6 +5,7 @@
 #include "Entity.h"
 
 class Bullet;
+class PlaneTemplate;
 // 战斗卷轴类（卷轴知晓关于战斗的一切）
 class Scroll
 {

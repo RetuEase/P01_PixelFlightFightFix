@@ -47,7 +47,9 @@ public:
 	/************************重中之重!**********************************/
 	void CollisionDetection();	// 碰撞检测，移动后需要进行碰撞检测
 	/******************************************************************/
-	void Resource();
+	void Resource();			//释放
+	void SetPlaneTemplate(PlaneTemplate pt);
+
 };
 
 class Plane : public Bullet

@@ -231,6 +231,10 @@ void Bullet::Resource()
 {
 	std::shared_ptr<Bullet> p1(this);
 }
+void Bullet::SetPlaneTemplate(PlaneTemplate pt)
+{
+	//////////////////////////////////////////////////////
+}
 Plane::Plane()
 {
 }
