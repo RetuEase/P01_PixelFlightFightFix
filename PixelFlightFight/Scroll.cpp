@@ -75,13 +75,10 @@ Scroll& Scroll::GetInstance()
 void Scroll::ControlPlayer()
 {
 	Coordinate speed = Coordinate(0, 0);
-
+		
 	if (_kbhit())
 	{
-
 		int key = _getch();
-
-
 		switch (key)
 		{
 		case 'W':

@@ -44,7 +44,7 @@ void GameLoop::Run()
 
 void GameLoop::MainMenuLoop()
 {
-	initgraph(WINDOWS_X , WINDOWS_Y , EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(WHITE);
 	cleardevice();
 	setbkmode(TRANSPARENT);//处理字体背景
@@ -63,10 +63,10 @@ void GameLoop::MainMenuLoop()
 	Button* Operating_instructions;//绘制操作说明
 	Button* exit_game;//退出
 
-	Begin = new Button(OnButtonClick, 340, 200, 500, 250, L"开始游戏");
-	WorkShop = new Button(OnButtonClick, 340, 300, 500, 250, L"飞机工厂");
-	Operating_instructions = new Button(OnButtonClick, 340, 400, 500, 250, L"操作说明");
-	exit_game = new Button(OnButtonClick, 340, 500, 500, 250, L"退出游戏");
+	Begin = new Button(OnButtonClick, 340, 200, 500, 20, L"开始游戏");
+	WorkShop = new Button(OnButtonClick, 340, 300, 500, 20, L"飞机工厂");
+	Operating_instructions = new Button(OnButtonClick, 340, 400, 500, 20, L"操作说明");
+	exit_game = new Button(OnButtonClick, 340, 500, 500, 20, L"退出游戏");
 	Begin->RenderToWindows();
 	WorkShop->RenderToWindows();
 	Operating_instructions->RenderToWindows();
@@ -93,7 +93,7 @@ void GameLoop::MainMenuLoop()
 		{
 			flag = 4;
 			printf("End\n");
-			PlaneWorkshopLoop();
+			InstructionsLoop();
 		}
 		if (exit_game->state(msg)) {//退出游戏
 			flag = -1;
@@ -102,45 +102,49 @@ void GameLoop::MainMenuLoop()
 	}
 	_getch();
 
-	int mouseX, mouseY;
-	MOUSEMSG mouseMsg;
 
-	while (1)
-	{
-		// 处理鼠标事件
-		mouseMsg = GetMouseMsg();
-		if (mouseMsg.uMsg == WM_LBUTTONDOWN)
-		{
-			mouseX = mouseMsg.x;
-			mouseY = mouseMsg.y;
-			if (mouseX >= 300 && mouseX <= 500 && mouseY >= 200 && mouseY <= 250)
-			{
-				// 用户点击了开始游戏按钮，跳转到游戏选关界面
-				SelectLevelLoop();
-			}
-			else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 300 && mouseY <= 350)
-			{
-				// 用户点击了飞机工厂按钮，跳转到飞机工坊界面
-				PlaneWorkshopLoop();
-			}
-			else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 400 && mouseY <= 450)
-			{
-				// 用户点击了操作说明按钮，跳转到说明界面
 
-			}
-			else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 500 && mouseY <= 550)
-			{
-				// 用户点击了退出游戏按钮
-				exit(0);
-				break;
-			}
-		}
-	}
+
+	//int mouseX, mouseY;
+	//MOUSEMSG mouseMsg;
+
+	//while (1)
+	//{
+	//	// 处理鼠标事件
+	//	mouseMsg = GetMouseMsg();
+	//	if (mouseMsg.uMsg == WM_LBUTTONDOWN)
+	//	{
+	//		mouseX = mouseMsg.x;
+	//		mouseY = mouseMsg.y;
+	//		if (mouseX >= 300 && mouseX <= 500 && mouseY >= 200 && mouseY <= 250)
+	//		{
+	//			// 用户点击了开始游戏按钮，跳转到游戏选关界面
+	//			SelectLevelLoop();
+	//		}
+	//		else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 300 && mouseY <= 350)
+	//		{
+	//			// 用户点击了飞机工厂按钮，跳转到飞机工坊界面
+	//			PlaneWorkshopLoop();
+	//		}
+	//		else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 400 && mouseY <= 450)
+	//		{
+	//			// 用户点击了操作说明按钮，跳转到说明界面
+
+	//		}
+	//		else if (mouseX >= 300 && mouseX <= 500 && mouseY >= 500 && mouseY <= 550)
+	//		{
+	//			// 用户点击了退出游戏按钮
+	//			exit(0);
+	//			break;
+	//		}
+	//	}
+	//}
 
 	cleardevice();
 	closegraph();
 }
 
+//TODO
 void GameLoop::InstructionsLoop()
 {
 
@@ -199,7 +203,6 @@ void GameLoop::PlaneWorkshopLoop()
 	int pixels[ROW][COL] = { 0 };
 	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
 
-
 	// 渲染像素数组
 	for (int i = 0; i < ROW; i++)
 	{
@@ -220,7 +223,6 @@ void GameLoop::PlaneWorkshopLoop()
 	//循环接受鼠标信息
 	while (1)
 	{
-
 		settextcolor(WHITE);
 		settextstyle(20, 0, _T("黑体"));
 		outtextxy(20, 20, _T("欢迎来到飞机工坊"));
@@ -276,34 +278,31 @@ void GameLoop::PlaneBattleLoop()
 	ExMessage emg;//可以循环接受鼠标信息
 
 	//获取Scroll信息
-	Scroll sc = Scroll::GetInstance();
-	while (1)
-	{//点击esc按键跳转到游戏主菜单
-		if (peekmessage(&emg))
-		{
-			if (emg.message == WM_KEYDOWN)
-			{
-				if (emg.message == VK_ESCAPE)
-				{
-					BattleMenuLoop();
-				}
-			}
-		}
-		else if (sc.baseLife <= 0)//基地血量耗尽
-		{
-			BattleDefeatLoop();
-		}
-		else if (sc.insIdCounter == 0)//敌机全部被消灭
-		{
-			BattleVictoryLoop();
-		}
-
-
-	}
+	//Scroll sc = Scroll::GetInstance();
+	//while (1)
+	//{//点击esc按键跳转到游戏主菜单
+	//    if (peekmessage(&emg))
+	//    {
+	//        if (emg.message == WM_KEYDOWN)
+	//        {
+	//            if (emg.message == VK_ESCAPE)
+	//            {
+	//                BattleMenuLoop();
+	//            }
+	//        }
+	//    }
+	//    else if (sc.baseLife <= 0)//基地血量耗尽
+	//    {
+	//        BattleDefeatLoop();
+	//    }
+	//    else if (sc.insIdCounter == 0)//敌机全部被消灭
+	//    {
+	//        BattleVictoryLoop();
+	//    }
+	//}
 	closegraph();
 }
 /********************禁区林黛玉********************/
-
 struct LButton
 {
 	int x1;

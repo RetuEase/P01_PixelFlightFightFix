@@ -15,8 +15,7 @@ public:
 	void SelectLevelLoop();		// 选关界面	
 	void PlaneBattleLoop();		// 飞机战斗界面
 	void PlaneWorkshopLoop();	// 飞机工坊界面
-
-	void InstructionsLoop();		// 操作说明界面   //TODO
+	void InstructionsLoop();	// 操作说明界面   //TODO
 
 
 	void BattleMenuLoop();		// 战斗菜单弹出界面
