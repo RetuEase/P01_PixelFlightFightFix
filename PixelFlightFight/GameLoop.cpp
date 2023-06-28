@@ -43,25 +43,28 @@ void GameLoop::Run()
 }
 void GameLoop::MainMenuLoop()
 {
+
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(WHITE);
-	cleardevice();//显示背景颜色      setbkmode(TRANSPARENT);//处理字体背景
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(CYAN);//设置填充色，这里是浅青色
 	setlinecolor(BLACK); //设置当前线条的颜色为黑色
-	settextstyle(45, 0, _T("微软雅黑"));
+	settextstyle(45, 0, _T("微软雅黑"));//
 	LPCTSTR title = _T("像素飞机大战");
-	outtextxy(500 - textwidth(title), 100, title);
+	settextcolor(BLUE);
+	outtextxy(400, 100, title);
 	// 绘制开始游戏按钮
 	setfillcolor(BLUE);
-	fillrectangle(300, 200, 500, 250); // 按钮背景
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* Begin;//绘制开始游戏按钮
 	Button* WorkShop;//绘制飞机工厂
 	Button* Operating_instructions;//绘制操作说明
 	Button* exit_game;//退出
-	Begin = new Button(OnButtonClick, 300, 100, 40, 20, L"开始游戏");
-	WorkShop = new Button(OnButtonClick, 300, 100, 40, 20, L"飞机工厂");
-	Operating_instructions = new Button(OnButtonClick, 300, 200, 40, 20, L"操作说明");
-	exit_game = new Button(OnButtonClick, 300, 300, 40, 20, L"退出游戏");
+	Begin = new Button(OnButtonClick, 350, 300, 300, 75, L"开始游戏");
+	WorkShop = new Button(OnButtonClick, 350, 400, 300, 75, L"飞机工厂");
+	Operating_instructions = new Button(OnButtonClick, 350, 500, 300, 75, L"操作说明");
+	exit_game = new Button(OnButtonClick, 350, 600, 300, 75, L"退出游戏");
 	Begin->RenderToWindows();
 	WorkShop->RenderToWindows();
 	Operating_instructions->RenderToWindows();
@@ -111,10 +114,10 @@ void GameLoop::SelectLevelLoop()
 	setbkcolor(WHITE);
 	cleardevice();
 
-	setfillcolor(RED);
-	fillrectangle(300, 250, 500, 350);
+	setfillcolor(CYAN);
+	fillrectangle(300, 250, 500, 75);
 
-	settextcolor(BLACK);
+	settextcolor(BLUE);
 	settextstyle(40, 0, _T("微软雅黑"));
 	setbkmode(TRANSPARENT);
 	char arr[] = "第一关";
