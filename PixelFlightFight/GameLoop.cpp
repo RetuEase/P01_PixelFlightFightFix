@@ -33,37 +33,36 @@ void GameLoop::Run()
 		case 3:
 			PlaneBattleLoop();//战斗界面
 		case 4:
-			PlaneBattleLoop();//说明界面
+			PlaneBattleLoop();//介绍界面
 		case 5:
 			PlaneWorkshopLoop();//飞机工坊
 		case -1:
 			return;//结束
-		} 
+		}
 	}
 }
 void GameLoop::MainMenuLoop()
 {
-
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-	setbkcolor(WHITE);
+	setbkcolor(CYAN);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
-	setfillcolor(CYAN);//设置填充色，这里是浅青色
-	setlinecolor(BLACK); //设置当前线条的颜色为黑色
-	settextstyle(45, 0, _T("微软雅黑"));//
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));//
 	LPCTSTR title = _T("像素飞机大战");
-	settextcolor(BLUE);
-	outtextxy(400, 100, title);
-	// 绘制开始游戏按钮
-	setfillcolor(BLUE);
+	settextcolor(WHITE);
+	outtextxy(355, 100, title);
+	// 绘制按钮
+	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
-	Button* Begin;//绘制开始游戏按钮
+	Button* Begin;//绘制按钮
 	Button* WorkShop;//绘制飞机工厂
 	Button* Operating_instructions;//绘制操作说明
 	Button* exit_game;//退出
-	Begin = new Button(OnButtonClick, 350, 300, 300, 75, L"开始游戏");
-	WorkShop = new Button(OnButtonClick, 350, 400, 300, 75, L"飞机工厂");
-	Operating_instructions = new Button(OnButtonClick, 350, 500, 300, 75, L"操作说明");
+	Operating_instructions = new Button(OnButtonClick, 350, 300, 300, 75, L"游戏介绍");
+	Begin = new Button(OnButtonClick, 350, 400, 300, 75, L"开始游戏");
+	WorkShop = new Button(OnButtonClick, 350, 500, 300, 75, L"飞机工厂");
 	exit_game = new Button(OnButtonClick, 350, 600, 300, 75, L"退出游戏");
 	Begin->RenderToWindows();
 	WorkShop->RenderToWindows();
@@ -74,7 +73,6 @@ void GameLoop::MainMenuLoop()
 	while (on)
 	{
 		msg = getmessage();
-
 		if (Begin->state(msg)) // 开始游戏 进入选关卡页面
 		{
 			flag = 2;
@@ -87,7 +85,7 @@ void GameLoop::MainMenuLoop()
 			printf("End\n");
 			PlaneWorkshopLoop();
 		}
-		if (Operating_instructions->state(msg)) // 操作说明
+		if (Operating_instructions->state(msg)) // 介绍
 		{
 			flag = 4;
 			printf("End\n");
@@ -98,66 +96,103 @@ void GameLoop::MainMenuLoop()
 			exit(0);
 		}
 	}
-	_getch();
+	//getch();
 }
 
 //TODO 
 //介绍界面
 void GameLoop::InstructionsLoop()
 {
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	setbkcolor(CYAN);
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));//
+	LPCTSTR title = _T("游戏介绍");
+	settextcolor(WHITE);
+	outtextxy(400, 100, title);
+
+	//游戏介绍
+
+
+	// 绘制按钮
+	setfillcolor(WHITE);
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
+	Button* re_main_menu;//返回菜单
+	re_main_menu = new Button(OnButtonClick, 350, 600, 300, 75, L"返回菜单");
+	re_main_menu->RenderToWindows();
+	ExMessage msg;
+	bool on = 1;
+	while (on)
+	{
+		msg = getmessage();
+		if (re_main_menu->state(msg)) // 返回菜单
+		{
+			flag = 1;
+			printf("Return to menu\n");
+			MainMenuLoop();
+		}
+	}
+	//getch();
 
 }
 
 void GameLoop::SelectLevelLoop()
 {
-	initgraph(800, 600);
-	setbkcolor(WHITE);
-	cleardevice();
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	setbkcolor(CYAN);
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));//
+	LPCTSTR title = _T("关卡选择");
+	settextcolor(WHITE);
+	outtextxy(400, 100, title);
+	//游戏介绍
+	// 绘制按钮
+	setfillcolor(WHITE);
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
+	Button* re_main_menu;//返回菜单
+	Button* first_level;//第一关
 
-	setfillcolor(CYAN);
-	fillrectangle(300, 250, 500, 75);
-
-	settextcolor(BLUE);
-	settextstyle(40, 0, _T("微软雅黑"));
-	setbkmode(TRANSPARENT);
-	char arr[] = "第一关";
-	outtextxy(354, 280, _T("第一关"));
-
-	//用户点击按钮跳转到战斗界面 PlaneBattleLoop（）
-	//点击ESC按键跳转回主界面 MainMenuLoop（）
-	ExMessage emg;
-
-	while (1)
+	first_level = new Button(OnButtonClick, 350, 300, 300, 75, L"第一关");
+	re_main_menu = new Button(OnButtonClick, 350, 600, 300, 75, L"返回菜单");
+	re_main_menu->RenderToWindows();
+	first_level->RenderToWindows();
+	ExMessage msg;
+	bool on = 1;
+	while (on)
 	{
-		if (peekmessage(&emg)) {
-			if (emg.message == WM_LBUTTONDOWN) {
-				if ((emg.x >= 300) && (emg.x <= 500) && (emg.y >= 250) && (emg.y <= 350)) {
-					PlaneBattleLoop();
-				}
-			}
-			else if (emg.message == WM_KEYDOWN) {
-				if (emg.wParam == VK_ESCAPE) {
-					closegraph();
-					MainMenuLoop();
-				}
-			}
+		msg = getmessage();
+		if (first_level->state(msg)) // 第一关
+		{
+			flag = 3;
+			printf("Game Start!\n");
+			PlaneBattleLoop();
 		}
-
+		if (re_main_menu->state(msg)) // 返回菜单
+		{
+			flag = 1;
+			printf("Return\n");
+			MainMenuLoop();
+		}
 	}
-	closegraph();
-
+	//getch();
 }
 
-
+//TODO
 void GameLoop::PlaneBattleLoop()
 {
-	initgraph(800, 600);
-
-	settextcolor(RED);
-	settextstyle(20, 0, _T("黑体"));
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	settextcolor(CYAN);
+	settextcolor(WHITE);
+	settextstyle(40, 0, _T("黑体"));
 	outtextxy(20, 20, _T("欢迎来到战斗界面"));
 	ExMessage emg;//可以循环接受鼠标信息
-
+	while (1) {}
 	//获取Scroll信息
 	//Scroll sc = Scroll::GetInstance();
 	//while (1)
@@ -375,122 +410,151 @@ void GameLoop::PlaneWorkshopLoop()
 
 void GameLoop::BattleMenuLoop()
 {
-	while (1)
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
+	setbkcolor(CYAN);
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));
+	LPCTSTR title = _T("选项");
+	settextcolor(WHITE);
+	outtextxy(450, 100, title);
+	settextcolor(WHITE);
+	// 绘制按钮
+	setfillcolor(WHITE);
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
+	Button* re_game;//绘制重新游玩按钮
+	Button* re_main_menu;//绘制返回菜单
+	Button* exit_game;//退出
+	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
+	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game->RenderToWindows();
+	re_main_menu->RenderToWindows();
+	exit_game->RenderToWindows();
+	ExMessage msg;
+	bool on = 1;
+	while (on)
 	{
-		initgraph(640, 480);//初始化界面
-		//setbkcolor(BLUE);
-		cleardevice();
-		settextcolor(GREEN);
-		settextstyle(100, 0, L"微软雅黑");
-		outtextxy(100, 70, L"暂停");
-		setfillcolor(BLUE);
-		fillrectangle(300, 200, 500, 250); // 按钮背景
-		Button* re_play;
-		Button* re_main_menu;
-		Button* return_game;
-		return_game = new Button(OnButtonClick, 300, 300, 400, 20, L"返回游戏");
-		re_play = new Button(OnButtonClick, 300, 100, 40, 20, L"重新游玩");
-		re_main_menu = new Button(OnButtonClick, 300, 200, 400, 20, L"返回主菜单");
-		re_play->RenderToWindows();
-		re_main_menu->RenderToWindows();
-		return_game->RenderToWindows();
-		ExMessage msg;
-		bool on = 1;
-		while (on) {
-			if (re_play->state(msg)) {
-				SelectLevelLoop(); //进入关卡页面
-			}
-			if (re_main_menu->state(msg)) {
-				MainMenuLoop();
-			}
-			if (return_game->state(msg)) {
+		msg = getmessage();
+		if (re_game->state(msg)) // 选择关卡
+		{
+			flag = 2;
+			printf("Restart\n");
+			SelectLevelLoop();
+		}
+		if (re_main_menu->state(msg)) // 返回菜单
+		{
+			flag = 1;
+			printf("Return\n");
+			MainMenuLoop();
+		}
 
-				//TODO
-			}
+		if (exit_game->state(msg)) {//退出游戏
+			flag = -1;
+			exit(0);
 		}
 	}
+	//getch();
 }
-
 
 void GameLoop::BattleDefeatLoop()
 {
-	while (1)
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
+	setbkcolor(CYAN);
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));
+	LPCTSTR title = _T("任务失败");
+	settextcolor(WHITE);
+	outtextxy(400, 100, title);
+	settextcolor(WHITE);
+	// 绘制按钮
+	setfillcolor(WHITE);
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
+	Button* re_game;//绘制重新游玩按钮
+	Button* re_main_menu;//绘制返回菜单
+	Button* exit_game;//退出
+	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
+	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game->RenderToWindows();
+	re_main_menu->RenderToWindows();
+	exit_game->RenderToWindows();
+	ExMessage msg;
+	bool on = 1;
+	while (on)
 	{
-		initgraph(640, 480);//初始化界面
-		//setbkcolor(BLUE);
-		cleardevice();
-		settextcolor(GREEN);
-		settextstyle(100, 0, L"微软雅黑");
-		outtextxy(100, 70, L"任务失败！");
-		//        LButton btns[3];
-		//        TCHAR tex1[1000] = _T("重新开始");
-		//        TCHAR tex2[1000] = _T("回到主菜单");
-		//        TCHAR tex3[1000] = _T("退出游戏");
-		//        while (1)
-		//        {
-		//            setVertexAndShowButton(btns[0], 280, 360, 220, 260, tex1, 20, 10, 5, "green", "green", "red");
-		//            setVertexAndShowButton(btns[1], 280, 360, 270, 310, tex2, 20, 10, 5, "white", "green", "red");
-		//            setVertexAndShowButton(btns[2], 280, 360, 320, 360, tex3, 20, 10, 5, "YELLOW", "green", "red");
-		//        }
-		setfillcolor(BLUE);
-		fillrectangle(300, 200, 500, 250); // 按钮背景
-		Button* re_play;
-		Button* re_main_menu;
-		Button* exit_game;
-		re_play = new Button(OnButtonClick, 300, 100, 40, 20, L"重新游玩");
-		re_main_menu = new Button(OnButtonClick, 300, 200, 400, 20, L"返回主菜单");
-		exit_game = new Button(OnButtonClick, 300, 300, 400, 20, L"退出游戏");
-		re_play->RenderToWindows();
-		re_main_menu->RenderToWindows();
-		exit_game->RenderToWindows();
-		ExMessage msg;
-		bool on = 1;
-		while (on) {
-			if (re_play->state(msg)) {
-				SelectLevelLoop(); //进入关卡页面
-			}
-			if (re_main_menu->state(msg)) {
-				MainMenuLoop();
-			}
-			if (exit_game->state(msg)) {
-				exit(0);
-			}
+		msg = getmessage();
+		if (re_game->state(msg)) // 选择关卡
+		{
+			flag = 2;
+			printf("Restart\n");
+			SelectLevelLoop();
+		}
+		if (re_main_menu->state(msg)) // 返回菜单
+		{
+			flag = 1;
+			printf("Return\n");
+			MainMenuLoop();
+		}
+
+		if (exit_game->state(msg)) {//退出游戏
+			flag = -1;
+			exit(0);
 		}
 	}
 }
 
 void GameLoop::BattleVictoryLoop()
 {
-	while (1)
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
+	setbkcolor(CYAN);
+	cleardevice();//显示背景颜色      
+	setbkmode(TRANSPARENT);//处理字体背景
+	setfillcolor(WHITE);//设置填充色，这里是浅青色
+	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	settextstyle(60, 0, _T("微软雅黑"));
+	LPCTSTR title = _T("任务完成");
+	settextcolor(WHITE);
+	outtextxy(400, 100, title);
+	settextcolor(WHITE);
+	// 绘制按钮
+	setfillcolor(WHITE);
+	//fillrectangle(350, 100, 300, 75); // 按钮背景
+	Button* re_game;//绘制重新游玩按钮
+	Button* re_main_menu;//绘制返回菜单
+	Button* exit_game;//退出
+	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
+	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game->RenderToWindows();
+	re_main_menu->RenderToWindows();
+	exit_game->RenderToWindows();
+	ExMessage msg;
+	bool on = 1;
+	while (on)
 	{
-		initgraph(640, 480);//初始化界面
-		setbkcolor(GREEN);
-		cleardevice();
-		settextcolor(BLUE);
-		settextstyle(100, 0, L"微软雅黑");
-		outtextxy(100, 70, L"任务完成！");
-		Button* next_game;
-		Button* re_main_menu;
-		Button* exit_game;
-		next_game = new Button(OnButtonClick, 300, 100, 40, 20, L"下一关");
-		re_main_menu = new Button(OnButtonClick, 300, 200, 400, 20, L"返回主菜单");
-		exit_game = new Button(OnButtonClick, 300, 300, 400, 20, L"退出游戏");
-		next_game->RenderToWindows();
-		re_main_menu->RenderToWindows();
-		exit_game->RenderToWindows();
+		msg = getmessage();
+		if (re_game->state(msg)) // 选择关卡
+		{
+			flag = 2;
+			printf("Restart\n");
+			SelectLevelLoop();
+		}
+		if (re_main_menu->state(msg)) // 返回菜单
+		{
+			flag = 1;
+			printf("Return\n");
+			MainMenuLoop();
+		}
 
-		ExMessage msg;
-		bool on = 1;
-		while (on) {
-			if (next_game->state(msg)) {
-				SelectLevelLoop();//进入关卡页面
-			}
-			if (re_main_menu->state(msg)) {
-				MainMenuLoop();
-			}
-			if (exit_game->state(msg)) {
-				exit(0);
-			}
+		if (exit_game->state(msg)) {//退出游戏
+			flag = -1;
+			exit(0);
 		}
 	}
 }
