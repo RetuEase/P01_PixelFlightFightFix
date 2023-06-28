@@ -38,7 +38,7 @@ void GameLoop::Run()
 			PlaneWorkshopLoop();//·É»ú¹¤·»
 		case -1:
 			return;//½áÊø
-		}
+		} 
 	}
 }
 void GameLoop::MainMenuLoop()
