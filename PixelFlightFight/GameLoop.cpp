@@ -1,18 +1,17 @@
 #include "GameLoop.h"
-#include "Scroll.h"
+//#include "Scroll.h"
 #include "Button.h"
 using namespace std;
 
 /********************yjl********************/
 
-GameLoop::GameLoop()
-	:flag(1)
-{
+GameLoop::GameLoop() :flag(1) {
 	//memset(keyDown, 0, sizeof(bool) * KEY_COUNT);
 }
 
 GameLoop::~GameLoop()
 {
+
 }
 
 GameLoop& GameLoop::GetInstance()
@@ -28,26 +27,26 @@ void GameLoop::Run()
 		switch (flag)
 		{
 		case 1:
-			MainMenuLoop();//主页面
+			MainMenuLoop(); //主界面
 		case 2:
-			SelectLevelLoop();//选择关卡
+			SelectLevelLoop(); //关卡界面
 		case 3:
-			PlaneBattleLoop();//战斗页面
+			PlaneBattleLoop();//战斗界面
 		case 4:
-			PlaneWorkshopLoop();//飞机工坊页面
+			PlaneBattleLoop();//说明界面
+		case 5:
+			PlaneWorkshopLoop();//飞机工坊界面
 		case -1:
-			return;
-
+			return;//结束
 		}
 	}
 }
 
 void GameLoop::MainMenuLoop()
 {
-
-	initgraph(800, 600, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	initgraph(WINDOWS_X , WINDOWS_Y , EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(WHITE);
-	//cleardevice();
+	cleardevice();
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(CYAN);//设置填充色，这里是浅青色
 	setlinecolor(BLACK); //设置当前线条的颜色为黑色
@@ -56,17 +55,16 @@ void GameLoop::MainMenuLoop()
 	LPCTSTR title = _T("像素飞机大战");
 	outtextxy(500 - textwidth(title), 100, title);
 	// 绘制开始游戏按钮
-	//setfillcolor(BLUE);
-	//fillrectangle(300, 200, 500, 250); // 按钮背景
+	setfillcolor(BLUE);
+	fillrectangle(300, 200, 500, 250); // 按钮背景
 
-	Button *Begin;//绘制开始游戏按钮
-	Button* WorkShop;
-	Button* Operating_instructions;//绘制飞机工厂
-	Button* exit_game;
-	//Button* Operating_instructions;
-	//Button* exit_game;//绘制操作说明
-	Begin = new Button(OnButtonClick, 340, 200, 500, 250,L"开始游戏");
-	WorkShop = new Button (OnButtonClick, 340, 300, 500, 250, L"飞机工厂");
+	Button* Begin;//绘制开始游戏按钮
+	Button* WorkShop;//绘制飞机工厂
+	Button* Operating_instructions;//绘制操作说明
+	Button* exit_game;//退出
+
+	Begin = new Button(OnButtonClick, 340, 200, 500, 250, L"开始游戏");
+	WorkShop = new Button(OnButtonClick, 340, 300, 500, 250, L"飞机工厂");
 	Operating_instructions = new Button(OnButtonClick, 340, 400, 500, 250, L"操作说明");
 	exit_game = new Button(OnButtonClick, 340, 500, 500, 250, L"退出游戏");
 	Begin->RenderToWindows();
@@ -79,27 +77,30 @@ void GameLoop::MainMenuLoop()
 	{
 		msg = getmessage();
 
-		if (Begin->state(msg))		// 开始游戏
+		if (Begin->state(msg))		// 开始游戏 进入选关卡页面
 		{
+			flag = 2;
 			printf("Begin\n");
 			SelectLevelLoop();
 		}
 		if (WorkShop->state(msg))		// 飞机工厂
 		{
+			flag = 5;
 			printf("End\n");
 			PlaneWorkshopLoop();
 		}
-		if (Operating_instructions->state(msg))		// 操作提示
+		if (Operating_instructions->state(msg))		// 操作说明
 		{
-			
+			flag = 4;
+			printf("End\n");
+			PlaneWorkshopLoop();
 		}
 		if (exit_game->state(msg)) {//退出游戏
+			flag = -1;
 			exit(0);
 		}
 	}
-
 	_getch();
-
 
 	int mouseX, mouseY;
 	MOUSEMSG mouseMsg;
@@ -134,13 +135,15 @@ void GameLoop::MainMenuLoop()
 				break;
 			}
 		}
-
-
-
 	}
 
 	cleardevice();
 	closegraph();
+}
+
+void GameLoop::InstructionsLoop()
+{
+
 }
 
 
@@ -187,120 +190,118 @@ void GameLoop::SelectLevelLoop()
 
 void GameLoop::PlaneWorkshopLoop()
 {
-    //60 X 60界面 像素10 X 10
+	//60 X 60界面 像素10 X 10
 
-    const int ROW = 60;
-    const int COL = 60;
-    const int PIXEL_SIZE = 10;
-    //用数组保存飞机形状
-    int pixels[ROW][COL] = { 0 };
-    initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
+	const int ROW = 60;
+	const int COL = 60;
+	const int PIXEL_SIZE = 10;
+	//用数组保存飞机形状
+	int pixels[ROW][COL] = { 0 };
+	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
 
 
-    // 渲染像素数组
-    for (int i = 0; i < ROW; i++)
-    {
-        for (int j = 0; j < COL; j++)
-        {
-            if (pixels[i][j]) {
-                setfillcolor(WHITE);
-            }
-            else {
-                setfillcolor(BLACK);
-            }
-            fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
-                (i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
-        }
-    }
+	// 渲染像素数组
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			if (pixels[i][j]) {
+				setfillcolor(WHITE);
+			}
+			else {
+				setfillcolor(BLACK);
+			}
+			fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
+				(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
+		}
+	}
 
-    //点击右键绘制飞机，点击左键退出
-    //循环接受鼠标信息
-    while (1)
-    {
+	//点击右键绘制飞机，点击左键退出
+	//循环接受鼠标信息
+	while (1)
+	{
 
-        settextcolor(WHITE);
-        settextstyle(20, 0, _T("黑体"));
-        outtextxy(20, 20, _T("欢迎来到飞机工坊"));
-        ExMessage emg;
-        if (peekmessage(&emg))
-        {
-            if (emg.message == WM_LBUTTONDOWN)
-            {
-                // 根据鼠标点击位置计算出对应的像素坐标
-                int x = emg.x / PIXEL_SIZE;
-                int y = emg.y / PIXEL_SIZE;
-                if (x >= 0 && y >= 0 && x < ROW && y < COL)
-                {
-                    // 反转该像素的值
-                    pixels[x][y] = !pixels[x][y];
+		settextcolor(WHITE);
+		settextstyle(20, 0, _T("黑体"));
+		outtextxy(20, 20, _T("欢迎来到飞机工坊"));
+		ExMessage emg;
+		if (peekmessage(&emg))
+		{
+			if (emg.message == WM_LBUTTONDOWN)
+			{
+				// 根据鼠标点击位置计算出对应的像素坐标
+				int x = emg.x / PIXEL_SIZE;
+				int y = emg.y / PIXEL_SIZE;
+				if (x >= 0 && y >= 0 && x < ROW && y < COL)
+				{
+					// 反转该像素的值
+					pixels[x][y] = !pixels[x][y];
 
-                    // 根据值的变化，设置矩形的颜色
-                    if (pixels[x][y])
-                    {
-                        setfillcolor(WHITE);
-                    }
-                    else
-                    {
-                        setfillcolor(BLACK);
-                    }
-                    // 重新绘制矩形
-                    fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
-                        (x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
-                }
+					// 根据值的变化，设置矩形的颜色
+					if (pixels[x][y])
+					{
+						setfillcolor(WHITE);
+					}
+					else
+					{
+						setfillcolor(BLACK);
+					}
+					// 重新绘制矩形
+					fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
+						(x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
+				}
 
-            }//点击esc按键退回主界面
-            else if (emg.message == WM_KEYDOWN)
-            {
-                if (emg.wParam == VK_ESCAPE) {
-                    closegraph();
-                    MainMenuLoop();
-                }
-            }
+			}//点击esc按键退回主界面
+			else if (emg.message == WM_KEYDOWN)
+			{
+				if (emg.wParam == VK_ESCAPE) {
+					closegraph();
+					MainMenuLoop();
+				}
+			}
 
-        }
-    }
-
-    closegraph();
+		}
+	}
+	closegraph();
 }
 
 
 void GameLoop::PlaneBattleLoop()
 {
-    initgraph(800, 600);
+	initgraph(800, 600);
 
-    settextcolor(RED);
-    settextstyle(20, 0, _T("黑体"));
-    outtextxy(20, 20, _T("欢迎来到战斗界面"));
-    ExMessage emg;//可以循环接受鼠标信息
+	settextcolor(RED);
+	settextstyle(20, 0, _T("黑体"));
+	outtextxy(20, 20, _T("欢迎来到战斗界面"));
+	ExMessage emg;//可以循环接受鼠标信息
 
-    //获取Scroll信息
-    Scroll sc = Scroll::GetInstance();
-    while (1)
-    {//点击esc按键跳转到游戏主菜单
-        if (peekmessage(&emg))
-        {
-            if (emg.message == WM_KEYDOWN)
-            {
-                if (emg.message == VK_ESCAPE)
-                {
-                    BattleMenuLoop();
-                }
-            }
-        }
-        else if (sc.baseLife <= 0)//基地血量耗尽
-        {
-            BattleDefeatLoop();
-        }
-        else if (sc.insIdCounter == 0)//敌机全部被消灭
-        {
-            BattleVictoryLoop();
-        }
+	//获取Scroll信息
+	Scroll sc = Scroll::GetInstance();
+	while (1)
+	{//点击esc按键跳转到游戏主菜单
+		if (peekmessage(&emg))
+		{
+			if (emg.message == WM_KEYDOWN)
+			{
+				if (emg.message == VK_ESCAPE)
+				{
+					BattleMenuLoop();
+				}
+			}
+		}
+		else if (sc.baseLife <= 0)//基地血量耗尽
+		{
+			BattleDefeatLoop();
+		}
+		else if (sc.insIdCounter == 0)//敌机全部被消灭
+		{
+			BattleVictoryLoop();
+		}
 
 
-    }
-    closegraph();
+	}
+	closegraph();
 }
-
 /********************禁区林黛玉********************/
 
 struct LButton
