@@ -1,5 +1,5 @@
 #pragma once
-#include"Globals.h"
+
 #include "Globals.h"
 int OnButtonClick();
 
@@ -24,7 +24,7 @@ public:
 	Label(int x = 0, int y = 0, int width = 100, int height = 60);//pos.x=x
 	Coordinate getPos();//获取pos
 	Vector2 getSize();
-	virtual void RenderToWindows()=0;//渲染到绘图区，这里动态绑定一下
+	virtual void RenderToWindows() = 0;//渲染到绘图区，这里动态绑定一下
 	Label(IMAGE image);
 	Label(LPCTSTR text);
 	~Label();
@@ -45,7 +45,5 @@ protected:
 	LPCTSTR text;
 	bool ischange;//按钮状态是否改变
 	int (*FuncPtr)();
-
-
-
 };
+#pragma once

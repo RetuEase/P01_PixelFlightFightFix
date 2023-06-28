@@ -29,7 +29,7 @@ Label::~Label() {
 
 }
 Label::Label(LPCTSTR text) {
-	container.text="kaishi";
+	container.text = "kaishi";
 
 }
 void Button::RenderToWindows() {
