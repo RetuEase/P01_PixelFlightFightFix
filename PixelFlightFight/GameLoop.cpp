@@ -4,7 +4,6 @@
 using namespace std;
 
 /********************yjl********************/
-
 GameLoop::GameLoop() :flag(1) {
 	//memset(keyDown, 0, sizeof(bool) * KEY_COUNT);
 }
@@ -144,7 +143,8 @@ void GameLoop::MainMenuLoop()
 	closegraph();
 }
 
-//TODO
+//TODO 
+//ΩÈ…‹ΩÁ√Ê
 void GameLoop::InstructionsLoop()
 {
 
