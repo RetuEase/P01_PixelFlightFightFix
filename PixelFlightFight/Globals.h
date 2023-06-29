@@ -8,18 +8,9 @@
 #include <queue>
 #include <unordered_set>
 #include <unordered_map>
-
 #include <conio.h>
 #include <Windows.h>
-
 #include <graphics.h>
-
-/*
-	熊猫giegie良心分享
-	共同写代码
-	创建文明小组
-	哈哈哈哈哈
-*/
 
 #define DEBUG
 
@@ -27,6 +18,25 @@
 #define WINDOWS_X	1000
 #define SCROLL_X	600
 #define WINDOWS_Y	800
+
+#define MAPSIZE_X	62
+#define MAPSIZE_Y	100
+#define BLOCKSIZE	8
+//颜色
+#define MAINCOLOR	0Xecec81	//light blue 背景
+#define OTHERCOLOR	0Xc9ce00	//blue		 前景
+#define SECONDCOLOR	0Xa879fd	//red		 强调
+
+
+//刷新与移动
+#define FRAMEINTERVAL 500	//周期间隔 ms
+#define UNITTIME	8	//单位时间刷新次数
+#define PLANERATE	4	//自机周期刷新率 
+#define BULLETRATE	8	//子弹周期刷新率 
+#define ENEMYRATE	1	//敌机周期刷新率 
+#define FIRERATE	2	//发射间隔刷新率 
+
+#define ENEMIESNUM	20	//敌人数量
 
 // 飞机移动方向
 #define MOVE_RIGHT	1	//0001
@@ -96,3 +106,4 @@ namespace std
 		}
 	};
 }
+#pragma once

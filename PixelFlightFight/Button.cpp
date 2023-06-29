@@ -35,7 +35,7 @@ Label::Label(LPCTSTR text) {
 void Button::RenderToWindows() {
 	setlinestyle(PS_SOLID, 2);	//PS_SOLID是指一条由特定颜色的实线，该线的宽度由调用GDI API的参数所指定的宽度决定。
 	//PS_SOLID通常用于创建线框，边框或其他需要绘制线条的图形元素
-	setfillcolor(CYAN);
+	setfillcolor(OTHERCOLOR);
 	settextstyle(25, 0, L"微软雅黑");
 
 	// 绘制按钮
@@ -51,7 +51,7 @@ bool Button::state(const ExMessage& msg) {
 	{
 		// 设置样式
 		setlinestyle(PS_SOLID, 2);
-		setfillcolor(LIGHTBLUE);
+		setfillcolor(SECONDCOLOR);
 		settextstyle(30, 0, L"微软雅黑");
 
 		// 绘制按钮
@@ -69,7 +69,7 @@ bool Button::state(const ExMessage& msg) {
 	{
 		// 设置样式
 		setlinestyle(PS_SOLID, 2);
-		setfillcolor(LIGHTBLUE);
+		setfillcolor(SECONDCOLOR);
 		settextstyle(25, 0, L"微软雅黑");
 
 		// 绘制按钮

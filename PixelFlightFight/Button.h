@@ -14,7 +14,6 @@ protected:
 	{
 		IMAGE image;
 		LPCSTR text;
-
 		LabelContainer();
 		~LabelContainer();
 	};
