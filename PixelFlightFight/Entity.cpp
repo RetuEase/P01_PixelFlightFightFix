@@ -2,28 +2,28 @@
 
 using namespace std;
 
-Sprite::Sprite()
+Block::Block()
 {
 	this->planeId = 0;
 }
 
-Sprite::~Sprite()
+Block::~Block()
 {
 }
-LONGLONG Sprite::getPlaneId() {
-	return this->planeId;
+LONGLONG Block::getId() {
+	return this->blockID;
 }
-void Sprite::setPlaneId(long long id) {
-	this->planeId = id;
+void Block::setId(long long id) {
+	this->blockID = id;
 }
 Bullet::Bullet()
-	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), insId(0)
+	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), blockID(0)
 {
 }
-Bullet::Bullet(Coordinate pos)
-	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), insId(0)
+Bullet::Bullet(Coordinate core)
+	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), blockID(0)
 {
-	this->pos = pos;
+	this->core = core;
 	//3*3的默认白色子弹
 	for (int i = -1; i <= 1; i++) {
 		for (int j = -1; j <= 1; j++) {
@@ -34,15 +34,15 @@ Bullet::Bullet(Coordinate pos)
 	this->tileCountMax = 9;
 	this->tileCount = 9;
 }
-Bullet::Bullet(Coordinate pos, std::unordered_map<Coordinate, COLORREF> spriteMap)
-	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), insId(0)
+Bullet::Bullet(Coordinate core, std::unordered_map<Coordinate, COLORREF> spriteMap)
+	:type(TYPE_BULLET), tileCountMax(9), tileCount(9), blockID(0)
 {
 	int count = 0;
 	for (auto& pair : spriteMap) {
 		this->spriteMap.insert(std::make_pair(pair.first, pair.second));
 		count++;
 	}
-	this->pos = pos;//3*3的子弹，中心坐标即为POS
+	this->core = core;//3*3的子弹，中心坐标即为POS
 	this->tileCountMax = count;
 	this->tileCount = count;
 }
@@ -51,10 +51,10 @@ Bullet::~Bullet()
 {
 }
 void Bullet::setInsId(int id) {
-	this->insId = id;
+	this->blockID = id;
 }
 int Bullet::getInsId() {
-	return this->insId;
+	return this->blockID;
 }
 void Bullet::sesSpeed(int x, int y) {
 	this->autoSpeed.x = x;
@@ -66,18 +66,18 @@ Speed Bullet::getSpeed() {
 
 void Bullet::AutoMove()
 {
-	this->pos.x += this->autoSpeed.x;
-	this->pos.y += this->autoSpeed.y;
+	this->core.x += this->autoSpeed.x;
+	this->core.y += this->autoSpeed.y;
 }
 
-void Bullet::RenderToScroll()
-{
-	for (const auto& pair : this->spriteMap) {
-		Coordinate key = pair.first;
-		COLORREF value = pair.second;
-		putpixel(this->pos.x + key.x, this->pos.y + key.y, value);
-	}
-}
+//void Bullet::RenderToScroll()
+//{
+//	for (const auto& pair : this->spriteMap) {
+//		Coordinate key = pair.first;
+//		COLORREF value = pair.second;
+//		putpixel(this->pos.x + key.x, this->pos.y + key.y, value);
+//	}
+//}
 
 /***********重中之重***********/
 //加了个全局变量 哈希表<自己的ID,和自己相撞的ID> 待消除实体列表
@@ -89,11 +89,11 @@ void Bullet::CollisionDetection()
 	//重叠而不会湮灭的不消除
 
 	Scroll scroll = Scroll::GetInstance();	//调用Scroll单例
-	
+
 	//先判断自己是否在待消除列表里
-	if (waitingEliminatedInsId.find(insId) != waitingEliminatedInsId.end())
+	if (waitingEliminatedInsId.find(blockID) != waitingEliminatedInsId.end())
 	{
-		std::unordered_map < InsId, InsId > ::iterator itr = waitingEliminatedInsId.find(insId);
+		std::unordered_map < InsId, InsId > ::iterator itr = waitingEliminatedInsId.find(blockID);
 		std::pair<InsId, InsId> pair = *itr;
 		scroll.DeleteInstance(pair.first);
 		scroll.DeleteInstance(pair.second);
@@ -106,10 +106,10 @@ void Bullet::CollisionDetection()
 	}
 	else
 	{
-		Coordinate nowCoordinate = pos;			//当前位置坐标
+		Coordinate nowCoordinate = core;			//当前位置坐标
 
 		std::unordered_map<Coordinate, Scroll::ScrollTile>::iterator  itr = scroll.scrollMap.end();//scrollMap的迭代器
-		Coordinate tCoordinate{ pos.x,pos.y };				//检测位置坐标
+		Coordinate tCoordinate{ core.x,core.y };				//检测位置坐标
 		int isNeg = 0;
 		if (autoSpeed.y > 0)
 		{
@@ -142,8 +142,8 @@ void Bullet::CollisionDetection()
 							pair = *iter;
 							if (pair.second.entityType == EntityType::_EntityEnemy)
 							{
-								scroll.DeleteInstance(pair.second.insId);
-								scroll.DeleteInstance(insId);
+								scroll.DeleteInstance(pair.second.blockID);
+								scroll.DeleteInstance(blockID);
 								return;
 							}
 
@@ -162,8 +162,8 @@ void Bullet::CollisionDetection()
 							pair = *iter;
 							if (pair.second.entityType == EntityType::_EntityBullet || pair.second.entityType == EntityType::_EntityPlayer)
 							{
-								scroll.DeleteInstance(pair.second.insId);
-								scroll.DeleteInstance(insId);
+								scroll.DeleteInstance(pair.second.blockID);
+								scroll.DeleteInstance(blockID);
 								return;
 							}
 
@@ -197,7 +197,7 @@ void Bullet::CollisionDetection()
 
 							if (pair.second.entityType == EntityType::_EntityEnemy)
 							{
-								waitingEliminatedInsId.insert({ insId,pair.second.insId });
+								waitingEliminatedInsId.insert({ blockID,pair.second.blockID });
 								return;
 							}
 
@@ -215,7 +215,7 @@ void Bullet::CollisionDetection()
 							pair = *iter;
 							if (pair.second.entityType == EntityType::_EntityBullet || pair.second.entityType == EntityType::_EntityPlayer)
 							{
-								waitingEliminatedInsId.insert({ insId,pair.second.insId });
+								waitingEliminatedInsId.insert({ blockID,pair.second.blockID });
 								return;
 							}
 
@@ -231,16 +231,17 @@ void Bullet::Resource()
 {
 	std::shared_ptr<Bullet> p1(this);
 }
-void Bullet::SetPlaneTemplate(PlaneTemplate pt)
-{
-	//////////////////////////////////////////////////////
-}
+class PlaneTemplate;
+//void Bullet::SetPlaneTemplate(PlaneTemplate pt)
+//{
+//	//////////////////////////////////////////////////////
+//}
 Plane::Plane()
 {
 }
 
-Plane::Plane(Coordinate pos, std::unordered_map<Coordinate, COLORREF> spriteMap)
-	:Bullet(pos, spriteMap)
+Plane::Plane(Coordinate core, std::unordered_map<Coordinate, COLORREF> spriteMap)
+	:Bullet(core, spriteMap)
 {
 	type = TYPE_PLANE;
 	core.push_back(Vector2(0, 0));
@@ -250,10 +251,10 @@ Plane::~Plane()
 {
 }
 
-void Plane::Destroy(Coordinate pos)
+void Plane::Destroy(Coordinate core)
 {
-	if (this->spriteMap.find(pos) != this->spriteMap.end()) {
-		this->spriteMap.erase(pos);
+	if (this->spriteMap.find(core) != this->spriteMap.end()) {
+		this->spriteMap.erase(core);
 	}
 }
 /******BFS******/
@@ -312,30 +313,30 @@ PlayerPlane::PlayerPlane()
 PlayerPlane::~PlayerPlane()
 {
 }
-PlayerPlane::PlayerPlane(Coordinate pos, std::unordered_map<Coordinate, COLORREF> spriteMap)
-	:Plane(pos, spriteMap)
+PlayerPlane::PlayerPlane(Coordinate core, std::unordered_map<Coordinate, COLORREF> spriteMap)
+	:Plane(core, spriteMap)
 {
 }
 void PlayerPlane::ManualMove(Speed speed)
 {
 	//x的处理
-	if (this->pos.x == SCROLL_X) {
-		this->pos.x += min(speed.x, 0);
+	if (this->core.x == SCROLL_X) {
+		this->core.x += min(speed.x, 0);
 	}
-	else if (this->pos.x == 0) {
-		this->pos.x += max(speed.x, 0);
+	else if (this->core.x == 0) {
+		this->core.x += max(speed.x, 0);
 	}
 	else {
-		this->pos.x += speed.x;
+		this->core.x += speed.x;
 	}
 	//y的处理
-	if (this->pos.y == WINDOWS_Y) {
-		this->pos.y += min(speed.y, 0);
+	if (this->core.y == WINDOWS_Y) {
+		this->core.y += min(speed.y, 0);
 	}
-	else if (this->pos.y == 0) {
-		this->pos.y += max(speed.y, 0);
+	else if (this->core.y == 0) {
+		this->core.y += max(speed.y, 0);
 	}
 	else {
-		this->pos.y += speed.y;
+		this->core.y += speed.y;
 	}
 }
