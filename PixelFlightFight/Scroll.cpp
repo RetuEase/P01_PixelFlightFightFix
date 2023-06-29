@@ -29,7 +29,7 @@ Scroll::~Scroll()
 	// 可以在这里进行资源的释放操作
 	closegraph(); // 关闭easyX绘图窗口
 	// 释放子弹资源
-	for (auto& entry : instanceRepo)
+	for (auto& entry : allEntities)
 	{
 		Bullet& bullet = entry.second;
 		if (bullet.entityType == EntityType::_EntityBullet)
@@ -41,19 +41,19 @@ Scroll::~Scroll()
 	}
 
 	// 释放敌机资源
-	for (auto& entry : instanceRepo)
+	for (auto& entry : allEntities)
 	{
 		Bullet& bullet = entry.second;
 		if (bullet.entityType == EntityType::_EntityEnemy)
 		{
-			Plane& enemy = static_cast<Plane&>(bullet);
+			PlayerPlane& enemy = static_cast<PlayerPlane&>(bullet);
 			// 根据具体的资源释放方式释放敌机资源
 			bullet.Resource();
 		}
 	}
 
 	// 释放我方飞机资源
-	for (auto& entry : instanceRepo)
+	for (auto& entry : allEntities)
 	{
 		Bullet& bullet = entry.second;
 		if (bullet.entityType == EntityType::_EntityPlayer)
@@ -106,31 +106,31 @@ Scroll& Scroll::GetInstance()
 	//}
 //}
 
-void Scroll::TraverseEntity(int i)//0为自机,1为子弹 2为敌机
-{
-	//移动 + 碰撞检测
-	EntityType et;
-	switch (i)
-	{
-	case 0:
-		et = _EntityPlayer;
-	case 1:
-		et = _EntityBullet;
-	case 2:
-		et = _EntityEnemy;
-	}
-	// 遍历实体列表，执行移动和碰撞检测
-	for (auto& entry : instanceRepo)
-	{
-		Bullet& bullet = entry.second;
-		if (bullet.entityType == et)
-		{
-			bullet.AutoMove();
-			if (et != _EntityEnemy) {
-				bullet.CollisionDetection();
-			}
-		}
-	}
+//void Scroll::TraverseEntity(int i)//0为自机,1为子弹 2为敌机
+//{
+//	//移动 + 碰撞检测
+//	EntityType et;
+//	switch (i)
+//	{
+//	case 0:
+//		et = _EntityPlayer;
+//	case 1:
+//		et = _EntityBullet;
+//	case 2:
+//		et = _EntityEnemy;
+//	}
+//	// 遍历实体列表，执行移动和碰撞检测
+//	for (auto& entry : allEntities)
+//	{
+//		Bullet& bullet = entry.second;
+//		if (bullet.entityType == et)
+//		{
+//			bullet.AutoMove();
+//			if (et != _EntityEnemy) {
+//				bullet.CollisionDetection();
+//			}
+//		}
+//	}
 	//// 判断实体类型
 	//if (bullet.entityType == EntityType::_EntityPlayer)
 	//{
@@ -213,30 +213,46 @@ void Scroll::TraverseEntity(int i)//0为自机,1为子弹 2为敌机
 
 void Scroll::GameUpdate()
 {
-	//	PLANERATE	1	//自机周期刷新率 
-	//#define BULLETRATE	1	//子弹周期刷新率 
-	//#define ENEMYRATE	1	//敌机周期刷新率 
-	//#define FIRERATE
-	while (1)
+	//1子弹动
+	for (auto i : allEntities)
 	{
-		if (refleshCount)
-			if (kbhit()) {
-
-
-
-
-			}
-		if (kbhit())
-		{
-
-
-
+		if (i->entityType == _EntityBullet) {
+			i->AutoMove();
+			i->CollisionDetection();
 		}
-		Sleep(FRAMEINTERVAL);
+	}
+	//2发射子弹
+	if (refleshCount == 3 && refleshCount == 7)
+	{
+		Bullet newBullet;
 	}
 
-
-
+	if (refleshCount % 2 == 0)
+	{
+		//3自机
+		for (auto i : allEntities)
+		{
+			if (i->entityType == _EntityPlayer) {
+				i->AutoMove();
+				i->CollisionDetection();
+			}
+		}
+		if (!refleshCount)
+		{
+			//4敌机
+			for (auto i : allEntities)
+			{
+				if (i->entityType == _EntityEnemy) {
+					i->AutoMove();
+					i->CollisionDetection();
+				}
+			}
+		}
+	}
+	++refleshCount == 7;
+	if (refleshCount == 8) {
+		refleshCount = 0;
+	}
 }
 
 void Scroll::DeleteInstance(InsId id)
@@ -251,7 +267,13 @@ void Scroll::DeleteInstance(InsId id)
 		tileContainer.erase(std::remove(tileContainer.begin(), tileContainer.end(), id), tileContainer.end());
 	}
 	// 从仓库中删除实体
-	instanceRepo.erase(id);
+	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
+		Block b = **it;
+		if (b.blockID = id) {
+			allEntities.erase(it);
+			break;
+		}
+	}
 }
 
 

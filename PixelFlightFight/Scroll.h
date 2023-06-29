@@ -16,9 +16,8 @@ public:
 	{
 		std::vector<InsId> tileContainer;	// 这一像素包含了些什么实体 id
 	};
-
-	std::unordered_map<Coordinate, ScrollTile> scrollMap;	// (坐标,坐标上的实体)
-	std::unordered_map<InsId, Bullet> instanceRepo;			// (实体ID,实体)
+	std::unordered_map<Coordinate, ScrollTile> scrollMap;	// (坐标,坐标上的像素块)
+	std::vector<Bullet*> allEntities;			// 所有实体
 
 	int insIdCounter;	// 实体 ID 计数器（用于生成 ID）
 
@@ -30,7 +29,7 @@ public:
 	int baseLifeMax;	// 基地满血
 	int baseLife;		// 基地剩余血量
 
-	int refleshCount = 0;	//刷新计数
+	int refleshCount;	//刷新计数
 	Speed playSpeed;	//玩家移速
 
 	//std::string bloodBar;     // 基地血条
@@ -40,7 +39,8 @@ public:
 	static Scroll& GetInstance();	//获取对象
 	void GameUpdate();				//一次刷新
 	void TraverseEntity(int i);		// 根据类型遍历实体 0为自机,1为子弹 2为敌机
-	void DeleteInstance(InsId id);	// 从卷轴和仓库删除实体
+	void DeleteInstance(InsId id);	// 从卷轴和仓库删除像素块
+
 
 	//void ControlPlayer();	
 

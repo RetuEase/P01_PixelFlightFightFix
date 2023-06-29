@@ -13,17 +13,22 @@ Block::~Block() {}
 /// <summary>
 /// Bullet
 /// </summary>
-Bullet::Bullet() {
+Bullet::Bullet() {//子弹构造函数 
 	entityType = _EntityBullet;		//默认是子弹
 	core = MyPLANECORE;				// 核心坐标
 	autoSpeed = { 0,-1 };			// 固有速度
 	tileCountMax = 1;				// 拥有的像素上限
 	tileCount = 1;					// 剩余的像素
+	Scroll scroll = Scroll::GetInstance();
+	scroll.allEntities.push_back(this);//将自己放入allEntities
 }
 
 
 Bullet::~Bullet()
 {
+	Scroll scroll = Scroll::GetInstance();
+	scroll.DeleteInstance(blockID);
+
 }
 
 void Bullet::AutoMove()
@@ -37,7 +42,9 @@ void Bullet::AutoMove()
 void Bullet::CollisionDetection()//碰撞检测
 {
 	if (entityType = _EntityPlayer) {
-
+		{
+		}
+		delete this;
 	}
 	else {
 
@@ -75,7 +82,6 @@ Plane::~Plane() {}
 
 //void Plane::Destroy(Coordinate core){}
 void Plane::Fracture() {}
-
 
 /// <summary>
 /// PlayerPlane

@@ -29,6 +29,7 @@ public:
 
 	void AutoMove();			// 惯性移动
 	//void RenderToScroll();		// 将 Bullet 依据计算后的坐标渲染到 scrollMap，注意 SCROLL_X 的限制
+
 	void CollisionDetection();	// 碰撞检测，移动后需要进行碰撞检测
 	void Resource();			//释放
 
