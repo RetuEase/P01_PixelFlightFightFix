@@ -19,15 +19,21 @@ Bullet::Bullet() {//子弹构造函数
 	autoSpeed = { 0,-1 };			// 固有速度
 	tileCountMax = 1;				// 拥有的像素上限
 	tileCount = 1;					// 剩余的像素
-	Scroll scroll = Scroll::GetInstance();
-	scroll.allEntities.push_back(this);//将自己放入allEntities
+	//Scroll scroll = Scroll::GetInstance();
+	allEntities.push_back(this);//将自己放入allEntities
 }
 
 
 Bullet::~Bullet()
 {
-	Scroll scroll = Scroll::GetInstance();
-	scroll.DeleteInstance(blockID);
+
+	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
+		Block b = **it;
+		if (b.blockID = blockID) {
+			allEntities.erase(it);
+			break;
+		}
+	}
 
 }
 
@@ -83,13 +89,13 @@ void Plane::CollisionDetection()
 {
 	if (entityType = _EntityEnemy) {//敌机
 		{
-			Scroll scroll = Scroll::GetInstance();
-			for (auto i : scroll.allEntities)
-			{
-				if (i->core == core)
+			std::vector<Bullet*>::iterator it;
+			for (it = allEntities.begin(); it != allEntities.end(); ++it) {
+				Bullet* bullet = *it;
+				if (bullet->core == core)
 				{
 					ENEMYMAP.erase(ENEMYMAP.find(core));
-					i->Resource();
+					bullet->Resource();
 					Resource();
 				}
 			}

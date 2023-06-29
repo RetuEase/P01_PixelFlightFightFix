@@ -1,9 +1,5 @@
 #pragma once
 #include "Globals.h"
-#include "Scroll.h"
-
-class Scroll;
-//class PlaneTemplate;
 
 //单个像素,无核心坐标
 class Block
@@ -33,6 +29,8 @@ public:
 	virtual void Fracture();			// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 };
 
+typedef Bullet* BulletPtr;
+
 class Plane : public Bullet//敌机
 {
 public:
@@ -56,3 +54,5 @@ public:
 
 std::unordered_map<Coordinate, Bullet> ENEMYMAP;//敌机map
 std::unordered_map<Coordinate, Block> blockMap;	// 实体拥有的像素（对与核心的相对坐标)
+
+std::vector<BulletPtr> allEntities;			// 所有实体

@@ -1,29 +1,15 @@
 #pragma once
-#include "Globals.h"
-#include "Workshop.h"
-#include "GameLoop.h"
 #include "Entity.h"
 
-
-std::unordered_map<Coordinate, Bullet> ENEMYMAP = {	};//敌机map
 // 战斗卷轴类（卷轴知晓关于战斗的一切）单例
 class Scroll
 {
 private:
 	Scroll();	//构造函数
 public:
-	struct ScrollTile
-	{
-		std::vector<InsId> tileContainer;	// 这一像素包含了些什么实体 id
-	};
-	std::vector<Bullet*> allEntities;			// 所有实体
 
-	int insIdCounter;	// 实体 ID 计数器（用于生成 ID）
-
-	bool dark;			// 当有弹出界面时，绘制整体变暗至原来的 1/4
-
+	//bool dark;			// 当有弹出界面时，绘制整体变暗至原来的 1/4
 	int enemiesNum;		//剩余敌人数量
-
 	int baseLifeMax;	// 基地满血
 	int baseLife;		// 基地剩余血量
 
@@ -37,7 +23,7 @@ public:
 	static Scroll& GetInstance();	//获取对象
 	void GameUpdate();				//一次刷新
 	//void TraverseEntity(int i);		// 根据类型遍历实体 0为自机,1为子弹 2为敌机
-	void DeleteInstance(InsId id);	// 从卷轴和仓库删除像素块
+	//void DeleteInstance(InsId id);	// 从卷轴和仓库删除像素块
 
 
 	//void ControlPlayer();	

@@ -2,7 +2,7 @@
 #include "GameLoop.h"
 
 int main()
-{	
+{
 	//setaspectratio(10,10);
 	initgraph(WINDOWS_X, WINDOWS_Y);
 

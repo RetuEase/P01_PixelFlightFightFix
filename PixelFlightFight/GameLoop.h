@@ -1,5 +1,6 @@
 #pragma once
-#include "Globals.h"
+#include "Scroll.h"
+#include "Button.h"
 
 // Ñ­»·µ¥ÀýÀà
 class GameLoop

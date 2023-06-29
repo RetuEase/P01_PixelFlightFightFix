@@ -6,11 +6,11 @@ Scroll::Scroll()
 	// 构造函数  初始化成员变量
 
 	// 初始化成员变量
-	insIdCounter = 0;       // 实体 ID 计数器（用于生成 ID）
+
 
 	baseLifeMax = 100;     // 基地满血
 	baseLife = baseLifeMax; // 基地剩余血量等于满血状态
-	dark = false;          // 当有弹出界面时，绘制整体变暗至原来的 1/4
+	//dark = false;          // 当有弹出界面时，绘制整体变暗至原来的 1/4
 	enemiesNum = ENEMIESNUM;		//剩余敌人数量
 	refleshCount = 0;	//刷新计数
 	playSpeed = { 0,0 };
@@ -97,8 +97,8 @@ void Scroll::GameUpdate()
 	}
 }
 
-void Scroll::DeleteInstance(InsId id)
-{
+//void Scroll::DeleteInstance(InsId id)
+//{
 	// 从卷轴和仓库删除实体的函数的实现
 	// 可以在这里根据给定的实体ID，从卷轴和仓库中删除对应的实体
 
@@ -109,14 +109,14 @@ void Scroll::DeleteInstance(InsId id)
 		tileContainer.erase(std::remove(tileContainer.begin(), tileContainer.end(), id), tileContainer.end());
 	}*/
 	// 从仓库中删除实体
-	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
-		Block b = **it;
-		if (b.blockID = id) {
-			allEntities.erase(it);
-			break;
-		}
-	}
-}
+//	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
+//		Block b = **it;
+//		if (b.blockID = id) {
+//			allEntities.erase(it);
+//			break;
+//		}
+//	}
+//}
 
 
 //// 析构函数的实现
