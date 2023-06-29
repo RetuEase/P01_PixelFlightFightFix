@@ -160,7 +160,7 @@ Scroll& Scroll::GetInstance()
 	// 将实体渲染到scrollMap中
 	//bullet.RenderToScroll();
 
-}
+//}
 //
 //void Scroll::RenderToWindows()
 //{
