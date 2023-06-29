@@ -7,7 +7,7 @@ Scroll::Scroll()
 
 	// 初始化成员变量
 	insIdCounter = 0;       // 实体 ID 计数器（用于生成 ID）
-	score = 0;             // 分数
+
 	baseLifeMax = 100;     // 基地满血
 	baseLife = baseLifeMax; // 基地剩余血量等于满血状态
 	dark = false;          // 当有弹出界面时，绘制整体变暗至原来的 1/4
@@ -24,47 +24,7 @@ Scroll::Scroll()
 }
 
 Scroll::~Scroll()
-{
-	// 析构函数的实现
-	// 可以在这里进行资源的释放操作
-	closegraph(); // 关闭easyX绘图窗口
-	// 释放子弹资源
-	for (auto& entry : allEntities)
-	{
-		Bullet*& bullet = entry.second;
-		if (bullet->entityType == EntityType::_EntityBullet)
-		{
-			Bullet& bulletRef = static_cast<Bullet&>(*bullet);
-			// 根据具体的资源释放方式释放子弹资源
-			bulletRef.Resource();
-		}
-	}
-
-	// 释放敌机资源
-	for (auto& entry : allEntities)
-	{
-		Bullet*& bullet = entry.second;
-		if (bullet->entityType == EntityType::_EntityEnemy)
-		{
-			PlayerPlane& enemy = static_cast<PlayerPlane&>(*bullet);
-			// 根据具体的资源释放方式释放敌机资源
-			enemy.Resource();
-		}
-	}
-
-	// 释放我方飞机资源
-	for (auto& entry : allEntities)
-	{
-		Bullet*& bullet = entry.second;
-		if (bullet->entityType == EntityType::_EntityPlayer)
-		{
-			PlayerPlane& player = static_cast<PlayerPlane&>(*bullet);
-			// 根据具体的资源释放方式释放我方飞机资源
-			player.Resource();
-		}
-	}
-}
-
+{}
 
 Scroll& Scroll::GetInstance()
 {
@@ -74,6 +34,129 @@ Scroll& Scroll::GetInstance()
 	static Scroll scroll;
 	return scroll;
 }
+
+
+void Scroll::GameUpdate()
+{
+	int playerMove = 0;
+	int enemyMove = 0;
+	int bulletMove = 0;
+	int fire = 0;
+
+	if (!refleshCount) {
+		enemyMove = 1;
+	}
+	if (refleshCount % 2 == 0)
+	{
+		playerMove = 1;
+	}
+	if (refleshCount == 3 || refleshCount == 7)
+	{
+		fire = 1;
+	}
+	if (enemyMove)
+	{
+		ENEMYMAP.clear();
+	}
+	for (auto i : allEntities)
+	{
+		//1敌机动
+		if (enemyMove)
+		{
+			if (i->entityType == _EntityEnemy) {
+				i->AutoMove();
+				ENEMYMAP.insert(std::make_pair(i->core, *i));
+				i->CollisionDetection();
+
+			}
+		}
+		//2子弹动
+		if (bulletMove)
+		{
+			if (i->entityType == _EntityBullet) {
+				i->AutoMove();
+				i->CollisionDetection();
+			}
+		}
+		//3自机
+		if (playerMove)
+		{
+			if (i->entityType == _EntityPlayer) {
+				i->AutoMove();
+				i->CollisionDetection();
+			}
+		}
+		//4发射子弹
+		if (fire) {
+			Bullet newBullet;
+		}
+	}
+	++refleshCount == 7;
+	if (refleshCount == 8) {
+		refleshCount = 0;
+	}
+}
+
+void Scroll::DeleteInstance(InsId id)
+{
+	// 从卷轴和仓库删除实体的函数的实现
+	// 可以在这里根据给定的实体ID，从卷轴和仓库中删除对应的实体
+
+	// 从卷轴中删除实体
+	/*for (auto& entry : scrollMap)
+	{
+		std::vector<InsId>& tileContainer = entry.second.tileContainer;
+		tileContainer.erase(std::remove(tileContainer.begin(), tileContainer.end(), id), tileContainer.end());
+	}*/
+	// 从仓库中删除实体
+	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
+		Block b = **it;
+		if (b.blockID = id) {
+			allEntities.erase(it);
+			break;
+		}
+	}
+}
+
+
+//// 析构函数的实现
+	//// 可以在这里进行资源的释放操作
+	//closegraph(); // 关闭easyX绘图窗口
+	//// 释放子弹资源
+	//for (auto& entry : allEntities)
+	//{
+	//	Bullet& bullet = entry.second;
+	//	if (bullet.entityType == EntityType::_EntityBullet)
+	//	{
+	//		Bullet& bullet = static_cast<Bullet&>(bullet);
+	//		// 根据具体的资源释放方式释放子弹资源
+	//		bullet.Resource();
+	//	}
+	//}
+
+	//// 释放敌机资源
+	//for (auto& entry : allEntities)
+	//{
+	//	Bullet& bullet = entry.second;
+	//	if (bullet.entityType == EntityType::_EntityEnemy)
+	//	{
+	//		PlayerPlane& enemy = static_cast<PlayerPlane&>(bullet);
+	//		// 根据具体的资源释放方式释放敌机资源
+	//		bullet.Resource();
+	//	}
+	//}
+
+	//// 释放我方飞机资源
+	//for (auto& entry : allEntities)
+	//{
+	//	Bullet& bullet = entry.second;
+	//	if (bullet.entityType == EntityType::_EntityPlayer)
+	//	{
+	//		PlayerPlane& player = static_cast<PlayerPlane&>(bullet);
+	//		// 根据具体的资源释放方式释放我方飞机资源
+	//		bullet.Resource();
+	//	}
+	//}
 
 //void Scroll::ControlPlayer()
 //{
@@ -212,70 +295,7 @@ Scroll& Scroll::GetInstance()
 //	FlushBatchDraw();
 //}
 
-void Scroll::GameUpdate()
-{
-	//1子弹动
-	for (auto i : allEntities)
-	{
-		if (i->entityType == _EntityBullet) {
-			i->AutoMove();
-			i->CollisionDetection();
-		}
-	}
-	//2发射子弹
-	if (refleshCount == 3 && refleshCount == 7)
-	{
-		Bullet newBullet;
-	}
 
-	if (refleshCount % 2 == 0)
-	{
-		//3自机
-		for (auto i : allEntities)
-		{
-			if (i->entityType == _EntityPlayer) {
-				i->AutoMove();
-				i->CollisionDetection();
-			}
-		}
-		if (!refleshCount)
-		{
-			//4敌机
-			for (auto i : allEntities)
-			{
-				if (i->entityType == _EntityEnemy) {
-					i->AutoMove();
-					i->CollisionDetection();
-				}
-			}
-		}
-	}
-	++refleshCount == 7;
-	if (refleshCount == 8) {
-		refleshCount = 0;
-	}
-}
-
-void Scroll::DeleteInstance(InsId id)
-{
-	// 从卷轴和仓库删除实体的函数的实现
-	// 可以在这里根据给定的实体ID，从卷轴和仓库中删除对应的实体
-
-	// 从卷轴中删除实体
-	for (auto& entry : scrollMap)
-	{
-		std::vector<InsId>& tileContainer = entry.second.tileContainer;
-		tileContainer.erase(std::remove(tileContainer.begin(), tileContainer.end(), id), tileContainer.end());
-	}
-	// 从仓库中删除实体
-	for (auto it = allEntities.begin(); it != allEntities.end(); ++it) {
-		Block b = **it;
-		if (b.blockID = id) {
-			allEntities.erase(it);
-			break;
-		}
-	}
-}
 
 
 //void Scroll::DrawRowOfScroll(int scrollRow)

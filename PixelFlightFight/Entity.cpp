@@ -37,22 +37,22 @@ void Bullet::AutoMove()
 	this->core.y += this->autoSpeed.y;
 }
 
-
-
 void Bullet::CollisionDetection()//碰撞检测
 {
-	if (entityType = _EntityPlayer) {
+	if (entityType = _EntityBullet) {//子弹
+		auto it = ENEMYMAP.find(core);
+		if (it != ENEMYMAP.end())
 		{
+			it->second.Resource();
+			ENEMYMAP.erase(it);
+			Resource();
 		}
-		delete this;
-	}
-	else {
-
 	}
 }
 
-void Bullet::Resource()
+void Bullet::Resource()//销毁
 {
+
 	std::shared_ptr<Bullet> p1(this);
 }
 
@@ -79,7 +79,23 @@ Plane::Plane(Coordinate co)
 	tileCount = 1;		// 剩余的像素
 }
 Plane::~Plane() {}
-
+void Plane::CollisionDetection()
+{
+	if (entityType = _EntityEnemy) {//敌机
+		{
+			Scroll scroll = Scroll::GetInstance();
+			for (auto i : scroll.allEntities)
+			{
+				if (i->core == core)
+				{
+					ENEMYMAP.erase(ENEMYMAP.find(core));
+					i->Resource();
+					Resource();
+				}
+			}
+		}
+	}
+}
 //void Plane::Destroy(Coordinate core){}
 void Plane::Fracture() {}
 
@@ -88,6 +104,7 @@ void Plane::Fracture() {}
 /// </summary>
 PlayerPlane::PlayerPlane()//默认飞机 
 {
+	blockID = 0;
 	entityType = _EntityPlayer;
 	core = MyPLANECORE;
 	autoSpeed = { 0,0 };
@@ -97,18 +114,19 @@ PlayerPlane::PlayerPlane()//默认飞机
 	Block pp2;
 	Block pp3;
 	unordered_map<Coordinate, Block> hmap{ {{-1,0},pp1},{{1,0},pp2},{{0,-1},pp3} };
+	blockMap.clear();
 	blockMap = hmap;
 };
 
-//<Coordinate, Block>
-
 PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机 
 {
+	blockID = 0;
 	entityType = _EntityPlayer;
 	core = MyPLANECORE;
 	autoSpeed = { 0,0 };
 	tileCountMax = tblockMap.size();	// 拥有的像素上限
 	tileCount = tblockMap.size();		// 剩余的像素
+	blockMap.clear();
 	for (auto& i : tblockMap)
 	{
 		if (!(i.x && i.y))
@@ -121,7 +139,34 @@ PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机
 
 PlayerPlane::~PlayerPlane() {}
 
+void PlayerPlane::CollisionDetection()
+{
+	if (entityType = _EntityPlayer) {//自机
 
+		if (ENEMYMAP.find(core) != ENEMYMAP.end())
+		{
+			GAMEEND = TRUE;//游戏结束		
+		}
+		else {
+			for (auto it = blockMap.begin(); it != blockMap.end(); )
+			{
+				const Coordinate& coord = it->first;
+
+				if (ENEMYMAP.find(coord) != ENEMYMAP.end())
+				{
+					blockMap.erase(it);
+					ENEMYMAP.erase(ENEMYMAP.find(coord));
+					tileCount--;
+					//Resource();
+				}
+				else
+				{
+					++it;
+				}
+			}
+		}
+	}
+}
 //void PlayerPlane::Destroy(Coordinate core) {}
 
 /******BFS******/
@@ -130,7 +175,7 @@ void PlayerPlane::Fracture()
 	int arr[4][2] = { {0,1},{0,-1},{1,0},{-1,0} };
 	int count = 0;//用于记录BFS搜索了几个点
 	unordered_map<Coordinate, bool> temp;
-	for (auto& pair : this->blockMap) {
+	for (auto& pair : blockMap) {
 		temp.insert(make_pair(pair.first, false));//将全部点装入临时map
 	}
 	//bool containCore = false;//标记BFS是否搜索到了核心
@@ -160,7 +205,7 @@ void PlayerPlane::Fracture()
 		for (auto& pair : temp) {
 			if (!(pair.second)) {
 				std::cout << "删除点" << pair.first.x << "," << pair.first.y << endl;
-				this->blockMap.erase(pair.first);
+				blockMap.erase(pair.first);
 				count++;
 			}
 		}

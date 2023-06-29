@@ -195,6 +195,7 @@ void GameLoop::SelectLevelLoop()
 
 void GameLoop::PlaneBattleLoop()
 {
+
 	initgraph(MAPSIZE_X * BLOCKSIZE, MAPSIZE_Y * BLOCKSIZE, EW_SHOWCONSOLE);
 	setbkcolor(MAINCOLOR);
 	cleardevice();//显示背景颜色      
@@ -202,59 +203,104 @@ void GameLoop::PlaneBattleLoop()
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
 	setlinecolor(WHITE); //设置当前线条的颜色为黑色
 	settextstyle(30, 0, _T("微软雅黑"));//
-	settextcolor(SECONDCOLOR);
-	outtextxy(20, 20, _T("分数:"));
-	LPCTSTR score = _T("114514");	//分数
 
-	outtextxy(70, 20, score);
-	settextcolor(WHITE);
 
 	ExMessage emg;//可以循环接受鼠标信息
-	while (1) {}
+	GAMEEND = false;
 	//获取Scroll信息
-	//Scroll sc = Scroll::GetInstance();	
-	//while (1)
-	//{		
-	//	//点击esc按键跳转到游戏主菜单
-	//	if (_kbhit()) {
-	//		bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
-	//		if (esc)
-	//		{
-	//			BattleMenuLoop();
-	//		}
-	//		else {
-	//			bool up = GetAsyncKeyState(VK_UP) & 0x8000;
-	//			bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
-	//			bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
-	//			bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
-	//			int u = 0;
-	//			int d = 0;
-	//			int l = 0;
-	//			int r = 0;
-	//			if (up) { u = -1; }
-	//			if (down) { d = 1; }
-	//			if (left) { l = -1; }
-	//			if (right) { r = 1; }				
-	//			sc.playSpeed = { l+r,u+d };
-	//		}
-	//	}
-	//	else {
-	//		sc.playSpeed = { 0,0 };
+	Scroll sc = Scroll::GetInstance();
+	BeginBatchDraw();//开始批量绘图
+	while (1)
+	{
+		settextcolor(SECONDCOLOR);
+		outtextxy(20, 20, _T("分数"));
+		std::wstring str = std::to_wstring(SCORE);
+		LPCTSTR score = str.c_str();//分数
+		outtextxy(70, 20, score);
+		settextcolor(WHITE);
 
-	//	}		
-	//	sc.GameUpdate();
-	//	if (sc.baseLife <= 0)//基地血量耗尽
-	//	{
-	//		BattleDefeatLoop();
-	//	}
-	//	if (sc.enemiesNum <= 0)//敌机全部被消灭
-	//	{
-	//		BattleVictoryLoop();
-	//	}
-	//	Sleep(FRAMEINTERVAL);
+		//点击esc按键跳转到游戏主菜单
+		if (_kbhit()) {
+			bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
+			if (esc)
+			{
+				BattleMenuLoop();
+			}
+			else {
+				bool up = GetAsyncKeyState(VK_UP) & 0x8000;
+				bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
+				bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
+				bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
+				int u = 0;
+				int d = 0;
+				int l = 0;
+				int r = 0;
+				if (up) { u = -1; }
+				if (down) { d = 1; }
+				if (left) { l = -1; }
+				if (right) { r = 1; }
+				sc.playSpeed = { l + r,u + d };
+			}
+		}
+		else {
+			sc.playSpeed = { 0,0 };
+		}
+		sc.GameUpdate();
 
-	//}
-	////closegraph();
+		//更新画布
+
+		// 在这里处理 所有实体 对象
+		for (Bullet* bullet : sc.allEntities) {
+			//敌机和子弹
+			if (bullet->entityType == _EntityEnemy || bullet->entityType == _EntityBullet) {
+				// 计算坐标在窗口中的位置
+				int x = bullet->core.x * BLOCKSIZE; // 每个 Block 边长为 10
+				int y = bullet->core.y * BLOCKSIZE;
+
+				// 绘制 Block
+				setfillcolor(OTHERCOLOR); // 设置填充颜色
+				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+
+			}
+			//自机
+			else if (bullet->entityType == _EntityPlayer) {
+				//绘制核心
+				int x = bullet->core.x * BLOCKSIZE;
+				int y = bullet->core.y * BLOCKSIZE;
+				setfillcolor(SECONDCOLOR);
+				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
+				//绘制副自机
+				setfillcolor(OTHERCOLOR);
+				for (const auto& pair : blockMap) {
+					const Coordinate& coord = pair.first;
+					const Block& block = pair.second;
+					// 计算坐标在窗口中的位置
+					int x = coord.x * BLOCKSIZE;
+					int y = coord.y * BLOCKSIZE;
+					// 绘制 Block
+
+					solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
+				}
+
+			}
+		}
+		FlushBatchDraw();//执行未完成的绘制任务
+
+		if (GAMEEND)//核心被打爆
+		{
+			EndBatchDraw();// 结束批量绘制
+			BattleDefeatLoop();
+		}
+		if (sc.enemiesNum <= 0)//敌机全部被消灭
+		{
+			EndBatchDraw();// 结束批量绘制
+			BattleVictoryLoop();
+		}
+
+		Sleep(FRAMEINTERVAL);
+
+	}
+	//closegraph();
 }
 
 //REDO
