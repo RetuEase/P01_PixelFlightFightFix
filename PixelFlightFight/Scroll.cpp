@@ -31,39 +31,40 @@ Scroll::~Scroll()
 	// 释放子弹资源
 	for (auto& entry : allEntities)
 	{
-		Bullet& bullet = entry.second;
-		if (bullet.entityType == EntityType::_EntityBullet)
+		Bullet*& bullet = entry.second;
+		if (bullet->entityType == EntityType::_EntityBullet)
 		{
-			Bullet& bullet = static_cast<Bullet&>(bullet);
+			Bullet& bulletRef = static_cast<Bullet&>(*bullet);
 			// 根据具体的资源释放方式释放子弹资源
-			bullet.Resource();
+			bulletRef.Resource();
 		}
 	}
 
 	// 释放敌机资源
 	for (auto& entry : allEntities)
 	{
-		Bullet& bullet = entry.second;
-		if (bullet.entityType == EntityType::_EntityEnemy)
+		Bullet*& bullet = entry.second;
+		if (bullet->entityType == EntityType::_EntityEnemy)
 		{
-			PlayerPlane& enemy = static_cast<PlayerPlane&>(bullet);
+			PlayerPlane& enemy = static_cast<PlayerPlane&>(*bullet);
 			// 根据具体的资源释放方式释放敌机资源
-			bullet.Resource();
+			enemy.Resource();
 		}
 	}
 
 	// 释放我方飞机资源
 	for (auto& entry : allEntities)
 	{
-		Bullet& bullet = entry.second;
-		if (bullet.entityType == EntityType::_EntityPlayer)
+		Bullet*& bullet = entry.second;
+		if (bullet->entityType == EntityType::_EntityPlayer)
 		{
-			PlayerPlane& player = static_cast<PlayerPlane&>(bullet);
+			PlayerPlane& player = static_cast<PlayerPlane&>(*bullet);
 			// 根据具体的资源释放方式释放我方飞机资源
-			bullet.Resource();
+			player.Resource();
 		}
 	}
 }
+
 
 Scroll& Scroll::GetInstance()
 {
