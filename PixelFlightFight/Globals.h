@@ -19,8 +19,8 @@
 #define SCROLL_X	600
 #define WINDOWS_Y	800
 
-#define MAPSIZE_X	62
-#define MAPSIZE_Y	100
+#define MAPSIZE_X	62	//游戏界面宽度
+#define MAPSIZE_Y	100 //游戏页面高度
 #define BLOCKSIZE	8
 //颜色
 #define MAINCOLOR	0Xecec81	//light blue 背景
@@ -69,6 +69,7 @@
 
 using InsId = long long;
 using PlaneId = long long;
+int I_IdCounter = 0;
 
 //实体类型
 enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer };
@@ -92,6 +93,10 @@ struct Vector2
 
 using Coordinate = Vector2;	// 坐标 (x,y)
 using Speed = Vector2;		// 速度方向 (x,y)
+
+std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
+Coordinate MyPLANECORE{ 31,60 };	//默认飞机核心位置
+
 
 // 哈希函数特化
 namespace std
