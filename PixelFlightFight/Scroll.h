@@ -12,7 +12,6 @@ public:
 	int enemiesNum;		//剩余敌人数量
 	int baseLifeMax;	// 基地满血
 	int baseLife;		// 基地剩余血量
-
 	int refleshCount;	//刷新计数
 	Speed playSpeed;	//玩家移速
 
@@ -22,6 +21,7 @@ public:
 	~Scroll();		//析构函数
 	static Scroll& GetInstance();	//获取对象
 	void GameUpdate();				//一次刷新
+
 	//void TraverseEntity(int i);		// 根据类型遍历实体 0为自机,1为子弹 2为敌机
 	//void DeleteInstance(InsId id);	// 从卷轴和仓库删除像素块
 
@@ -57,4 +57,3 @@ public:
 	 //void InitiateInstance(PlaneTemplate pt, Coordinate pos);	// 生成实体到卷轴和仓库
 
 };
-#pragma once

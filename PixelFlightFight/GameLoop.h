@@ -23,5 +23,8 @@ public:
 	void BattleMenuLoop();		// 战斗菜单弹出界面
 	void BattleDefeatLoop();	// 战斗失败弹出界面
 	void BattleVictoryLoop();	// 战斗胜利弹出界面
+
+	//void TestLoop();	// 测试界面
 };
-#pragma once
+
+

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Globals.h"
 int OnButtonClick();
 
@@ -45,4 +44,4 @@ protected:
 	bool ischange;//按钮状态是否改变
 	int (*FuncPtr)();
 };
-#pragma once
+

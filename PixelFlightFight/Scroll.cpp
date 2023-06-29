@@ -4,9 +4,7 @@
 Scroll::Scroll()
 {
 	// 构造函数  初始化成员变量
-
 	// 初始化成员变量
-
 
 	baseLifeMax = 100;     // 基地满血
 	baseLife = baseLifeMax; // 基地剩余血量等于满血状态
@@ -40,10 +38,10 @@ void Scroll::GameUpdate()
 {
 	int playerMove = 0;
 	int enemyMove = 0;
-	int bulletMove = 0;
+	int bulletMove = 1;
 	int fire = 0;
 
-	if (!refleshCount) {
+	if (refleshCount == 0) {
 		enemyMove = 1;
 	}
 	if (refleshCount % 2 == 0)
@@ -56,18 +54,18 @@ void Scroll::GameUpdate()
 	}
 	if (enemyMove)
 	{
-		ENEMYMAP.clear();
+		Bullet::ENEMYMAP.clear();
 	}
-	for (auto i : allEntities)
+	for (auto i : Bullet::AllEntities)
 	{
 		//1敌机动
 		if (enemyMove)
 		{
 			if (i->entityType == _EntityEnemy) {
 				i->AutoMove();
-				ENEMYMAP.insert(std::make_pair(i->core, *i));
-				i->CollisionDetection();
-
+				Bullet::ENEMYMAP.insert(std::make_pair(i->core, *i));
+				std::cout << "敌人位置:" << i->core.x << " " << i->core.y;
+				//i->CollisionDetection();
 			}
 		}
 		//2子弹动
@@ -82,16 +80,17 @@ void Scroll::GameUpdate()
 		if (playerMove)
 		{
 			if (i->entityType == _EntityPlayer) {
-				i->AutoMove();
-				i->CollisionDetection();
+				i->PlayerMove(playSpeed);
+				//i->CollisionDetection();
 			}
 		}
 		//4发射子弹
 		if (fire) {
-			Bullet newBullet;
+			//Bullet newBullet;
 		}
 	}
-	++refleshCount == 7;
+
+	++refleshCount;
 	if (refleshCount == 8) {
 		refleshCount = 0;
 	}

@@ -1,15 +1,15 @@
 #pragma once
-#pragma comment( linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" )
+//#pragma comment( linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" )
 #include <iostream>
-#include <fstream>
-#include <sstream>
+//#include <fstream>
+//#include <sstream>
 #include <string>
 #include <vector>
 #include <queue>
-#include <unordered_set>
+//#include <unordered_set>
 #include <unordered_map>
 #include <conio.h>
-#include <Windows.h>
+//#include <Windows.h>
 #include <graphics.h>
 
 #define DEBUG
@@ -29,7 +29,7 @@
 
 
 //刷新与移动
-#define FRAMEINTERVAL 500	//周期间隔 ms
+#define FRAMEINTERVAL 80	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 
 #define BULLETRATE	8	//子弹周期刷新率 
@@ -67,53 +67,45 @@
 // 飞机工坊中的单元像素边长
 #define UNIT_EDGE 10
 
-
-
-using InsId = long long;
-using PlaneId = long long;
-int I_IdCounter = 1;
-bool GAMEEND = false;
-int SCORE = 0;//分数
-//实体类型
-enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer };
-
 // 二维结构
 struct Vector2
 {
 	int x, y;
-
 	Vector2()
 		:x(0), y(0) {}
-
 	Vector2(int x, int y)
 		:x(x), y(y) {}
-
 	bool operator==(const Vector2& other) const
 	{
 		return x == other.x && y == other.y;
 	}
 };
+// 哈希函数特化
+namespace std {
+	template <>
+	struct hash<Vector2> {
+		std::size_t operator()(const Vector2& v) const {
+			return std::hash<int>()(v.x)+ std::hash<int>()(v.y)* MAPSIZE_X;
+		}
+	};
+}
+//typedef Bullet* BulletPtr;
+using InsId = long long;
+using PlaneId = long long;
+//int I_IdCounter = 1;
+//bool GAMEEND = false;
+//int score = 0;//分数
+
+//实体类型
+enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer };
 
 using Coordinate = Vector2;	// 坐标 (x,y)
 using Speed = Vector2;		// 速度方向 (x,y)
 
-
-std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
-Coordinate MyPLANECORE{ 31,60 };	//默认飞机核心位置
-
-
-//
-//// 哈希函数特化
-//namespace std
+extern int I_IdCounter;
+extern int GAMEEND;
+extern int SCORE;
+//struct ScrollTile
 //{
-//	template <>
-//	struct hash<Vector2>
-//	{
-//		std::size_t operator()(const Vector2& obj) const
-//		{
-//			// 使用哈希算法计算对象的哈希值
-//			return std::hash<int>()(obj.x) + std::hash<int>()(obj.y);
-//		}
-//	};
-//}
-#pragma once
+//	std::vector<InsId> tileContainer;	// 这一像素包含了些什么实体 id
+//};
