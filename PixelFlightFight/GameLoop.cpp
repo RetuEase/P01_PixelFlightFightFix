@@ -212,11 +212,12 @@ void GameLoop::PlaneBattleLoop()
 	BeginBatchDraw();//开始批量绘图	
 	std::cout << "!!!" << std::endl;
 
-	Plane p1({ 10,10 });
-	Plane p2({ 3,-15 });
-	Plane p3({ 18,-2 });
-	Bullet b1;
-	PlayerPlane mp;
+	Plane p1({ 10,10 });//生成敌机
+	Plane p2({ 3,-15 });//生成敌机
+	Plane p3({ 18,-2 });//生成敌机
+
+	Bullet b1;			//生成子弹
+	PlayerPlane mp;		//生成我机
 
 	//绘制网格
 	while (1)
