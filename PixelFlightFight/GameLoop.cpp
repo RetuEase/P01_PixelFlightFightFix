@@ -42,35 +42,39 @@ void GameLoop::Run()
 void GameLoop::MainMenuLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-	setbkcolor(MAINCOLOR);  //显示背景颜色
+
+	setbkcolor(BGCOLOR);  //显示背景颜色
 	cleardevice();      //SECONDCOLOR
-	setbkmode(MAINCOLOR);//处理字体颜色
+	setbkmode(BGCOLOR);//处理字体颜色
 	setfillcolor(WHITE);//设置填充色，	
 	setlinecolor(WHITE); //设置当前线条的颜色//line(0, 780, 620, 780);
-	settextstyle(60, 0, _T("微软雅黑"));
-	settextcolor(SECONDCOLOR);
-	outtextxy(455, 100, _T("飞机大战"));
-	setfillcolor(SECONDCOLOR);//设置填充色
+	settextstyle(60, 50, _T("微软雅黑"));
+	settextcolor(GOLDENCOLOR);
 
+	IMAGE img;
+	loadimage(&img, _T("title.png"));
+	putimage(100, 0, &img);
+
+	setfillcolor(SECONDCOLOR);//设置填充色
 	setlinecolor(SECONDCOLOR);
-	fillrectangle(353, 105, 450, 160); // 按钮背景
+	//fillrectangle(353, 105, 450, 160); // 按钮背景
 	setlinecolor(WHITE);
 
-	settextcolor(WHITE);
-	outtextxy(355, 100, _T("像素"));
+	//settextcolor(WHITE);
+	//outtextxy(355, 100, _T("像素"));
 
-	settextcolor(WHITE);
-	setfillcolor(WHITE);//设置填充色
+	settextcolor(GOLDENCOLOR);
+	setfillcolor(BGCOLOR);//设置填充色
 	// 绘制按钮
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* Begin;//绘制按钮
 	Button* WorkShop;//绘制飞机工厂
 	Button* Operating_instructions;//绘制操作说明
 	Button* exit_game;//退出
-	Operating_instructions = new Button(OnButtonClick, 350, 300, 300, 75, L"游戏介绍");
-	Begin = new Button(OnButtonClick, 350, 400, 300, 75, L"开始游戏");
-	WorkShop = new Button(OnButtonClick, 350, 500, 300, 75, L"飞机工厂");
-	exit_game = new Button(OnButtonClick, 350, 600, 300, 75, L"退出游戏");
+	Operating_instructions = new Button(OnButtonClick, 470, 380, 300, 75, L"游戏介绍");
+	Begin = new Button(OnButtonClick, 470, 480, 300, 75, L"开始游戏");
+	WorkShop = new Button(OnButtonClick, 470, 580, 300, 75, L"飞机工厂");
+	exit_game = new Button(OnButtonClick, 470, 680, 300, 75, L"退出游戏");
 	Begin->RenderToWindows();
 	WorkShop->RenderToWindows();
 	Operating_instructions->RenderToWindows();
@@ -111,7 +115,7 @@ void GameLoop::MainMenuLoop()
 void GameLoop::InstructionsLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-	setbkcolor(MAINCOLOR);
+	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
@@ -119,8 +123,8 @@ void GameLoop::InstructionsLoop()
 	settextstyle(60, 0, _T("微软雅黑"));//
 	settextcolor(SECONDCOLOR);
 	LPCTSTR title = _T("游戏介绍");
-	outtextxy(400, 100, title);
-	settextcolor(WHITE);
+	outtextxy(500, 100, title);
+	settextcolor(GOLDENCOLOR);
 	//游戏介绍:
 	//TODO
 
@@ -129,7 +133,7 @@ void GameLoop::InstructionsLoop()
 	setfillcolor(WHITE);
 
 	Button* re_main_menu;//返回菜单
-	re_main_menu = new Button(OnButtonClick, 350, 600, 300, 75, L"返回菜单");
+	re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
 	re_main_menu->RenderToWindows();
 	ExMessage msg;
 	bool on = 1;
@@ -150,7 +154,7 @@ void GameLoop::InstructionsLoop()
 void GameLoop::SelectLevelLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-	setbkcolor(MAINCOLOR);
+	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
@@ -158,16 +162,16 @@ void GameLoop::SelectLevelLoop()
 	settextstyle(60, 0, _T("微软雅黑"));//
 	LPCTSTR title = _T("关卡选择");
 	settextcolor(SECONDCOLOR);
-	outtextxy(400, 100, title);
-	settextcolor(WHITE);
+	outtextxy(500, 100, title);
+	settextcolor(GOLDENCOLOR);
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* re_main_menu;//返回菜单
 	Button* first_level;//第一关
 
-	first_level = new Button(OnButtonClick, 350, 300, 300, 75, L"第一关");
-	re_main_menu = new Button(OnButtonClick, 350, 600, 300, 75, L"返回菜单");
+	first_level = new Button(OnButtonClick, 470, 380, 300, 75, L"第一关");
+	re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
 	re_main_menu->RenderToWindows();
 	first_level->RenderToWindows();
 	ExMessage msg;
@@ -194,13 +198,13 @@ void GameLoop::SelectLevelLoop()
 void GameLoop::PlaneBattleLoop()
 {
 
-	initgraph(MAPSIZE_X * BLOCKSIZE, MAPSIZE_Y * BLOCKSIZE, EW_SHOWCONSOLE);
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口
 	BeginBatchDraw();//开始批量绘图
-	setbkcolor(MAINCOLOR);
+	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
-	setfillcolor(WHITE);//设置填充色，这里是浅青色
-	setlinecolor(WHITE); //设置当前线条的颜色为黑色
+	setfillcolor(WHITE);//设置填充色
+	setlinecolor(WHITE); //设置当前线条的颜色
 	settextstyle(30, 0, _T("微软雅黑"));
 	GAMEEND = false;
 	//获取Scroll信息
@@ -208,31 +212,47 @@ void GameLoop::PlaneBattleLoop()
 	BeginBatchDraw();//开始批量绘图	
 	std::cout << "!!!" << std::endl;
 
-
-	Plane p1({ 31,20 });
+	Plane p1({ 10,10 });
+	Plane p2({ 3,-15 });
+	Plane p3({ 18,-2 });
 	Bullet b1;
 	PlayerPlane mp;
 
+	//绘制网格
 	while (1)
 	{
-		setbkcolor(MAINCOLOR);
+		setbkcolor(BGCOLOR);
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
-		settextcolor(SECONDCOLOR);
+		settextcolor(GOLDENCOLOR);
 		outtextxy(20, 20, _T("分数"));
 		std::wstring str = std::to_wstring(SCORE);
 		LPCTSTR score = str.c_str();//分数
 		outtextxy(70, 20, score);
-		settextcolor(WHITE);
-
+		settextcolor(GOLDENCOLOR);
+		setlinecolor(BACKCOLOR); //设置当前线条的颜色
+		setlinestyle(PS_SOLID, 2);
+		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);
+		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);
+		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);
+		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);
+		setlinestyle(PS_SOLID, 1);
+		//for (int x = BLANK_L; x <= BLANK_R; x += BLOCKSIZE)
+		//{
+		//	for (int y = BLANK_U; y <= BLANK_D; y += BLOCKSIZE)
+		//	{
+		//		line(x, BLANK_U, x, BLANK_D);  // 绘制垂直线
+		//		line(BLANK_L, y, BLANK_R, y);  // 绘制水平线
+		//	}
+		//}
 		//点击esc按键跳转到游戏主菜单
 		if (_kbhit()) {
 			bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
 			if (esc)
 			{
-				EndBatchDraw();// 结束批量绘制
-				closegraph();
-				BattleMenuLoop();
+				cout << "暂停!" << endl;
+				EndBatchDraw();
+				BattleMenuLoop();//切换至菜单		
 			}
 			else {
 				bool up = GetAsyncKeyState(VK_UP) & 0x8000;
@@ -257,36 +277,50 @@ void GameLoop::PlaneBattleLoop()
 
 		//处理所有实体
 		for (Bullet* bullet : Bullet::AllEntities) {
-			//敌机和子弹
-			if (bullet->entityType == _EntityEnemy || bullet->entityType == _EntityBullet) {
+			//敌机
+			if (bullet->entityType == _EntityEnemy) {
+
+				//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
 				// 计算坐标在窗口中的位置
-				int x = bullet->core.x * BLOCKSIZE; // 每个 Block 边长为 10
-				int y = bullet->core.y * BLOCKSIZE;
+				int x = BLANK_L + bullet->core.x * BLOCKSIZE;
+				int y = BLANK_U + bullet->core.y * BLOCKSIZE;
 
 				// 绘制 Block
 				setlinecolor(WHITE);
-				setfillcolor(OTHERCOLOR);
+				setfillcolor(CORECOLOR);
+				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+			}
+			//子弹
+			else if (bullet->entityType == _EntityBullet) {
+
+				//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+				// 计算坐标在窗口中的位置
+				int x = BLANK_L + bullet->core.x * BLOCKSIZE;
+				int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+
+				// 绘制 Block
+				setlinecolor(WHITE);
+				setfillcolor(BULLETCOLOR);
 				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
 			}
 			//自机
 			else if (bullet->entityType == _EntityPlayer) {
 				//绘制核心
-				int x = bullet->core.x * BLOCKSIZE;
-				int y = bullet->core.y * BLOCKSIZE;
+				int corex = BLANK_L + bullet->core.x * BLOCKSIZE;
+				int corey = BLANK_U + bullet->core.y * BLOCKSIZE;
 				setlinecolor(SECONDCOLOR);
-				setfillcolor(SECONDCOLOR);
-				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
+				setfillcolor(CORECOLOR);
+				solidrectangle(corex, corey, corex + BLOCKSIZE, corey + BLOCKSIZE);
 				//绘制副自机
-				setfillcolor(OTHERCOLOR);
+				setfillcolor(BULLETCOLOR);
 				for (const auto& pair : Bullet::PlayerPlaneBlock) {
 					const Coordinate& coord = pair.first;
-					const Block& block = pair.second;
 					// 计算坐标在窗口中的位置
-					int x = coord.x * BLOCKSIZE;
-					int y = coord.y * BLOCKSIZE;
+					int x = BLANK_L + bullet->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
+					int y = BLANK_U + bullet->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
 					// 绘制 Block
 					setlinecolor(WHITE);
-					setfillcolor(OTHERCOLOR);
+					setfillcolor(BULLETCOLOR);
 					solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
 				}
 
@@ -504,26 +538,26 @@ void GameLoop::PlaneWorkshopLoop()
 
 void GameLoop::BattleMenuLoop()
 {
-	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
-	setbkcolor(MAINCOLOR);
-	cleardevice();//显示背景颜色      
+	//EndBatchDraw();
+	//initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
+	setbkcolor(BGCOLOR);
+	cleardevice();
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
 	setlinecolor(WHITE); //设置当前线条的颜色为黑色
 	settextstyle(60, 0, _T("微软雅黑"));
-	LPCTSTR title = _T("选项");
-	settextcolor(SECONDCOLOR);
-	outtextxy(450, 100, title);
-	settextcolor(WHITE);
+	LPCTSTR title = _T("暂停");
+	settextcolor(GOLDENCOLOR);
+	outtextxy(570, 100, title);
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* re_game;//绘制重新游玩按钮
 	Button* re_main_menu;//绘制返回菜单
 	Button* exit_game;//退出
-	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
-	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
-	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game = new Button(OnButtonClick, 470, 480, 300, 75, L"返回关卡");
+	re_main_menu = new Button(OnButtonClick, 470, 580, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 470, 680, 300, 75, L"退出游戏");
 	re_game->RenderToWindows();
 	re_main_menu->RenderToWindows();
 	exit_game->RenderToWindows();
@@ -532,11 +566,14 @@ void GameLoop::BattleMenuLoop()
 	while (on)
 	{
 		msg = getmessage();
-		if (re_game->state(msg)) // 选择关卡
+		if (re_game->state(msg)) // 返回关卡
 		{
 			flag = 2;
 			printf("Restart\n");
-			SelectLevelLoop();
+			//BeginBatchDraw();
+			//closegraph();
+			return;
+
 		}
 		if (re_main_menu->state(msg)) // 返回菜单
 		{
@@ -550,31 +587,30 @@ void GameLoop::BattleMenuLoop()
 			exit(0);
 		}
 	}
-	//getch();
 }
 
 void GameLoop::BattleDefeatLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
-	setbkcolor(MAINCOLOR);
+	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
 	setlinecolor(WHITE); //设置当前线条的颜色为黑色
 	settextstyle(60, 0, _T("微软雅黑"));
 	LPCTSTR title = _T("任务失败");
-	settextcolor(SECONDCOLOR);
-	outtextxy(400, 100, title);
-	settextcolor(WHITE);
+	settextcolor(GOLDENCOLOR);
+	outtextxy(500, 100, title);
+
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* re_game;//绘制重新游玩按钮
 	Button* re_main_menu;//绘制返回菜单
 	Button* exit_game;//退出
-	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
-	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
-	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game = new Button(OnButtonClick, 470, 480, 300, 75, L"选择关卡");
+	re_main_menu = new Button(OnButtonClick, 470, 580, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 470, 680, 300, 75, L"退出游戏");
 	re_game->RenderToWindows();
 	re_main_menu->RenderToWindows();
 	exit_game->RenderToWindows();
@@ -606,25 +642,24 @@ void GameLoop::BattleDefeatLoop()
 void GameLoop::BattleVictoryLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
-	setbkcolor(MAINCOLOR);
+	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色，这里是浅青色
 	setlinecolor(WHITE); //设置当前线条的颜色为黑色
 	settextstyle(60, 0, _T("微软雅黑"));
 	LPCTSTR title = _T("任务完成");
-	settextcolor(SECONDCOLOR);
-	outtextxy(400, 100, title);
-	settextcolor(WHITE);
+	settextcolor(GOLDENCOLOR);
+	outtextxy(500, 100, title);
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
 	Button* re_game;//绘制重新游玩按钮
 	Button* re_main_menu;//绘制返回菜单
 	Button* exit_game;//退出
-	re_game = new Button(OnButtonClick, 350, 300, 300, 75, L"选择关卡");
-	re_main_menu = new Button(OnButtonClick, 350, 400, 300, 75, L"返回菜单");
-	exit_game = new Button(OnButtonClick, 350, 500, 300, 75, L"退出游戏");
+	re_game = new Button(OnButtonClick, 470, 480, 300, 75, L"选择关卡");
+	re_main_menu = new Button(OnButtonClick, 470, 580, 300, 75, L"返回菜单");
+	exit_game = new Button(OnButtonClick, 470, 680, 300, 75, L"退出游戏");
 	re_game->RenderToWindows();
 	re_main_menu->RenderToWindows();
 	exit_game->RenderToWindows();

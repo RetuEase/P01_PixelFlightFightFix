@@ -15,19 +15,36 @@
 #define DEBUG
 
 // 界面大小
-#define WINDOWS_X	1000
-#define SCROLL_X	600
-#define WINDOWS_Y	800
+#define WINDOWS_X	1265
+#define WINDOWS_Y	780
 
-#define MAPSIZE_X	62	//游戏界面宽度
-#define MAPSIZE_Y	100 //游戏页面高度
-#define BLOCKSIZE	8
+#define MAPSIZE_X	31	//游戏界面宽度
+#define MAPSIZE_Y	50 //游戏页面高度
+#define BLOCKSIZE	15
+
+#define BLANK_U 10	//上边框
+#define BLANK_D 760	//下
+#define BLANK_L 400	//左
+#define BLANK_R 865	//右
+
+
 //颜色
-#define MAINCOLOR	0Xecec81	//light blue 背景
-#define OTHERCOLOR	0Xc9ce00	//blue		 前景
-#define SECONDCOLOR	0Xa879fd	//red		 强调
+#define BGCOLOR		0X020202//黑//0Xecec81	//light blue 背景
+#define OTHERCOLOR	0X612C18//深蓝 //0Xc9ce00	//blue		 前景
+#define BACKCOLOR	0Xfba464//边框 蓝 //0Xc9ce00	//blue		 后景
+#define SECONDCOLOR	0Xfba464//页面强调 金色
+#define CORECOLOR	0X3f30d3//核心 红色
+#define BULLETCOLOR 0X612C18//子弹/自己 深蓝
 
-
+#define GOLDENCOLOR 0X00f2ff//字体 金
+//#fff200
+//0X612C18
+//0X971f34
+//0Xc3beb2	灰色
+//0X3f30d3  红
+//0X3ec8d4  金色 #fbc531
+//0Xfba464
+//0X66acae
 //刷新与移动
 #define FRAMEINTERVAL 80	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
@@ -85,7 +102,7 @@ namespace std {
 	template <>
 	struct hash<Vector2> {
 		std::size_t operator()(const Vector2& v) const {
-			return std::hash<int>()(v.x)+ std::hash<int>()(v.y)* MAPSIZE_X;
+			return std::hash<int>()(v.x) + std::hash<int>()(v.y) * MAPSIZE_X;
 		}
 	};
 }

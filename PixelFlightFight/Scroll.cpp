@@ -73,7 +73,7 @@ void Scroll::GameUpdate()
 		{
 			if (i->entityType == _EntityBullet) {
 				i->AutoMove();
-				i->CollisionDetection();
+				//i->CollisionDetection();
 			}
 		}
 		//3вт╩З
