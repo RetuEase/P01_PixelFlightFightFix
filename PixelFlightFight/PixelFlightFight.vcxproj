@@ -142,6 +142,9 @@
     <ClCompile Include="Scroll.cpp" />
     <ClCompile Include="Workshop.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="title.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
