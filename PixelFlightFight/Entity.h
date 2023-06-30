@@ -48,10 +48,9 @@ public:
 	Plane();//创建默认飞机
 	Plane(Coordinate co);
 	~Plane();
-	virtual void PlayerMove(Speed speed);	// 主动移动
-
-	virtual void CollisionDetection();			// 碰撞检测
-	virtual void Fracture();					// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
+	virtual void PlayerMove(Speed speed)override;	// 主动移动
+	virtual void CollisionDetection()override;	 		// 碰撞检测
+	virtual void Fracture()override;					// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 };
 
 class PlayerPlane : public Plane//玩家飞机
@@ -61,10 +60,9 @@ public:
 	PlayerPlane();//创建默认玩家飞机
 	PlayerPlane(std::vector<Coordinate>);			//由workshop创建玩家飞机
 	~PlayerPlane();
-	virtual void PlayerMove(Speed speed);	// 主动移动
-
-	virtual void CollisionDetection();
-	virtual void Fracture();						// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
+	virtual void PlayerMove(Speed speed)override;	// 主动移动
+	virtual void CollisionDetection()override;
+	virtual void Fracture()override;				// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 };
 
 

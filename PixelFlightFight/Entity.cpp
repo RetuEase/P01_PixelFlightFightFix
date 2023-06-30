@@ -102,7 +102,7 @@ Plane::Plane(Coordinate co)
 	autoSpeed = { 0,1 };	// 固有速度
 	tileCountMax = 1;	// 拥有的像素上限
 	tileCount = 1;		// 剩余的像素
-	std::shared_ptr<Bullet> bulletptr = std::make_shared<Bullet>(*this);
+	std::shared_ptr<Bullet> bulletptr = std::make_shared<Plane>(*this);
 	AllEntities[blockID] = bulletptr;	//将自己插入AllEntities
 
 }
@@ -158,7 +158,7 @@ PlayerPlane::PlayerPlane()//默认飞机
 	std::unordered_map<Coordinate, Block> hmap{ {{-1,0},pp1},{{1,0},pp2},{{0,-1},pp3} };
 	PlayerPlaneBlock.clear();
 	PlayerPlaneBlock = hmap;
-	std::shared_ptr<Bullet> bulletptr = std::make_shared<Bullet>(*this);
+	std::shared_ptr<Bullet> bulletptr = std::make_shared<PlayerPlane>(*this);
 	AllEntities[blockID] = bulletptr;	//将自己插入AllEntities
 
 };
@@ -180,9 +180,8 @@ PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机
 			PlayerPlaneBlock.insert({ i, pp });
 		}
 	}
-	std::shared_ptr<Bullet> bulletptr = std::make_shared<Bullet>(*this);
+	std::shared_ptr<Bullet> bulletptr = std::make_shared<PlayerPlane>(*this);
 	AllEntities[blockID] = bulletptr;	//将自己插入AllEntities
-
 }
 
 PlayerPlane::~PlayerPlane() {
