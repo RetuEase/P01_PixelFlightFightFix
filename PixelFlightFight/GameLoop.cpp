@@ -1,4 +1,5 @@
 #include "GameLoop.h"
+#include "Workshop.h"
 
 using namespace std;
 
@@ -361,76 +362,56 @@ void GameLoop::PlaneBattleLoop()
 void GameLoop::PlaneWorkshopLoop()
 {
 	////60 X 60界面 像素10 X 10
-
-	//const int ROW = 60;
-	//const int COL = 60;
-	//const int PIXEL_SIZE = 10;
+	const int ROW = 60;
+	const int COL = 60;
+	const int PIXEL_SIZE = 10;
 	////用数组保存飞机形状
-	//int pixels[ROW][COL] = { 0 };
-	//initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
+	int pixels[ROW][COL] = { 0 };
+	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
 
 	//// 渲染像素数组
-	//for (int i = 0; i < ROW; i++)
-	//{
-	//	for (int j = 0; j < COL; j++)
-	//	{
-	//		if (pixels[i][j]) {
-	//			setfillcolor(WHITE);
-	//		}
-	//		else {
-	//			setfillcolor(BLACK);
-	//		}
-	//		fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
-	//			(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
-	//	}
-	//}
-
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			if (pixels[i][j]) {
+				setfillcolor(WHITE);
+			}
+			else {
+				setfillcolor(BLACK);
+			}
+			fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
+				(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
+		}
+	}
 	////点击右键绘制飞机，点击左键退出
 	////循环接受鼠标信息
-	//while (1)
-	//{
-	//	settextcolor(WHITE);
-	//	settextstyle(20, 0, _T("黑体"));
-	//	outtextxy(20, 20, _T("欢迎来到飞机工坊"));
-	//	ExMessage emg;
-	//	if (peekmessage(&emg))
-	//	{
-	//		if (emg.message == WM_LBUTTONDOWN)
-	//		{
-	//			// 根据鼠标点击位置计算出对应的像素坐标
-	//			int x = emg.x / PIXEL_SIZE;
-	//			int y = emg.y / PIXEL_SIZE;
-	//			if (x >= 0 && y >= 0 && x < ROW && y < COL)
-	//			{
-	//				// 反转该像素的值
-	//				pixels[x][y] = !pixels[x][y];
-
-	//				// 根据值的变化，设置矩形的颜色
-	//				if (pixels[x][y])
-	//				{
-	//					setfillcolor(WHITE);
-	//				}
-	//				else
-	//				{
-	//					setfillcolor(BLACK);
-	//				}
-	//				// 重新绘制矩形
-	//				fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
-	//					(x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
-	//			}
-
-	//		}//点击esc按键退回主界面
-	//		else if (emg.message == WM_KEYDOWN)
-	//		{
-	//			if (emg.wParam == VK_ESCAPE) {
-	//				closegraph();
-	//				MainMenuLoop();
-	//			}
-	//		}
-
-	//	}
-	//}
-	//closegraph();
+	PlaneCanvas pc(WHITE);
+	while (1)
+	{
+		ExMessage emg;
+		if (peekmessage(&emg))
+		{
+			if (emg.message == WM_LBUTTONDOWN)
+			{
+				Coordinate cor(emg.x, emg.y); //鼠标的位置
+				pc.Click(cor, true);
+			}//点击esc按键退回主界面
+			else if (emg.message == WM_RBUTTONDOWN)
+			{
+				Coordinate cor(emg.x, emg.y); //鼠标的位置
+				pc.Click(cor, false);
+			}
+			else if (emg.message == WM_KEYDOWN)
+			{
+				if (emg.wParam == VK_ESCAPE) {
+					closegraph();
+					MainMenuLoop();
+				}
+			}
+		}
+	}
+	closegraph();
 }
 
 /********************ldy********************/

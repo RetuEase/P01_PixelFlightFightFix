@@ -90,6 +90,11 @@ struct Vector2
 	int x, y;
 	Vector2()
 		:x(0), y(0) {}
+	/*explicit Vector2(Vector2& v)
+	{
+		this->x = v.x;
+		this->y = v.y;
+	}*/
 	Vector2(int x, int y)
 		:x(x), y(y) {}
 	bool operator==(const Vector2& other) const
