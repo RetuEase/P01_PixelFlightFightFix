@@ -1,6 +1,7 @@
 #include "GameLoop.h"
 
 
+
 using namespace std;
 
 /********************yjl********************/
@@ -363,15 +364,65 @@ void GameLoop::PlaneBattleLoop()
 //REDO
 void GameLoop::PlaneWorkshopLoop()
 {
-	////60 X 60界面 像素10 X 10
+	//60 X 60界面 像素10 X 10
+	const int ROW = 60;
+	const int COL = 60;
+	const int PIXEL_SIZE = 10;
+	//用数组保存飞机形状
+	int pixels[ROW][COL] = { 0 };
+	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
 
+	//渲染像素数组
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			if (pixels[i][j]) {
+				setfillcolor(WHITE);
+			}
+			else {
+				setfillcolor(BLACK);
+			}
+			fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
+				(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
+		}
+	}
+	//点击右键绘制飞机，点击左键退出
+	//循环接受鼠标信息
+	PlaneCanvas pc(WHITE);
+	while (1)
+	{
+		ExMessage emg;
+		if (peekmessage(&emg))
+		{
+			if (emg.message == WM_LBUTTONDOWN)
+			{
+				Coordinate cor(emg.x, emg.y); //鼠标的位置
+				pc.Click(cor, true);
+			}//点击esc按键退回主界面
+			else if (emg.message == WM_RBUTTONDOWN)
+			{
+				Coordinate cor(emg.x, emg.y); //鼠标的位置
+				pc.Click(cor, false);
+			}
+			else if (emg.message == WM_KEYDOWN)
+			{
+				if (emg.wParam == VK_ESCAPE) {
+					closegraph();
+					MainMenuLoop();
+				}
+			}
+		}
+	}
+	closegraph();
+
+	//60 X 60界面 像素10 X 10
 	//const int ROW = 60;
 	//const int COL = 60;
 	//const int PIXEL_SIZE = 10;
 	////用数组保存飞机形状
 	//int pixels[ROW][COL] = { 0 };
 	//initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
-
 	//// 渲染像素数组
 	//for (int i = 0; i < ROW; i++)
 	//{
@@ -387,7 +438,6 @@ void GameLoop::PlaneWorkshopLoop()
 	//			(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
 	//	}
 	//}
-
 	////点击右键绘制飞机，点击左键退出
 	////循环接受鼠标信息
 	//while (1)
@@ -407,7 +457,6 @@ void GameLoop::PlaneWorkshopLoop()
 	//			{
 	//				// 反转该像素的值
 	//				pixels[x][y] = !pixels[x][y];
-
 	//				// 根据值的变化，设置矩形的颜色
 	//				if (pixels[x][y])
 	//				{
@@ -421,7 +470,6 @@ void GameLoop::PlaneWorkshopLoop()
 	//				fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
 	//					(x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
 	//			}
-
 	//		}//点击esc按键退回主界面
 	//		else if (emg.message == WM_KEYDOWN)
 	//		{
@@ -430,12 +478,38 @@ void GameLoop::PlaneWorkshopLoop()
 	//				MainMenuLoop();
 	//			}
 	//		}
-
 	//	}
 	//}
 	//closegraph();
 }
+void GameLoop::LevelSetUp()
+{
+	I_IdCounter = 1;
+	SCORE = 0;
+	GAMEEND = 1;
+	std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
+	Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
 
+	Bullet::ENEMYMAP.clear();
+	Bullet::PlayerPlaneBlock.clear();
+	Bullet::AllEntities.clear();
+	Bullet::keysToDelete.clear();
+
+	//生成敌人
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(-31, 0);
+	int enemies[ENEMIESNUMBER];
+
+	Plane* b1 = new Plane({ 4,4 });	//生成了
+
+	//for (int i = 0; i < ENEMIESNUMBER; i++) {
+	//	std::cout << "(" << dist(gen) << ", " << dist(gen) * dist(gen) * dist(gen) % 200 << ")" << std::endl;
+	//	Coordinate co(dist(gen), dist(gen) * dist(gen) * dist(gen) % 200);
+	//	Plane* b2 = new Plane(co);	//没有生成
+	//}
+	PlayerPlane mp;
+}
 /********************ldy********************/
 //struct LButton
 //{
@@ -701,31 +775,8 @@ void GameLoop::BattleVictoryLoop()
 		}
 	}
 }
-void GameLoop::LevelSetUp()
-{
-	I_IdCounter = 1;
-	SCORE = 0;
-	GAMEEND = 1;
-	std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
-	Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
 
-	Bullet::ENEMYMAP.clear();
-	Bullet::PlayerPlaneBlock.clear();
-	Bullet::AllEntities.clear();
-	Bullet::keysToDelete.clear();
 
-	//生成敌人
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(-31, 0);
-	int enemies[ENEMIESNUMBER];
-	for (int i = 0; i < ENEMIESNUMBER; i++) {
-		std::cout << "(" << dist(gen) << ", " << dist(gen) * dist(gen) * dist(gen) % 200 << ")" << std::endl;
-		Coordinate co(dist(gen), dist(gen) * dist(gen) * dist(gen) % 200);
-		Plane* b2 = new Plane(co);
-	}
-	PlayerPlane mp;
-}
 //
 //void GameLoop::TestLoop() {
 //	initgraph(MAPSIZE_X* BLOCKSIZE, MAPSIZE_Y*BLOCKSIZE);
