@@ -4,7 +4,7 @@ int I_IdCounter = 1;
 int SCORE = 0;
 int GAMEEND = 1;
 std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
-Coordinate PLAYERPLANECORE(31, 60);	//默认飞机核心位置
+Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
 
 std::unordered_map<Coordinate, Bullet> Bullet::ENEMYMAP;			//敌机map
 std::unordered_map<Coordinate, Block> Bullet::PlayerPlaneBlock;		// 玩家飞机拥有的像素（对与核心的相对坐标)
@@ -193,10 +193,31 @@ PlayerPlane::~PlayerPlane() {
 
 void PlayerPlane::PlayerMove(Speed speed)
 {
-	this->core.x += speed.x;
-	this->core.y += speed.y;
-	PLAYERPLANECORE.x += speed.x;
-	PLAYERPLANECORE.y += speed.y;
+	if (this->core.x + speed.x <= MAPSIZE_X && this->core.x + speed.x >= 0) {
+		this->core.x += speed.x;
+		PLAYERPLANECORE.x += speed.x;
+	}
+	else {
+		setlinecolor(SECONDCOLOR);
+		setlinestyle(PS_SOLID, 2);
+		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
+		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线
+		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);  // 绘制垂直线
+		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+	}
+	if (this->core.y + speed.y <= MAPSIZE_Y && this->core.x + speed.x >= 0) {
+		this->core.y += speed.y;
+		PLAYERPLANECORE.y += speed.y;
+	}
+	else {
+		setlinecolor(SECONDCOLOR);
+		setlinestyle(PS_SOLID, 2);
+		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
+		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线
+		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);  // 绘制垂直线
+		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+
+	}
 }
 
 void PlayerPlane::CollisionDetection()
