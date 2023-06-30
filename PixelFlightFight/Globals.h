@@ -22,8 +22,8 @@
 #define MAPSIZE_Y	50 //游戏页面高度
 #define BLOCKSIZE	15
 
-#define BLANK_U 10	//上边框
-#define BLANK_D 760	//下
+#define BLANK_U 15	//上边框
+#define BLANK_D 765	//下
 #define BLANK_L 400	//左
 #define BLANK_R 865	//右
 
@@ -46,7 +46,7 @@
 //0Xfba464
 //0X66acae
 //刷新与移动
-#define FRAMEINTERVAL 80	//周期间隔 ms
+#define FRAMEINTERVAL 40	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 
 #define BULLETRATE	8	//子弹周期刷新率 

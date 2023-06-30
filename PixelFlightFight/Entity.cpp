@@ -36,7 +36,6 @@ void Block::Resource()
 
 }
 
-
 /// <summary>
 /// Bullet
 /// </summary>
@@ -57,7 +56,6 @@ Bullet::~Bullet()
 	std::cout << "释放子弹: ";
 	// 在Bullet析构函数中移除实例	
 }
-
 
 void Bullet::AutoMove()
 {
@@ -193,24 +191,24 @@ PlayerPlane::~PlayerPlane() {
 
 void PlayerPlane::PlayerMove(Speed speed)
 {
-	if (this->core.x + speed.x <= MAPSIZE_X && this->core.x + speed.x >= 0) {
+	if (this->core.x + speed.x <= MAPSIZE_X - 1 && this->core.x + speed.x >= 0) {
 		this->core.x += speed.x;
 		PLAYERPLANECORE.x += speed.x;
 	}
 	else {
-		setlinecolor(SECONDCOLOR);
+		setlinecolor(CORECOLOR);
 		setlinestyle(PS_SOLID, 2);
 		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
 		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线
 		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);  // 绘制垂直线
 		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
 	}
-	if (this->core.y + speed.y <= MAPSIZE_Y && this->core.x + speed.x >= 0) {
+	if (this->core.y + speed.y <= MAPSIZE_Y - 1 && this->core.y + speed.y >= 0) {
 		this->core.y += speed.y;
 		PLAYERPLANECORE.y += speed.y;
 	}
 	else {
-		setlinecolor(SECONDCOLOR);
+		setlinecolor(CORECOLOR);
 		setlinestyle(PS_SOLID, 2);
 		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
 		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线

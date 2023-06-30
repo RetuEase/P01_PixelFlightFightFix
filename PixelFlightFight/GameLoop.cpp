@@ -123,7 +123,7 @@ void GameLoop::InstructionsLoop()
 	settextstyle(60, 0, _T("微软雅黑"));//
 	settextcolor(SECONDCOLOR);
 	LPCTSTR title = _T("游戏介绍");
-	outtextxy(500, 100, title);
+	outtextxy(525, 100, title);
 	settextcolor(GOLDENCOLOR);
 	//游戏介绍:
 	//TODO
@@ -162,7 +162,7 @@ void GameLoop::SelectLevelLoop()
 	settextstyle(60, 0, _T("微软雅黑"));//
 	LPCTSTR title = _T("关卡选择");
 	settextcolor(SECONDCOLOR);
-	outtextxy(500, 100, title);
+	outtextxy(525, 100, title);
 	settextcolor(GOLDENCOLOR);
 	// 绘制按钮
 	setfillcolor(WHITE);
@@ -230,12 +230,7 @@ void GameLoop::PlaneBattleLoop()
 		LPCTSTR score = str.c_str();//分数
 		outtextxy(70, 20, score);
 		settextcolor(GOLDENCOLOR);
-		setlinecolor(BACKCOLOR); //设置当前线条的颜色
-		setlinestyle(PS_SOLID, 2);
-		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);
-		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);
-		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);
-		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);
+
 		setlinestyle(PS_SOLID, 1);
 		//for (int x = BLANK_L; x <= BLANK_R; x += BLOCKSIZE)
 		//{
@@ -280,28 +275,31 @@ void GameLoop::PlaneBattleLoop()
 			//敌机
 			if (bullet->entityType == _EntityEnemy) {
 
-				//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
-				// 计算坐标在窗口中的位置
-				int x = BLANK_L + bullet->core.x * BLOCKSIZE;
-				int y = BLANK_U + bullet->core.y * BLOCKSIZE;
-
-				// 绘制 Block
-				setlinecolor(WHITE);
-				setfillcolor(CORECOLOR);
-				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+				if (bullet->core.y <= MAPSIZE_Y - 1 && bullet->core.y >= 0 && bullet->core.x <= MAPSIZE_X - 1 && bullet->core.x >= 0) {
+					//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+					// 计算坐标在窗口中的位置
+					int x = BLANK_L + bullet->core.x * BLOCKSIZE;
+					int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+					// 绘制 Block
+					setlinecolor(WHITE);
+					setfillcolor(CORECOLOR);
+					solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+				}
 			}
 			//子弹
 			else if (bullet->entityType == _EntityBullet) {
-
 				//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
 				// 计算坐标在窗口中的位置
-				int x = BLANK_L + bullet->core.x * BLOCKSIZE;
-				int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+				if (bullet->core.y <= MAPSIZE_Y - 1 && bullet->core.y >= 0 && bullet->core.x <= MAPSIZE_X - 1 && bullet->core.x >= 0) {
 
-				// 绘制 Block
-				setlinecolor(WHITE);
-				setfillcolor(BULLETCOLOR);
-				solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+					int x = BLANK_L + bullet->core.x * BLOCKSIZE;
+					int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+
+					// 绘制 Block
+					setlinecolor(WHITE);
+					setfillcolor(BULLETCOLOR);
+					solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+				}
 			}
 			//自机
 			else if (bullet->entityType == _EntityPlayer) {
@@ -326,7 +324,12 @@ void GameLoop::PlaneBattleLoop()
 
 			}
 		}
-
+		setlinecolor(BACKCOLOR); //设置当前线条的颜色
+		setlinestyle(PS_SOLID, 2);
+		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);
+		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);
+		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);
+		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);
 		FlushBatchDraw();//执行未完成的绘制任务
 
 		//if (GAMEEND)//核心被打爆
@@ -600,7 +603,7 @@ void GameLoop::BattleDefeatLoop()
 	settextstyle(60, 0, _T("微软雅黑"));
 	LPCTSTR title = _T("任务失败");
 	settextcolor(GOLDENCOLOR);
-	outtextxy(500, 100, title);
+	outtextxy(525, 100, title);
 
 	// 绘制按钮
 	setfillcolor(WHITE);
@@ -650,7 +653,7 @@ void GameLoop::BattleVictoryLoop()
 	settextstyle(60, 0, _T("微软雅黑"));
 	LPCTSTR title = _T("任务完成");
 	settextcolor(GOLDENCOLOR);
-	outtextxy(500, 100, title);
+	outtextxy(525, 100, title);
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
