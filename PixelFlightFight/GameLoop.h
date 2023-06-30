@@ -16,13 +16,14 @@ public:
 	void SelectLevelLoop();		// 选关界面	
 	void PlaneBattleLoop();		// 飞机战斗界面
 	void PlaneWorkshopLoop();	// 飞机工坊界面
+	void InstructionsLoop();	// 操作说明界面
 
-	void InstructionsLoop();		// 操作说明界面   //TODO
-
-
+	void LevelSetUp();			// 战斗初始化
 	void BattleMenuLoop();		// 战斗菜单弹出界面
 	void BattleDefeatLoop();	// 战斗失败弹出界面
 	void BattleVictoryLoop();	// 战斗胜利弹出界面
+
+
 
 	//void TestLoop();	// 测试界面
 };

@@ -52,34 +52,33 @@ void Scroll::GameUpdate()
 	{
 		playerMove = 1;
 	}
-	if (enemyMove)
-	{
-		Bullet::ENEMYMAP.clear();
-	}
+
 	for (auto it = Bullet::AllEntities.begin(); it != Bullet::AllEntities.end(); it++) {
 		InsId key = it->first;
 		std::shared_ptr<Bullet> bulletptr = it->second;
 
 		//1敌机动
 		if (bulletptr->entityType == _EntityEnemy && enemyMove) {
+			Bullet::ENEMYMAP.erase(bulletptr->core);
+			//std::cout<<"ENEMYMAP个数 "<< Bullet::ENEMYMAP.size() << std::endl;
 			if (bulletptr->AutoMove())
 			{
 				Bullet::ENEMYMAP.insert(std::make_pair(bulletptr->core, *bulletptr));
-				std::cout << "敌人位置:" << bulletptr->core.x << " " << bulletptr->core.y << std::endl;
+				//std::cout << "敌人位置:" << bulletptr->core.x << " " << bulletptr->core.y << std::endl;
 				bulletptr->CollisionDetection();
 			}
 		}
 		//2子弹动
 		else if (bulletptr->entityType == _EntityBullet && bulletMove) {
 			if (bulletptr->AutoMove()) {
-				//bulletptr->CollisionDetection();
+				bulletptr->CollisionDetection();
 			}
 		}
 		//3自机
 		else if (bulletptr->entityType == _EntityPlayer && playerMove) {
 
 			bulletptr->PlayerMove(playSpeed);
-			//bulletptr->CollisionDetection();
+			bulletptr->CollisionDetection();
 		}
 	}
 
@@ -90,9 +89,7 @@ void Scroll::GameUpdate()
 
 		if (it != Bullet::AllEntities.end()) {
 			std::shared_ptr<Bullet> bulletptr = it->second;
-			//if (bulletptr->entityType == _EntityBullet)
 			Bullet::AllEntities.erase(it);
-
 		}
 	}
 

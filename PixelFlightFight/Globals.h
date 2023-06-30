@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <set>
+#include <random>
 //#include <unordered_set>
 #include <unordered_map>
 #include <conio.h>
@@ -18,7 +20,7 @@
 #define WINDOWS_X	1265
 #define WINDOWS_Y	780
 
-#define MAPSIZE_X	31	//游戏界面宽度  地图31*50 
+#define MAPSIZE_X	31//游戏界面宽度  地图31*50 
 #define MAPSIZE_Y	50 //游戏页面高度
 #define BLOCKSIZE	15
 
@@ -46,7 +48,7 @@
 //0Xfba464
 //0X66acae
 //刷新与移动
-#define FRAMEINTERVAL 50	//周期间隔 ms
+#define FRAMEINTERVAL	30	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 
 #define BULLETRATE	8	//子弹周期刷新率 
@@ -83,6 +85,8 @@
 
 // 飞机工坊中的单元像素边长
 #define UNIT_EDGE 10
+
+#define ENEMIESNUMBER 40
 
 // 二维结构
 struct Vector2

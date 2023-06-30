@@ -1,5 +1,6 @@
 #include "GameLoop.h"
 
+
 using namespace std;
 
 /********************yjl********************/
@@ -196,7 +197,7 @@ void GameLoop::SelectLevelLoop()
 
 void GameLoop::PlaneBattleLoop()
 {
-
+	LevelSetUp();
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口
 	BeginBatchDraw();//开始批量绘图
 	setbkcolor(BGCOLOR);
@@ -204,17 +205,11 @@ void GameLoop::PlaneBattleLoop()
 	setbkmode(TRANSPARENT);//处理字体背景
 	setfillcolor(WHITE);//设置填充色
 	setlinecolor(WHITE); //设置当前线条的颜色
-	settextstyle(30, 0, _T("微软雅黑"));
 	GAMEEND = false;
 	//获取Scroll信息
 	Scroll sc = Scroll::GetInstance();
 	BeginBatchDraw();//开始批量绘图	
 
-	Plane p1({ 10,10 });
-	Plane p2({ 3,15 });
-	Plane p3({ 18,2 });
-	Bullet b2(1);
-	PlayerPlane mp;
 
 	//绘制网格
 	while (1)
@@ -282,7 +277,7 @@ void GameLoop::PlaneBattleLoop()
 		//发射子弹
 		if (sc.fireCD >= 5) {//fire &&
 			Bullet* b = new Bullet(1);
-			cout << b->blockID;
+			//cout << b->blockID;
 			sc.fireCD = 0;
 		}
 		sc.GameUpdate();
@@ -705,6 +700,31 @@ void GameLoop::BattleVictoryLoop()
 			exit(0);
 		}
 	}
+}
+void GameLoop::LevelSetUp()
+{
+	I_IdCounter = 1;
+	SCORE = 0;
+	GAMEEND = 1;
+	std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
+	Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
+
+	Bullet::ENEMYMAP.clear();
+	Bullet::PlayerPlaneBlock.clear();
+	Bullet::AllEntities.clear();
+	Bullet::keysToDelete.clear();
+
+	//生成敌人
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(-31, 0);
+	int enemies[ENEMIESNUMBER];
+	for (int i = 0; i < ENEMIESNUMBER; i++) {
+		std::cout << "(" << dist(gen) << ", " << dist(gen) * dist(gen) * dist(gen) % 200 << ")" << std::endl;
+		Coordinate co(dist(gen), dist(gen) * dist(gen) * dist(gen) % 200);
+		Plane* b2 = new Plane(co);
+	}
+	PlayerPlane mp;
 }
 //
 //void GameLoop::TestLoop() {
