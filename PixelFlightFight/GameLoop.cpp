@@ -214,9 +214,10 @@ void GameLoop::PlaneBattleLoop()
 	std::cout << "!!!" << std::endl;
 
 	Plane p1({ 10,10 });
-	Plane p2({ 3,-15 });
-	Plane p3({ 18,-2 });
-
+	//Plane p2({ 3,-15 });
+	//Plane p3({ 18,-2 });
+	Bullet b1;
+	Bullet b2(1);
 	PlayerPlane mp;
 
 	//绘制网格
@@ -241,6 +242,8 @@ void GameLoop::PlaneBattleLoop()
 		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
 
 		setlinestyle(PS_SOLID, 1);
+
+		++sc.fireCD;
 		//for (int x = BLANK_L; x <= BLANK_R; x += BLOCKSIZE)
 		//{
 		//	for (int y = BLANK_U; y <= BLANK_D; y += BLOCKSIZE)
@@ -259,10 +262,12 @@ void GameLoop::PlaneBattleLoop()
 				BattleMenuLoop();//切换至菜单		
 			}
 			else {
+				bool fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
 				bool up = GetAsyncKeyState(VK_UP) & 0x8000;
 				bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
 				bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
 				bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
+
 				int u = 0;
 				int d = 0;
 				int l = 0;
@@ -271,14 +276,20 @@ void GameLoop::PlaneBattleLoop()
 				if (down) { d = 1; }
 				if (left) { l = -1; }
 				if (right) { r = 1; }
+
 				sc.playSpeed = { l + r,u + d };
+
+				if (fire && sc.fireCD >= 4)
+				{
+					sc.Fire();
+					sc.fireCD = 0;
+				}
 			}
 		}
 		else {
 			sc.playSpeed = { 0,0 };
 		}
 		sc.GameUpdate();
-
 
 		//处理所有实体
 		for (Bullet* bullet : Bullet::AllEntities) {
@@ -324,7 +335,6 @@ void GameLoop::PlaneBattleLoop()
 				for (const auto& pair : Bullet::PlayerPlaneBlock) {
 					const Coordinate& coord = pair.first;
 					if (bullet->core.y + coord.y <= MAPSIZE_Y - 1 && bullet->core.y + coord.y >= 0 && bullet->core.x + coord.x <= MAPSIZE_X - 1 && bullet->core.x + coord.x >= 0) {
-
 						// 计算坐标在窗口中的位置
 						int x = BLANK_L + bullet->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
 						int y = BLANK_U + bullet->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
@@ -337,7 +347,6 @@ void GameLoop::PlaneBattleLoop()
 
 			}
 		}
-
 		FlushBatchDraw();//执行未完成的绘制任务
 
 		//if (GAMEEND)//核心被打爆
@@ -356,6 +365,7 @@ void GameLoop::PlaneBattleLoop()
 	}
 	//closegraph();
 }
+
 
 //REDO
 void GameLoop::PlaneWorkshopLoop()

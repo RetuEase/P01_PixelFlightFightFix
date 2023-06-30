@@ -14,13 +14,16 @@ public:
 	int baseLife;		// 基地剩余血量
 	int refleshCount;	//刷新计数
 	Speed playSpeed;	//玩家移速
+	int fireCD;	//刷新计数
 
 	//std::string bloodBar;     // 基地血条
 	//std::string bloodBarBorder; // 基地血条边框		
 
 	~Scroll();		//析构函数
-	static Scroll& GetInstance();	//获取对象
-	void GameUpdate();				//一次刷新
+	static Scroll& GetInstance();
+
+	void Fire();				//发射
+	void GameUpdate();			//一次刷新
 
 	//void TraverseEntity(int i);		// 根据类型遍历实体 0为自机,1为子弹 2为敌机
 	//void DeleteInstance(InsId id);	// 从卷轴和仓库删除像素块

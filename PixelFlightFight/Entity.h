@@ -8,8 +8,10 @@ class Block
 public:
 	InsId blockID;				//每个像素一个
 	Block();
+
 	~Block();
-	virtual void Resource();	//移除实体
+
+	virtual void Release();	//移除实体
 	bool operator==(const Block other) const {
 		if (blockID == other.blockID)
 			return true;
@@ -31,13 +33,14 @@ public:
 	int tileCountMax;	// 拥有的像素上限
 	int tileCount;		// 剩余的像素
 
-	Bullet();	//创建子弹
+	Bullet();			//子弹
+	Bullet(int i);		//生成子弹
 	~Bullet();
 
-	void AutoMove();						// 惯性移动
+	bool AutoMove();						// 惯性移动
 	virtual void PlayerMove(Speed speed);	// 主动移动
 	virtual void CollisionDetection();		// 碰撞检测，移动后需要进行碰撞检测
-	void Resource();						//移除实体
+	void Release();						//移除实体
 	virtual void Fracture();				// BFS 递归判断哪些像素没有和核心像素连通存进 vector，遍历删掉
 };
 

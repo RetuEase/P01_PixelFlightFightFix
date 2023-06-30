@@ -28,7 +28,7 @@
 #define BLANK_R 865	//右
 
 
-//颜色
+//颜色 BGR
 #define BGCOLOR		0X020202//黑//0Xecec81	//light blue 背景
 #define OTHERCOLOR	0X612C18//深蓝 //0Xc9ce00	//blue		 前景
 #define BACKCOLOR	0Xfba464//边框 蓝 //0Xc9ce00	//blue		 后景
@@ -114,7 +114,7 @@ using PlaneId = long long;
 //int score = 0;//分数
 
 //实体类型
-enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer };
+enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer, _EntityNull };
 
 using Coordinate = Vector2;	// 坐标 (x,y)
 using Speed = Vector2;		// 速度方向 (x,y)

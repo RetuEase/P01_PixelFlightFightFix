@@ -12,7 +12,7 @@ Scroll::Scroll()
 	enemiesNum = ENEMIESNUM;		//剩余敌人数量
 	refleshCount = 0;	//刷新计数
 	playSpeed = { 0,0 };
-
+	fireCD = 0;
 	// 初始化基地血条
 	//int bloodBarWidth = 10;    // 血条宽度，使用10个像素点表示
 	//bloodBar = std::string(bloodBarWidth, '*');
@@ -33,6 +33,10 @@ Scroll& Scroll::GetInstance()
 	return scroll;
 }
 
+void Scroll::Fire()
+{
+	Bullet b(1);
+}
 
 void Scroll::GameUpdate()
 {
@@ -48,10 +52,6 @@ void Scroll::GameUpdate()
 	{
 		playerMove = 1;
 	}
-	if (refleshCount == 3 || refleshCount == 7)
-	{
-		fire = 1;
-	}
 	if (enemyMove)
 	{
 		Bullet::ENEMYMAP.clear();
@@ -59,37 +59,27 @@ void Scroll::GameUpdate()
 	for (auto i : Bullet::AllEntities)
 	{
 		//1敌机动
-		if (enemyMove)
-		{
-			if (i->entityType == _EntityEnemy) {
-				i->AutoMove();
+		if (i->entityType == _EntityEnemy && enemyMove) {
+			if (i->AutoMove())
+			{
 				Bullet::ENEMYMAP.insert(std::make_pair(i->core, *i));
-				std::cout << "敌人位置:" << i->core.x << " " << i->core.y;
-				//i->CollisionDetection();
+				std::cout << "敌人位置:" << i->core.x << " " << i->core.y << std::endl;
+				i->CollisionDetection();
 			}
 		}
 		//2子弹动
-		if (bulletMove)
-		{
-			if (i->entityType == _EntityBullet) {
-				i->AutoMove();
+		else if (i->entityType == _EntityBullet && bulletMove) {
+			if (i->AutoMove()) {
 				//i->CollisionDetection();
 			}
+
 		}
 		//3自机
-		if (playerMove)
-		{
-			if (i->entityType == _EntityPlayer) {
-				i->PlayerMove(playSpeed);
-				//i->CollisionDetection();
-			}
-		}
-		//4发射子弹
-		if (fire) {
-			//Bullet newBullet;
+		else if (i->entityType == _EntityPlayer && playerMove) {
+			i->PlayerMove(playSpeed);
+			//i->CollisionDetection();
 		}
 	}
-
 	++refleshCount;
 	if (refleshCount == 8) {
 		refleshCount = 0;

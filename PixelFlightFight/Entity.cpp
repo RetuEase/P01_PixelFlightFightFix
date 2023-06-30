@@ -16,12 +16,9 @@ std::vector<Bullet*> Bullet::AllEntities;// 所有实体
 Block::Block()
 {
 	blockID = I_IdCounter++;//分配id
-	std::cout << "分配ID " << blockID << " / " << I_IdCounter << std::endl;
 }
 Block::~Block()
 {
-	std::cout << "释放块: " << blockID << std::endl;
-	// 从PlayerPlaneBlock中移除
 	/*for (auto it = PlayerPlaneBlock.begin(); it != PlayerPlaneBlock.end(); ++it) {
 		if (it->second == *this) {
 			PlayerPlaneBlock.erase(it);
@@ -30,9 +27,9 @@ Block::~Block()
 	}*/
 }
 
-void Block::Resource()
+void Block::Release()
 {
-	std::cout << "移除块实例: " << blockID << std::endl;
+	std::cout << "移除块: " << blockID << std::endl;
 
 }
 
@@ -41,26 +38,40 @@ void Block::Resource()
 /// </summary>
 Bullet::Bullet()//子弹构造函数 
 {
-	entityType = _EntityBullet;		//默认是子弹
-	core = PLAYERPLANECORE;				// 核心坐标
-	autoSpeed = Speed(0, -1);			// 固有速度
+	entityType = _EntityNull;		//默认是子弹
+	core = { -1, -1 };				// 核心坐标
+	autoSpeed = Speed(0, 0);			// 固有速度
 	tileCountMax = 1;				// 拥有的像素上限
 	tileCount = 1;					// 剩余的像素
-	//Scroll scroll = Scroll::GetInstance();
-	AllEntities.push_back(this);//将自己放入allEntities
 }
 
-
+Bullet::Bullet(int i)
+{
+	entityType = _EntityBullet;		//默认是子弹
+	core = PLAYERPLANECORE;			// 核心坐标
+	autoSpeed = Speed(0, -1);		// 固有速度
+	tileCountMax = 1;				// 拥有的像素上限
+	tileCount = 1;					// 剩余的像素
+	AllEntities.push_back(this);	//将自己插入AllEntities
+	std::cout << "生成子弹" << blockID << " / " << AllEntities.size() << std::endl;
+}
 Bullet::~Bullet()
 {
 	std::cout << "释放子弹: ";
-	// 在Bullet析构函数中移除实例	
 }
 
-void Bullet::AutoMove()
+bool Bullet::AutoMove()
 {
-	this->core.x += this->autoSpeed.x;
-	this->core.y += this->autoSpeed.y;
+	if (this->core.y <= MAPSIZE_Y - 1 && this->core.y >= 0 && this->core.x <= MAPSIZE_X - 1 && this->core.x >= 0)
+	{
+		this->core.x += this->autoSpeed.x;
+		this->core.y += this->autoSpeed.y;
+		return true;
+	}
+	else {
+		this->Release();
+		return false;
+	}
 }
 
 void Bullet::PlayerMove(Speed speed) {}
@@ -71,23 +82,25 @@ void Bullet::CollisionDetection()//碰撞检测
 	auto it = ENEMYMAP.find(core);
 	if (it != ENEMYMAP.end())//发生碰撞
 	{
-		std::cout << "子弹碰撞: " << blockID << std::endl;
-		it->second.Resource();
+		//std::cout << "子弹碰撞: " << blockID << std::endl;
+		it->second.Release();
 		ENEMYMAP.erase(it);
-		Resource();
+		Release();
 		return;
 	}
 	//}
 }
 
-void Bullet::Resource()//销毁
+void Bullet::Release()//销毁
 {
-	std::cout << "从allEntities中移除: " << blockID << std::endl;
-
-	for (auto it = AllEntities.begin(); it != AllEntities.end(); ++it) {
-		if (*it == this) {
-			AllEntities.erase(it);
-			break;
+	if (entityType == _EntityBullet)
+	{
+		std::cout << "从AllEntities中移除: " << AllEntities.size() << std::endl;
+		for (auto it = AllEntities.begin(); it != AllEntities.end(); ++it) {
+			if (*it == this) {
+				AllEntities.erase(it);
+				break;
+			}
 		}
 	}
 }
@@ -98,14 +111,7 @@ void Bullet::Fracture() {}
 /// <summary>
 /// PLANE
 /// </summary>
-Plane::Plane()
-{
-	entityType = _EntityEnemy;	//默认是敌机
-	core = { 50,0 };
-	autoSpeed = { 0,1 };	// 固有速度
-	tileCountMax = 1;	// 拥有的像素上限
-	tileCount = 1;		// 剩余的像素
-}
+Plane::Plane() {}
 Plane::Plane(Coordinate co)
 {
 	entityType = _EntityEnemy;	//默认是敌机
@@ -113,33 +119,33 @@ Plane::Plane(Coordinate co)
 	autoSpeed = { 0,1 };	// 固有速度
 	tileCountMax = 1;	// 拥有的像素上限
 	tileCount = 1;		// 剩余的像素
+	AllEntities.push_back(this);	//将自己插入AllEntities
+
 }
 Plane::~Plane() {
-	std::cout << "释放飞机: " << blockID << std::endl;
+	//std::cout << "释放飞机: " << blockID << std::endl;
 }
 void Plane::PlayerMove(Speed speed) {}
 void Plane::CollisionDetection()
 {
 	if (entityType = _EntityEnemy) {//敌机
 		{
-
+			if (core == PLAYERPLANECORE)
+			{
+				std::cout << "敌机撞自机,游戏结束 " << blockID << std::endl;
+			}
 			for (std::vector<Bullet*>::iterator it = Bullet::AllEntities.begin(); it != Bullet::AllEntities.end(); ++it) {
 				Bullet* bullet = *it;
-
-				if (bullet->core == core)
+				if (bullet->core == core && bullet->entityType == _EntityBullet)
 				{
 					std::cout << "敌机碰撞: " << blockID << std::endl;
 					ENEMYMAP.erase(ENEMYMAP.find(core));
-					bullet->Resource();
-					Resource();
+					bullet->Release();
+					Release();
 					return;
 				}
 
 			}
-
-
-
-
 		}
 	}
 }
@@ -155,7 +161,7 @@ PlayerPlane::PlayerPlane()//默认飞机
 	blockID = 0;
 	entityType = _EntityPlayer;
 	core = PLAYERPLANECORE;
-	autoSpeed = { 0,0 };
+	autoSpeed = Speed(0, 0);
 	tileCountMax = 4;	// 拥有的像素上限
 	tileCount = 4;		// 剩余的像素
 	Block pp1;
@@ -164,6 +170,8 @@ PlayerPlane::PlayerPlane()//默认飞机
 	std::unordered_map<Coordinate, Block> hmap{ {{-1,0},pp1},{{1,0},pp2},{{0,-1},pp3} };
 	PlayerPlaneBlock.clear();
 	PlayerPlaneBlock = hmap;
+	AllEntities.push_back(this);	//将自己插入AllEntities
+
 };
 
 PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机 
@@ -171,7 +179,7 @@ PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机
 	blockID = 0;
 	entityType = _EntityPlayer;
 	core = PLAYERPLANECORE;
-	autoSpeed = { 0,0 };
+	autoSpeed = Speed(0, 0);
 	tileCountMax = tblockMap.size();	// 拥有的像素上限
 	tileCount = tblockMap.size();		// 剩余的像素
 	PlayerPlaneBlock.clear();
@@ -183,10 +191,12 @@ PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机
 			PlayerPlaneBlock.insert({ i, pp });
 		}
 	}
+	AllEntities.push_back(this);	//将自己插入AllEntities
+
 }
 
 PlayerPlane::~PlayerPlane() {
-	std::cout << "释放玩家飞机: " << blockID << std::endl;
+	//std::cout << "释放玩家飞机: " << blockID << std::endl;
 }
 
 void PlayerPlane::PlayerMove(Speed speed)
@@ -224,7 +234,7 @@ void PlayerPlane::CollisionDetection()
 
 		if (ENEMYMAP.find(core) != ENEMYMAP.end())
 		{
-			std::cout << "核心碰撞: " << blockID << std::endl;
+			//std::cout << "核心碰撞: " << blockID << std::endl;
 
 			GAMEEND = 0;//游戏结束		
 		}
@@ -235,7 +245,7 @@ void PlayerPlane::CollisionDetection()
 
 				if (ENEMYMAP.find(coord) != ENEMYMAP.end())
 				{
-					std::cout << "我机碰撞: " << it->second.blockID << std::endl;
+					//std::cout << "我机碰撞: " << it->second.blockID << std::endl;
 					PlayerPlaneBlock.erase(it);
 					ENEMYMAP.erase(ENEMYMAP.find(coord));
 					tileCount--;
