@@ -198,10 +198,10 @@ void PlayerPlane::PlayerMove(Speed speed)
 	else {
 		setlinecolor(CORECOLOR);
 		setlinestyle(PS_SOLID, 2);
-		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
-		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线
-		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);  // 绘制垂直线
-		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_R + 2, BLANK_U - 2);
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_L - 2, BLANK_D + 2);
+		line(BLANK_L - 2, BLANK_D + 2, BLANK_R + 2, BLANK_D + 2);
+		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
 	}
 	if (this->core.y + speed.y <= MAPSIZE_Y - 1 && this->core.y + speed.y >= 0) {
 		this->core.y += speed.y;
@@ -210,10 +210,10 @@ void PlayerPlane::PlayerMove(Speed speed)
 	else {
 		setlinecolor(CORECOLOR);
 		setlinestyle(PS_SOLID, 2);
-		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);  // 绘制垂直线
-		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);  // 绘制垂直线
-		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);  // 绘制垂直线
-		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_R + 2, BLANK_U - 2);
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_L - 2, BLANK_D + 2);
+		line(BLANK_L - 2, BLANK_D + 2, BLANK_R + 2, BLANK_D + 2);
+		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
 
 	}
 }

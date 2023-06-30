@@ -231,6 +231,13 @@ void GameLoop::PlaneBattleLoop()
 		outtextxy(70, 20, score);
 		settextcolor(GOLDENCOLOR);
 
+		setlinecolor(BACKCOLOR); //设置当前线条的颜色
+		setlinestyle(PS_SOLID, 2);
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_R + 2, BLANK_U - 2);
+		line(BLANK_L - 2, BLANK_U - 2, BLANK_L - 2, BLANK_D + 2);
+		line(BLANK_L - 2, BLANK_D + 2, BLANK_R + 2, BLANK_D + 2);
+		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
+
 		setlinestyle(PS_SOLID, 1);
 		//for (int x = BLANK_L; x <= BLANK_R; x += BLOCKSIZE)
 		//{
@@ -269,6 +276,7 @@ void GameLoop::PlaneBattleLoop()
 			sc.playSpeed = { 0,0 };
 		}
 		sc.GameUpdate();
+
 
 		//处理所有实体
 		for (Bullet* bullet : Bullet::AllEntities) {
@@ -313,23 +321,21 @@ void GameLoop::PlaneBattleLoop()
 				setfillcolor(BULLETCOLOR);
 				for (const auto& pair : Bullet::PlayerPlaneBlock) {
 					const Coordinate& coord = pair.first;
-					// 计算坐标在窗口中的位置
-					int x = BLANK_L + bullet->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
-					int y = BLANK_U + bullet->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
-					// 绘制 Block
-					setlinecolor(WHITE);
-					setfillcolor(BULLETCOLOR);
-					solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
+					if (bullet->core.y + coord.y <= MAPSIZE_Y - 1 && bullet->core.y + coord.y >= 0 && bullet->core.x + coord.x <= MAPSIZE_X - 1 && bullet->core.x + coord.x >= 0) {
+
+						// 计算坐标在窗口中的位置
+						int x = BLANK_L + bullet->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
+						int y = BLANK_U + bullet->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
+						// 绘制 Block
+						setlinecolor(WHITE);
+						setfillcolor(BULLETCOLOR);
+						solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE);
+					}
 				}
 
 			}
 		}
-		setlinecolor(BACKCOLOR); //设置当前线条的颜色
-		setlinestyle(PS_SOLID, 2);
-		line(BLANK_L, BLANK_U, BLANK_R, BLANK_U);
-		line(BLANK_L, BLANK_U, BLANK_L, BLANK_D);
-		line(BLANK_L, BLANK_D, BLANK_R, BLANK_D);
-		line(BLANK_R, BLANK_U, BLANK_R, BLANK_D);
+
 		FlushBatchDraw();//执行未完成的绘制任务
 
 		//if (GAMEEND)//核心被打爆
