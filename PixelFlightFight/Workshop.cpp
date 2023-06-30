@@ -1,103 +1,90 @@
 #include "Workshop.h"
 
 /********************只取余数********************/
-PlaneCanvas::PlaneCanvas(COLORREF color) : paintColor(color) //  这里的color规定的是那个颜色 是普通的还是核心的
-{
-#ifdef DEBUG
-	TCHAR input[10];
-	InputBox(input, 10, L"请输入需要的核心像素数量（9位数以内）", L"核心像素", L"0");
 
-#ifdef UNICODE
-	paintPlane = PlaneTemplate(_wtoi(input)); //初始化 planeTemplate 对象
-#else
-	paintPlane = PlaneTemplate(atoi(input));
-#endif
-#endif
-}
+std::vector<Coordinate> PlaneTemplate::Defalut_Plane{ {0,0},{0,-1},{1,0},{-1,0} };//默认飞机
+
+//PlaneCanvas::PlaneCanvas(COLORREF color) : paintColor(color) //  这里的color规定的是那个颜色 是普通的还是核心的
+//{
+//#ifdef DEBUG
+//	TCHAR input[10];
+//	//InputBox(input, 10, L"请输入需要的核心像素数量（9位数以内）", L"核心像素", L"0");
+//
+//#ifdef UNICODE
+//	//paintPlane = PlaneTemplate(_wtoi(input)); //初始化 planeTemplate 对象
+//#else
+//	paintPlane = PlaneTemplate(atoi(input));
+//#endif
+//#endif
+//}
 
 PlaneCanvas::~PlaneCanvas()
-{
-}
-//
-void PlaneCanvas::On(Coordinate pos)
-{
-	//有了click 这个目前还不知道怎么去用
-}
-//
+{}
 
-void PlaneCanvas::Click(Coordinate pos, bool left)
-{
-	if (left)
-	{
-		// 遍历 spriteMap 向量并执行相应的操作
-		for (auto it = paintPlane.spriteMap.begin(); it != paintPlane.spriteMap.end(); ++it) {
-			// 如果找到了，则删除该项
-			if (*it == pos)
-			{
-				paintPlane.ErasePixel(pos);
-				return;
-			}
-		}
-		//没有的话就加入改元素
-		paintPlane.AddPixel(pos);
+
+void PlaneCanvas::Click(Coordinate pos, int button)
+{//改成了左键放像素 右键消除 中间放核心  左键 1 中键2 右键3  
+	if (button == 3) {
+		paintPlane.SetCore(pos);
 	}
-	else //如果是右键点击
-	{
-		for (auto it = paintPlane.spriteMap.begin(); it != paintPlane.spriteMap.end(); ++it) {
-			// 如果找到了，则删除该项
-			if (*it == pos)
-			{
-				paintPlane.UnsetCore(pos);
+	else {
 
-				return;
+		if (button == 1)//放像素
+		{
+			int i = 1;
+			// 遍历 spriteMap 向量并执行相应的操作
+			for (auto it = paintPlane.spriteMap.begin(); it != paintPlane.spriteMap.end(); ++it) {
+				// 如果没有的话就加入该元素
+				if (*it == pos) {
+					i = 0;
+					break;
+				}
+			}
+			if (i)
+			{
+				paintPlane.AddPixel(pos);
+			}
+			return;
+		}
+		else if (button == 2) //如果是右键点击
+		{
+			for (auto it = paintPlane.spriteMap.begin(); it != paintPlane.spriteMap.end(); ++it) {
+				// 如果找到了，则删除该项
+				if (*it == pos) {
+					paintPlane.ErasePixel(pos);
+					return;
+				}
 			}
 		}
-		setfillcolor(paintColor);
 	}
 
 }
 
 PlaneTemplate::PlaneTemplate()
-	:coreCountMax(1)
+	:coreCountMax(1), planCountMax(10)
 {
-}
-
-//确定核心的数量
-PlaneTemplate::PlaneTemplate(int coreCount)
-	:coreCountMax(coreCount)
-{
-	coreCountMax = coreCount;
 }
 
 PlaneTemplate::~PlaneTemplate()
 {
 }
 
-
 //增加或者取消一个像素
 void PlaneTemplate::AddPixel(Coordinate pos)
 {
-	int dX = (pos.x / 10) * 10;
-	int dY = (pos.y / 10) * 10;
-	Coordinate cor(dX, dY);
+	if (spriteMap.size() < planCountMax) {
+		spriteMap.push_back(pos);
+	}
 
-	spriteMap.push_back(cor);
-	solidrectangle(dX, dY, dX + 9, dY + 9);
 }
 
 void PlaneTemplate::ErasePixel(Coordinate pos)
 {
-	int dX = (pos.x / 10) * 10;
-	int dY = (pos.y / 10) * 10;
 	//覆盖了
-	setfillcolor(BLACK);
-	solidrectangle(dX, dY, dX + 9, dY + 9);
-	Coordinate cor(dX, dY);
-
-	//从列表里面删除----------------------有问题的部分 已解决
+	//从列表里面删除----------------------有问题的部分---已解决
 	for (auto it = spriteMap.begin(); it != spriteMap.end(); ++it)
 	{
-		if (*it == cor) {
+		if (*it == pos) {
 			spriteMap.erase(it);
 			return;
 		}
@@ -108,53 +95,63 @@ void PlaneTemplate::ErasePixel(Coordinate pos)
 //增加一个核心 减少一个核心
 void PlaneTemplate::SetCore(Coordinate pos)
 {
-	int dX = (pos.x / 10) * 10;
-	int dY = (pos.y / 10) * 10;
-	Coordinate cor(dX, dY);
-	//放到核心表里面
-	core.push_back(cor);
-	//颜色在click里面确定添加了
-	solidrectangle(dX, dY, dX + 9, dY + 9);
-}
-
-
-void PlaneTemplate::UnsetCore(Coordinate pos)
-{
-	int dX = (pos.x / 10) * 10;
-	int dY = (pos.y / 10) * 10;
-	Coordinate cor(dX, dY);
-	//颜色覆盖
-	setfillcolor(BLACK);
-	solidrectangle(dX, dY, dX + 9, dY + 9);
-
-	//从核心表里面删除  -----------------有问题的部分
-	for (auto it = core.begin(); it != core.end(); ++it)
+	if (core.size() < coreCountMax)
 	{
-		if (*it == cor) {
-			core.erase(it);
-			return;
-		}
+		//放到核心表里面
+		core.push_back(pos);
+		//颜色在click里面确定添加了
+		//solidrectangle(dX, dY, dX + 9, dY + 9);
+	}
+	else
+	{
+		core.pop_back();
+		core.push_back(pos);
 	}
 }
+
+//
+//void PlaneTemplate::UnsetCore(Coordinate pos)
+//{
+//	int dX = (pos.x / 10) * 10;
+//	int dY = (pos.y / 10) * 10;
+//	Coordinate cor(dX, dY);
+//	//颜色覆盖
+//	setfillcolor(BLACK);
+//	solidrectangle(dX, dY, dX + 9, dY + 9);
+//
+//	//从核心表里面删除  -----------------有问题的部分
+//	for (auto it = core.begin(); it != core.end(); ++it)
+//	{
+//		if (*it == cor) {
+//			core.erase(it);
+//			return;
+//		}
+//	}
+//}
 
 //------------------------------------------------
 //问题 auto 一旦使用就会报错， 具体原因不知道
 // 凡是接触到迭代器的地方都会报错，原因不清楚， 头函数？？还是确实什么 和上个问题一样
 
-std::vector<Coordinate> PlaneTemplate::DesignPlane()
+void PlaneTemplate::DesignPlane()
 {
-	Coordinate cor = *core.begin();
-	//先要得到偏移值
-	int dx = cor.x;
-	int dy = cor.y;
-	std::vector<Coordinate> newCor;
-	newCor.resize(36);
-	for (std::vector<Coordinate>::iterator it = spriteMap.begin(); it != spriteMap.end(); it++)
+	if (core.size())
 	{
-		Coordinate cor((*it).x - dx, (*it).y - dy); //以 （0，0）为核心元素的位置重新去储存元素的位置
-		newCor.push_back(cor);
+		Defalut_Plane.clear();
+		Defalut_Plane.push_back({ 0,0 });
+		Coordinate cor = *core.begin();
+		//先要得到偏移值
+		int dx = cor.x;
+		int dy = cor.y;
+		if (spriteMap.size())
+		{
+			for (std::vector<Coordinate>::iterator it = spriteMap.begin(); it != spriteMap.end(); it++)
+			{
+				Coordinate cor((*it).x - dx, (*it).y - dy); //以 （0，0）为核心元素的位置重新去储存元素的位置
+				Defalut_Plane.push_back(cor);
+			}
+		}
 	}
-	return newCor;
 }
 
 /********************紅色鯡魚********************/

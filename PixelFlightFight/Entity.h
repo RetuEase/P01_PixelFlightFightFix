@@ -24,7 +24,7 @@ public:
 	static std::unordered_map<Coordinate, Block> PlayerPlaneBlock;				// 玩家飞机拥有的像素（对与核心的相对坐标)
 	static std::unordered_map<InsId, std::shared_ptr<Bullet>> AllEntities;		// 所有实体
 	static std::vector<InsId> keysToDelete;										//待删除的项
-
+	static int enemiesNum;
 	EntityType entityType;//实体类型   _EntityBullet, _EntityEnemy, _EntityPlayer
 	Coordinate core;	// 核心的绝对坐标
 	Speed autoSpeed;	// 固有速度

@@ -9,7 +9,7 @@ Scroll::Scroll()
 	baseLifeMax = 100;     // 基地满血
 	baseLife = baseLifeMax; // 基地剩余血量等于满血状态
 	//dark = false;          // 当有弹出界面时，绘制整体变暗至原来的 1/4
-	enemiesNum = ENEMIESNUM;		//剩余敌人数量
+
 	refleshCount = 0;	//刷新计数
 	playSpeed = { 0,0 };
 	fireCD = 0;
@@ -79,6 +79,7 @@ void Scroll::GameUpdate()
 
 			bulletptr->PlayerMove(playSpeed);
 			bulletptr->CollisionDetection();
+			//bulletptr->Fracture();
 		}
 	}
 

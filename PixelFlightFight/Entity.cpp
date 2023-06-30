@@ -2,15 +2,15 @@
 
 int I_IdCounter = 1;
 int SCORE = 0;
-int GAMEEND = 1;
-std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
+int GAMEEND = 0;//1结束
+
 Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
 
 std::unordered_map<Coordinate, Bullet> Bullet::ENEMYMAP;			//敌机map
 std::unordered_map<Coordinate, Block> Bullet::PlayerPlaneBlock;		// 玩家飞机拥有的像素（对与核心的相对坐标)
 std::unordered_map<InsId, std::shared_ptr<Bullet>> Bullet::AllEntities;// 所有实体
 std::vector<InsId> Bullet::keysToDelete;//待删除的项
-
+int Bullet::enemiesNum = 21;
 /// <summary>
 /// Block
 /// </summary>
@@ -57,7 +57,7 @@ Bullet::~Bullet()
 }
 bool Bullet::AutoMove()
 {
-	if (this->core.y >= 0)
+	if (entityType == _EntityBullet && this->core.y >= 0)
 	{
 		this->core.x += this->autoSpeed.x;
 		this->core.y += this->autoSpeed.y;
@@ -77,6 +77,7 @@ void Bullet::CollisionDetection()//碰撞检测
 	if (it != ENEMYMAP.end())//发生碰撞
 	{
 		//std::cout << "子弹碰撞: " << blockID << std::endl;
+		SCORE += 1;
 		it->second.Release();
 		ENEMYMAP.erase(it);
 		Release();
@@ -86,6 +87,10 @@ void Bullet::CollisionDetection()//碰撞检测
 }
 void Bullet::Release()//销毁
 {
+	if (entityType == _EntityEnemy)
+	{
+		--enemiesNum;//剩余敌人数量	
+	}
 	keysToDelete.push_back(blockID);
 }
 void Bullet::Fracture() {}
@@ -111,7 +116,7 @@ Plane::~Plane() {
 
 bool Plane::AutoMove()//敌机移动
 {
-	if (this->core.y <= MAPSIZE_Y - 1)
+	if (entityType == _EntityEnemy && this->core.y <= MAPSIZE_Y - 1)
 	{
 		this->core.x += this->autoSpeed.x;
 		this->core.y += this->autoSpeed.y;
@@ -140,7 +145,8 @@ void Plane::CollisionDetection()
 			std::shared_ptr<Bullet> bulletptr = it->second;
 			if (bulletptr->core == core && bulletptr->entityType == _EntityBullet)
 			{
-				std::cout << "敌机碰撞: " << blockID << std::endl;
+				//std::cout << "敌机碰撞: " << blockID << std::endl;
+				SCORE += 1;
 				ENEMYMAP.erase(ENEMYMAP.find(core));
 				bulletptr->Release();
 				Release();
@@ -186,12 +192,14 @@ PlayerPlane::PlayerPlane(std::vector<Coordinate> tblockMap) //创建飞机
 	PlayerPlaneBlock.clear();
 	for (auto& i : tblockMap)
 	{
-		if (!(i.x && i.y))
+		if (i.x != 0 || i.y != 0)
 		{
 			Block pp;
 			PlayerPlaneBlock.insert({ i, pp });
+			//std::cout << "!!!!!!" << PlayerPlaneBlock.size() << std::endl;
 		}
 	}
+
 	std::shared_ptr<Bullet> bulletptr = std::make_shared<PlayerPlane>(*this);
 	AllEntities[blockID] = bulletptr;	//将自己插入AllEntities
 }
@@ -234,7 +242,7 @@ void PlayerPlane::CollisionDetection()
 	if (ENEMYMAP.find(core) != ENEMYMAP.end())
 	{
 		//std::cout << "核心碰撞: " << blockID << std::endl;
-		GAMEEND = 0;//游戏结束		
+		GAMEEND = 1;//游戏结束		
 	}
 	else {
 		for (auto it = PlayerPlaneBlock.begin(); it != PlayerPlaneBlock.end(); ++it)
@@ -286,7 +294,8 @@ void PlayerPlane::Fracture()
 			}
 		}
 	}
-	//std::cout << count << std::endl;
+	//std::
+	//  << count << std::endl;
 	//std::cout << temp.size() << std::endl;
 	if (count != temp.size()) {//有坐标没被搜索到则说明有断裂
 		//将BFS未搜索到的点删除

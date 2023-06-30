@@ -1,7 +1,4 @@
 #include "GameLoop.h"
-
-
-
 using namespace std;
 
 /********************yjl********************/
@@ -22,29 +19,44 @@ GameLoop& GameLoop::GetInstance()
 
 void GameLoop::Run()
 {
-	while (1)
+	// 主循环
+	while (true)
 	{
-		switch (flag)
-		{
-		case 1:
-			MainMenuLoop(); //主界面
-		case 2:
-			SelectLevelLoop(); //关卡界面
-		case 3:
-			PlaneBattleLoop();//战斗界面
-		case 4:
-			PlaneBattleLoop();//介绍界面
-		case 5:
-			PlaneWorkshopLoop();//飞机工坊
-		case -1:
-			return;//结束
-		}
+		cleardevice();
+		MainMenuLoop();//主界面
+		//// 清空屏幕
+		//cleardevice();
+
+		//// 根据当前页面状态绘制页面
+		//if (flag == 1)
+		//{
+		//	MainMenuLoop();//主界面
+		//}
+		//else if (flag == 2)
+		//{
+		//	SelectLevelLoop(); //关卡界面
+		//}
+		//else if (flag == 3)
+		//{
+		//	PlaneBattleLoop();//战斗界面
+
+		//}
+		//else if (flag == 4)
+		//{
+		//	PlaneBattleLoop();//介绍界面
+		//}
+		//else if (flag == 5)
+		//{
+		//	PlaneWorkshopLoop();//飞机工坊
+		//}
+		//// 等待一段时间，控制刷新速度
+		//Sleep(100);
 	}
+
 }
 void GameLoop::MainMenuLoop()
 {
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-
 	setbkcolor(BGCOLOR);  //显示背景颜色
 	cleardevice();      //SECONDCOLOR
 	setbkmode(BGCOLOR);//处理字体颜色
@@ -90,23 +102,20 @@ void GameLoop::MainMenuLoop()
 		if (Begin->state(msg)) // 开始游戏 进入选关卡页面
 		{
 			flag = 2;
-			printf("Begin\n");
 			SelectLevelLoop();
 		}
 		if (WorkShop->state(msg)) // 飞机工厂
 		{
 			flag = 5;
-			printf("End\n");
 			PlaneWorkshopLoop();
 		}
 		if (Operating_instructions->state(msg)) // 介绍
 		{
 			flag = 4;
-			printf("End\n");
 			InstructionsLoop();
 		}
 		if (exit_game->state(msg)) {//退出游戏
-			flag = -1;
+			flag = 0;
 			exit(0);
 		}
 	}
@@ -133,7 +142,6 @@ void GameLoop::InstructionsLoop()
 
 	// 绘制按钮
 	setfillcolor(WHITE);
-
 	Button* re_main_menu;//返回菜单
 	re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
 	re_main_menu->RenderToWindows();
@@ -219,10 +227,12 @@ void GameLoop::PlaneBattleLoop()
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
 		settextcolor(GOLDENCOLOR);
-		outtextxy(20, 20, _T("分数"));
+		//outtextxy(20, 20, _T("分数"));
+		settextstyle(30, 15, _T("微软雅黑"));
+
 		std::wstring str = std::to_wstring(SCORE);
 		LPCTSTR score = str.c_str();//分数
-		outtextxy(70, 20, score);
+		outtextxy(615, 20, score);
 		settextcolor(GOLDENCOLOR);
 
 		setlinecolor(BACKCOLOR); //设置当前线条的颜色
@@ -243,12 +253,13 @@ void GameLoop::PlaneBattleLoop()
 		//		line(BLANK_L, y, BLANK_R, y);  // 绘制水平线
 		//	}
 		//}
+		bool fire = false;
 		//点击esc按键跳转到游戏主菜单
 		if (_kbhit()) {
 			bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
 			if (esc)
 			{
-				cout << "暂停!" << endl;
+				//cout << "暂停!" << endl;
 				EndBatchDraw();
 				BattleMenuLoop();//切换至菜单		
 			}
@@ -258,6 +269,7 @@ void GameLoop::PlaneBattleLoop()
 				bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
 				bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
 				bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
+				fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
 				int u = 0;
 				int d = 0;
 				int l = 0;
@@ -276,10 +288,12 @@ void GameLoop::PlaneBattleLoop()
 			sc.playSpeed = { 0,0 };
 		}
 		//发射子弹
-		if (sc.fireCD >= 5) {//fire &&
+		if (fire && sc.fireCD >= 10) {
 			Bullet* b = new Bullet(1);
 			//cout << b->blockID;
 			sc.fireCD = 0;
+			fire = false;
+
 		}
 		sc.GameUpdate();
 
@@ -343,16 +357,16 @@ void GameLoop::PlaneBattleLoop()
 		}
 		FlushBatchDraw();//执行未完成的绘制任务
 
-		//if (GAMEEND)//核心被打爆
-		//{
-		//	EndBatchDraw();// 结束批量绘制
-		//	BattleDefeatLoop();
-		//}
-		//if (sc.enemiesNum <= 0)//敌机全部被消灭
-		//{
-		//	EndBatchDraw();// 结束批量绘制
-		//	BattleVictoryLoop();
-		//}
+		if (GAMEEND)//核心被打爆
+		{
+			EndBatchDraw();// 结束批量绘制
+			BattleDefeatLoop();
+		}
+		if (Bullet::enemiesNum <= 0)//敌机全部被消灭
+		{
+			EndBatchDraw();// 结束批量绘制
+			BattleVictoryLoop();
+		}
 
 		Sleep(FRAMEINTERVAL);
 
@@ -360,134 +374,198 @@ void GameLoop::PlaneBattleLoop()
 	//closegraph();
 }
 
-
-//REDO
 void GameLoop::PlaneWorkshopLoop()
 {
-	//60 X 60界面 像素10 X 10
-	const int ROW = 60;
-	const int COL = 60;
-	const int PIXEL_SIZE = 10;
-	//用数组保存飞机形状
-	int pixels[ROW][COL] = { 0 };
-	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
+	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
+	setbkcolor(BGCOLOR);
+	PlaneCanvas pc;
+	while (1) {
+		cleardevice();
+		setbkmode(TRANSPARENT);//处理字体背景
+		setfillcolor(WHITE);//设置填充色，这里是浅青色
+		setlinecolor(WHITE); //设置当前线条的颜色为黑色
+		settextstyle(60, 0, _T("微软雅黑"));//
+		settextcolor(GOLDENCOLOR);
+		LPCTSTR title = _T("飞机工坊");
+		outtextxy(525, 100, title);
+		settextstyle(40, 0, _T("微软雅黑"));
+		settextcolor(GOLDENCOLOR);
+		LPCTSTR intro = _T("请编辑自己的飞机 左键添加机身 中键选择核心 右键删除机身");
+		outtextxy(260, 180, intro);
+		settextcolor(GOLDENCOLOR);
+		BeginBatchDraw();//开始批量绘图
 
-	//渲染像素数组
-	for (int i = 0; i < ROW; i++)
-	{
-		for (int j = 0; j < COL; j++)
+		//绘制网格
+		setlinecolor(BACKCOLOR); //设置当前线条的颜色
+		setlinestyle(PS_SOLID, 2);
+		line(WORKSHOP_L - 2, WORKSHOP_U - 2, WORKSHOP_R + 2, WORKSHOP_U - 2);
+		line(WORKSHOP_L - 2, WORKSHOP_U - 2, WORKSHOP_L - 2, WORKSHOP_D + 2);
+		line(WORKSHOP_L - 2, WORKSHOP_D + 2, WORKSHOP_R + 2, WORKSHOP_D + 2);
+		line(WORKSHOP_R + 2, WORKSHOP_U - 2, WORKSHOP_R + 2, WORKSHOP_D + 2);
+		setlinestyle(PS_SOLID, 1);
+
+		setlinestyle(PS_DASHDOT, 1);
+		for (int x = WORKSHOP_L; x <= WORKSHOP_R; x += WORKSHOP_SIZE)
 		{
-			if (pixels[i][j]) {
-				setfillcolor(WHITE);
+			for (int y = WORKSHOP_U; y <= WORKSHOP_D; y += WORKSHOP_SIZE)
+			{
+				line(x, WORKSHOP_U, x, WORKSHOP_D);  // 绘制垂直线
+				line(WORKSHOP_L, y, WORKSHOP_R, y);  // 绘制水平线
 			}
-			else {
-				setfillcolor(BLACK);
-			}
-			fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
-				(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
 		}
-	}
-	//点击右键绘制飞机，点击左键退出
-	//循环接受鼠标信息
-	PlaneCanvas pc(WHITE);
-	while (1)
-	{
-		ExMessage emg;
-		if (peekmessage(&emg))
+		// 循环接受鼠标点击事件
+		setfillcolor(WHITE);	// 绘制按钮
+		Button* re_main_menu;//返回
+		re_main_menu = new Button(OnButtonClick, 920, 680, 300, 75, L"应用并返回");
+		re_main_menu->RenderToWindows();
+		while (true)
 		{
-			if (emg.message == WM_LBUTTONDOWN)
+			FlushMouseMsgBuffer();
+			// 检测鼠标点击事件
+			if (MouseHit())
 			{
-				Coordinate cor(emg.x, emg.y); //鼠标的位置
-				pc.Click(cor, true);
-			}//点击esc按键退回主界面
-			else if (emg.message == WM_RBUTTONDOWN)
-			{
-				Coordinate cor(emg.x, emg.y); //鼠标的位置
-				pc.Click(cor, false);
-			}
-			else if (emg.message == WM_KEYDOWN)
-			{
-				if (emg.wParam == VK_ESCAPE) {
-					closegraph();
-					MainMenuLoop();
+
+				// 获取鼠标点击事件
+				MOUSEMSG msg = GetMouseMsg();
+				//cout << "click" << left << " " << " " << msg.x << " " << msg.y << endl;// 输出点击的格子坐标
+
+				if (msg.x >= 920 && msg.x <= 1220 && msg.y >= 680 && msg.y <= 755) // 返回
+				{
+					if (msg.mkLButton)
+					{
+						pc.paintPlane.DesignPlane();
+						EndBatchDraw();
+						flag = 1;
+						MainMenuLoop();
+					}
+				}
+				// 将鼠标点击的屏幕坐标转换为窗口内坐标
+				int x = (msg.x - WORKSHOP_L) / WORKSHOP_SIZE;
+				int y = (msg.y - WORKSHOP_U) / WORKSHOP_SIZE;
+
+				// 判断点击的格子是否在窗口内
+				if (x >= 0 && x < WORKSHOP_X && y >= 0 && y < WORKSHOP_Y)
+				{
+					int button = 0;	//左键1 右键2 中键3
+					if (msg.mkLButton)
+					{
+						button = 1;
+					}
+					if (msg.mkRButton)
+					{
+						button = 2;
+					}
+					if (msg.mkMButton)
+					{
+						button = 3;
+					}
+					//cout << button<<endl;
+					pc.Click({ x, y }, button);
+					//cout << "click " << x << ", " << y << endl;// 输出点击的格子坐标
+					break;
 				}
 			}
+			//Sleep(WORKSHOPFLASH);
 		}
-	}
-	closegraph();
+		//绘制机身
+		for (const Coordinate& coordinate : pc.paintPlane.spriteMap) {
+			setfillcolor(BULLETCOLOR);
+			int x = WORKSHOP_SIZE * coordinate.x + WORKSHOP_L;
+			int y = WORKSHOP_SIZE * coordinate.y + WORKSHOP_U;
+			solidrectangle(x + 1, y + 1, x + WORKSHOP_SIZE - 1, y + WORKSHOP_SIZE - 1); // 绘制机身，边长为 WORKSHOP_SIZE
+		}
+		//绘制核心
+		for (const Coordinate& ccoordinate : pc.paintPlane.core) {
+			setfillcolor(CORECOLOR);
+			int x = WORKSHOP_SIZE * ccoordinate.x + WORKSHOP_L;
+			int y = WORKSHOP_SIZE * ccoordinate.y + WORKSHOP_U;
+			solidrectangle(x + 1, y + 1, x + WORKSHOP_SIZE - 1, y + WORKSHOP_SIZE - 1); // 绘制核心，边长为 WORKSHOP_SIZE
 
-	//60 X 60界面 像素10 X 10
-	//const int ROW = 60;
-	//const int COL = 60;
-	//const int PIXEL_SIZE = 10;
-	////用数组保存飞机形状
-	//int pixels[ROW][COL] = { 0 };
-	//initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
-	//// 渲染像素数组
-	//for (int i = 0; i < ROW; i++)
-	//{
-	//	for (int j = 0; j < COL; j++)
-	//	{
-	//		if (pixels[i][j]) {
-	//			setfillcolor(WHITE);
-	//		}
-	//		else {
-	//			setfillcolor(BLACK);
-	//		}
-	//		fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
-	//			(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
-	//	}
-	//}
-	////点击右键绘制飞机，点击左键退出
-	////循环接受鼠标信息
-	//while (1)
-	//{
-	//	settextcolor(WHITE);
-	//	settextstyle(20, 0, _T("黑体"));
-	//	outtextxy(20, 20, _T("欢迎来到飞机工坊"));
-	//	ExMessage emg;
+		}
+
+		setlinestyle(PS_SOLID, 1);
+		setfillcolor(OTHERCOLOR);
+		settextcolor(GOLDENCOLOR);
+		settextstyle(40, 0, _T("微软雅黑"));
+		outtextxy(50, 520, _T("剩余机身数量: "));
+		std::wstring planeNumStr = std::to_wstring(pc.paintPlane.planCountMax - pc.paintPlane.spriteMap.size());
+		LPCTSTR planeNum = planeNumStr.c_str();//机身数量
+		outtextxy(250, 520, planeNum);
+		outtextxy(50, 620, _T("剩余核心数量:"));
+		std::wstring coreNumStr = std::to_wstring(pc.paintPlane.coreCountMax - pc.paintPlane.core.size());
+		LPCTSTR coreNum = coreNumStr.c_str();//核心数量
+		outtextxy(250, 620, coreNum);
+
+		FlushBatchDraw();//执行未完成的绘制任务	
+
+		//用数组保存飞机形状
+		//int pixels[WORKSHOP_X][WORKSHOP_Y] = { 0 };
+		//for (const auto& pair : Bullet::AllEntities) {
+		//	std::shared_ptr<Bullet> bulletptr = pair.second;
+		//	//敌机	
+		//	if (bulletptr->entityType == _EntityEnemy) {
+		//		if (bulletptr->core.y <= MAPSIZE_Y - 1 && bulletptr->core.y >= 0 && bulletptr->core.x <= MAPSIZE_X - 1 && bulletptr->core.x >= 0) {
+		//			//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
+		//			// 计算坐标在窗口中的位置
+		//			int x = BLANK_L + bulletptr->core.x * BLOCKSIZE;
+		//			int y = BLANK_U + bulletptr->core.y * BLOCKSIZE;
+		//			// 绘制 Block
+		//			setlinecolor(WHITE);
+		//			setfillcolor(CORECOLOR);
+		//			solidrectangle(x, y, x + BLOCKSIZE, y + BLOCKSIZE); // 绘制矩形，边长为 BLOCKSIZE
+		//		}
+		//	}
+		//
+		////渲染像素数组
+		//for (int i = 0; i < WORKSHOP_X; i++)
+		//{
+		//	for (int j = 0; j < WORKSHOP_Y; j++)
+		//	{
+		//		if (pixels[i][j])
+		//		{
+		//			if (pixels[i][j] == 999) {
+		//				setfillcolor(CORECOLOR);
+		//			}
+		//			else{
+		//				setfillcolor(BULLETCOLOR);
+		//			}
+		//			int x = WORKSHOP_SIZE * i;
+		//			int y = WORKSHOP_SIZE * j;
+		//			solidrectangle(x, y, x + WORKSHOP_SIZE, y + WORKSHOP_SIZE); // 绘制矩形，边长为 WORKSHOP_SIZE
+		//		}
+		//	}
+		//}
+
+
+	}
+
+	//ExMessage emg;
 	//	if (peekmessage(&emg))
 	//	{
 	//		if (emg.message == WM_LBUTTONDOWN)
 	//		{
-	//			// 根据鼠标点击位置计算出对应的像素坐标
-	//			int x = emg.x / PIXEL_SIZE;
-	//			int y = emg.y / PIXEL_SIZE;
-	//			if (x >= 0 && y >= 0 && x < ROW && y < COL)
-	//			{
-	//				// 反转该像素的值
-	//				pixels[x][y] = !pixels[x][y];
-	//				// 根据值的变化，设置矩形的颜色
-	//				if (pixels[x][y])
-	//				{
-	//					setfillcolor(WHITE);
-	//				}
-	//				else
-	//				{
-	//					setfillcolor(BLACK);
-	//				}
-	//				// 重新绘制矩形
-	//				fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
-	//					(x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
-	//			}
+	//			Coordinate cor(emg.x, emg.y); //鼠标的位置
+	//			pc.Click(cor, true);
 	//		}//点击esc按键退回主界面
-	//		else if (emg.message == WM_KEYDOWN)
+	//		else if (emg.message == WM_RBUTTONDOWN)
 	//		{
-	//			if (emg.wParam == VK_ESCAPE) {
-	//				closegraph();
-	//				MainMenuLoop();
-	//			}
+	//			Coordinate cor(emg.x, emg.y); //鼠标的位置
+	//			pc.Click(cor, false);
+	//		}
+	//		else if (emg.message == WM_KEYDOWN)
+	//		{				
 	//		}
 	//	}
-	//}
-	//closegraph();
+
+
 }
+
 void GameLoop::LevelSetUp()
 {
 	I_IdCounter = 1;
 	SCORE = 0;
-	GAMEEND = 1;
-	std::vector<Coordinate> DEFAULTPLANE{ {0,0},{0,-1},{1,0},{0,1} };//默认飞机
+	GAMEEND = 0;
+
 	Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
 
 	Bullet::ENEMYMAP.clear();
@@ -496,19 +574,39 @@ void GameLoop::LevelSetUp()
 	Bullet::keysToDelete.clear();
 
 	//生成敌人
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(-31, 0);
-	int enemies[ENEMIESNUMBER];
+	Plane* b = new Plane(Coordinate(12, -2));
+	Plane* b1 = new Plane(Coordinate(25, -56));
+	Plane* b2 = new Plane(Coordinate(30, -192));
+	Plane* b3 = new Plane(Coordinate(25, -56));
+	Plane* b4 = new Plane(Coordinate(24, -50));
+	Plane* b5 = new Plane(Coordinate(20, -68));
+	Plane* b6 = new Plane(Coordinate(2, -150));
+	Plane* b7 = new Plane(Coordinate(28, -175));
+	Plane* b8 = new Plane(Coordinate(27, -153));
+	Plane* b9 = new Plane(Coordinate(17, -50));
+	Plane* b10 = new Plane(Coordinate(9, -184));
+	Plane* b11 = new Plane(Coordinate(11, 0));
+	Plane* b12 = new Plane(Coordinate(16, -120));
+	Plane* b13 = new Plane(Coordinate(26, 0));
+	Plane* b14 = new Plane(Coordinate(9, -104));
+	Plane* b15 = new Plane(Coordinate(28, -172));
+	Plane* b16 = new Plane(Coordinate(22, -120));
+	Plane* b17 = new Plane(Coordinate(29, -32));
+	Plane* b18 = new Plane(Coordinate(14, -64));
+	Plane* b19 = new Plane(Coordinate(30, -40));
+	Plane* b20 = new Plane(Coordinate(31, -20));
 
-	Plane* b1 = new Plane({ 4,4 });	//生成了
-
+	//std::random_device rd;
+	//std::mt19937 gen(rd());
+	//std::uniform_int_distribution<int> dist(-31, 0);
 	//for (int i = 0; i < ENEMIESNUMBER; i++) {
 	//	std::cout << "(" << dist(gen) << ", " << dist(gen) * dist(gen) * dist(gen) % 200 << ")" << std::endl;
 	//	Coordinate co(dist(gen), dist(gen) * dist(gen) * dist(gen) % 200);
-	//	Plane* b2 = new Plane(co);	//没有生成
+	//
 	//}
-	PlayerPlane mp;
+
+	//初始化玩家飞机
+	PlayerPlane mp(PlaneTemplate::Defalut_Plane);
 }
 /********************ldy********************/
 //struct LButton
@@ -671,7 +769,7 @@ void GameLoop::BattleMenuLoop()
 		}
 
 		if (exit_game->state(msg)) {//退出游戏
-			flag = -1;
+			flag = 0;
 			exit(0);
 		}
 	}
@@ -690,6 +788,15 @@ void GameLoop::BattleDefeatLoop()
 	settextcolor(GOLDENCOLOR);
 	outtextxy(525, 100, title);
 
+	settextstyle(40, 0, _T("微软雅黑"));
+	settextcolor(OTHERCOLOR);
+	outtextxy(580, 180, _T("分数: "));
+	settextcolor(GOLDENCOLOR);
+	std::wstring str = std::to_wstring(SCORE);
+	LPCTSTR score = str.c_str();//分数
+	outtextxy(650, 180, score);
+
+
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
@@ -721,7 +828,7 @@ void GameLoop::BattleDefeatLoop()
 		}
 
 		if (exit_game->state(msg)) {//退出游戏
-			flag = -1;
+			flag = 0;
 			exit(0);
 		}
 	}
@@ -739,6 +846,14 @@ void GameLoop::BattleVictoryLoop()
 	LPCTSTR title = _T("任务完成");
 	settextcolor(GOLDENCOLOR);
 	outtextxy(525, 100, title);
+	settextstyle(40, 0, _T("微软雅黑"));
+	settextcolor(OTHERCOLOR);
+	outtextxy(580, 180, _T("分数: "));
+	settextcolor(GOLDENCOLOR);
+	std::wstring str = std::to_wstring(SCORE);
+	LPCTSTR score = str.c_str();//分数
+	outtextxy(650, 180, score);
+
 	// 绘制按钮
 	setfillcolor(WHITE);
 	//fillrectangle(350, 100, 300, 75); // 按钮背景
@@ -770,46 +885,8 @@ void GameLoop::BattleVictoryLoop()
 		}
 
 		if (exit_game->state(msg)) {//退出游戏
-			flag = -1;
+			flag = 0;
 			exit(0);
 		}
 	}
 }
-
-
-//
-//void GameLoop::TestLoop() {
-//	initgraph(MAPSIZE_X* BLOCKSIZE, MAPSIZE_Y*BLOCKSIZE);
-//	BeginBatchDraw();//开始批量绘图
-//	Plane p1({ 31,20 });
-//	Bullet b1;
-//
-//	while (!_kbhit())  // 按下键盘任意键退出循环
-//	{
-//		setbkcolor(MAINCOLOR);
-//		cleardevice();  // 清空窗口
-//		setfillcolor(OTHERCOLOR);
-//
-//		b1.AutoMove();
-//		//b1.CollisionDetection();
-//
-//		p1.AutoMove();
-//		//p1.CollisionDetection();
-//
-//
-//		for (const auto& block : Bullet::AllEntities)
-//		{
-//			
-//			int x = block->core.x;  // 获取块的 x 坐标
-//			int y = block->core.y;  // 获取块的 y 坐标
-//
-//			// 绘制块
-//			rectangle(x * BLOCKSIZE, y * BLOCKSIZE, x * BLOCKSIZE + BLOCKSIZE, y * BLOCKSIZE + BLOCKSIZE);
-//		}
-//		FlushBatchDraw();//执行未完成的绘制任务
-//		Sleep(150);  // 暂停250毫秒，控制刷新速度
-//	
-//	}
-
-//}
-

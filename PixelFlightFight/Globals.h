@@ -24,6 +24,15 @@
 #define MAPSIZE_Y	50 //游戏页面高度
 #define BLOCKSIZE	15
 
+
+#define WORKSHOP_X	10//宽	飞机工坊界面 
+#define WORKSHOP_Y	10//高
+#define WORKSHOP_SIZE	46//高
+#define WORKSHOP_U 	266//上
+#define WORKSHOP_D 	726//下
+#define WORKSHOP_L 	402//左
+#define WORKSHOP_R 	862//右
+
 #define BLANK_U 15	//上边框
 #define BLANK_D 765	//下
 #define BLANK_L 400	//左
@@ -48,6 +57,9 @@
 //0Xfba464
 //0X66acae
 //刷新与移动
+#define WORKSHOPFLASH	30	//飞机工坊刷新周期间隔 ms
+
+
 #define FRAMEINTERVAL	30	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 

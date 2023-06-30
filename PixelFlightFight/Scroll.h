@@ -9,7 +9,7 @@ private:
 public:
 
 	//bool dark;			// 当有弹出界面时，绘制整体变暗至原来的 1/4
-	int enemiesNum;		//剩余敌人数量
+
 	int baseLifeMax;	// 基地满血
 	int baseLife;		// 基地剩余血量
 	int refleshCount;	//刷新计数
