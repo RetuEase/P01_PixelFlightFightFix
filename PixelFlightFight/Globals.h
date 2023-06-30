@@ -18,7 +18,7 @@
 #define WINDOWS_X	1265
 #define WINDOWS_Y	780
 
-#define MAPSIZE_X	31	//游戏界面宽度
+#define MAPSIZE_X	31	//游戏界面宽度  地图31*50 
 #define MAPSIZE_Y	50 //游戏页面高度
 #define BLOCKSIZE	15
 
@@ -46,7 +46,7 @@
 //0Xfba464
 //0X66acae
 //刷新与移动
-#define FRAMEINTERVAL 40	//周期间隔 ms
+#define FRAMEINTERVAL 50	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 
 #define BULLETRATE	8	//子弹周期刷新率 
@@ -90,11 +90,6 @@ struct Vector2
 	int x, y;
 	Vector2()
 		:x(0), y(0) {}
-	/*explicit Vector2(Vector2& v)
-	{
-		this->x = v.x;
-		this->y = v.y;
-	}*/
 	Vector2(int x, int y)
 		:x(x), y(y) {}
 	bool operator==(const Vector2& other) const
@@ -111,7 +106,7 @@ namespace std {
 		}
 	};
 }
-//typedef Bullet* BulletPtr;
+//typedef Bullet* bulletptr->
 using InsId = long long;
 using PlaneId = long long;
 //int I_IdCounter = 1;
@@ -119,7 +114,7 @@ using PlaneId = long long;
 //int score = 0;//分数
 
 //实体类型
-enum EntityType { _EntityBullet, _EntityEnemy, _EntityPlayer, _EntityNull };
+enum EntityType { _EntityNull, _EntityBullet, _EntityEnemy, _EntityPlayer };
 
 using Coordinate = Vector2;	// 坐标 (x,y)
 using Speed = Vector2;		// 速度方向 (x,y)

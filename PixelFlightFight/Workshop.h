@@ -1,5 +1,5 @@
 #pragma once
-#include "Globals.h"
+//#include "Globals.h"
 #include "Entity.h"
 class PlaneTemplate : public Block //--------------->>>>>这里还需要继承吗
 {

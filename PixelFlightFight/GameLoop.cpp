@@ -1,5 +1,4 @@
 #include "GameLoop.h"
-#include "Workshop.h"
 
 using namespace std;
 
@@ -111,7 +110,6 @@ void GameLoop::MainMenuLoop()
 	}
 	//getch();
 }
-
 //TODO 
 //介绍界面
 void GameLoop::InstructionsLoop()
@@ -196,7 +194,6 @@ void GameLoop::SelectLevelLoop()
 	}
 }
 
-
 void GameLoop::PlaneBattleLoop()
 {
 
@@ -212,19 +209,16 @@ void GameLoop::PlaneBattleLoop()
 	//获取Scroll信息
 	Scroll sc = Scroll::GetInstance();
 	BeginBatchDraw();//开始批量绘图	
-	std::cout << "!!!" << std::endl;
 
 	Plane p1({ 10,10 });
-	//Plane p2({ 3,-15 });
-	//Plane p3({ 18,-2 });
-	Bullet b1;
+	Plane p2({ 3,15 });
+	Plane p3({ 18,2 });
 	Bullet b2(1);
 	PlayerPlane mp;
 
 	//绘制网格
 	while (1)
 	{
-
 		setbkcolor(BGCOLOR);
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
@@ -263,45 +257,48 @@ void GameLoop::PlaneBattleLoop()
 				BattleMenuLoop();//切换至菜单		
 			}
 			else {
-				bool fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
+				//bool fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
 				bool up = GetAsyncKeyState(VK_UP) & 0x8000;
 				bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
 				bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
 				bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
-
 				int u = 0;
 				int d = 0;
 				int l = 0;
 				int r = 0;
-				if (up) { u = -1; }
+				if (up) {
+					u = -1;
+				}
 				if (down) { d = 1; }
 				if (left) { l = -1; }
 				if (right) { r = 1; }
 
 				sc.playSpeed = { l + r,u + d };
-
-				if (fire && sc.fireCD >= 4)
-				{
-					sc.Fire();
-					sc.fireCD = 0;
-				}
 			}
 		}
 		else {
 			sc.playSpeed = { 0,0 };
 		}
+		//发射子弹
+		if (sc.fireCD >= 5) {//fire &&
+			Bullet* b = new Bullet(1);
+			cout << b->blockID;
+			sc.fireCD = 0;
+		}
 		sc.GameUpdate();
 
 		//处理所有实体
-		for (Bullet* bullet : Bullet::AllEntities) {
-			//敌机
-			if (bullet->entityType == _EntityEnemy) {
+		//cout << "size: " << Bullet::AllEntities.size() << endl;
+		for (const auto& pair : Bullet::AllEntities) {
+			std::shared_ptr<Bullet> bulletptr = pair.second;
 
-				if (bullet->core.y <= MAPSIZE_Y - 1 && bullet->core.y >= 0 && bullet->core.x <= MAPSIZE_X - 1 && bullet->core.x >= 0) {
+			//敌机	
+			if (bulletptr->entityType == _EntityEnemy) {
+				if (bulletptr->core.y <= MAPSIZE_Y - 1 && bulletptr->core.y >= 0 && bulletptr->core.x <= MAPSIZE_X - 1 && bulletptr->core.x >= 0) {
 					//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
 					// 计算坐标在窗口中的位置
-					int x = BLANK_L + bullet->core.x * BLOCKSIZE;
-					int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+					int x = BLANK_L + bulletptr->core.x * BLOCKSIZE;
+					int y = BLANK_U + bulletptr->core.y * BLOCKSIZE;
 					// 绘制 Block
 					setlinecolor(WHITE);
 					setfillcolor(CORECOLOR);
@@ -309,13 +306,13 @@ void GameLoop::PlaneBattleLoop()
 				}
 			}
 			//子弹
-			else if (bullet->entityType == _EntityBullet) {
+			else if (bulletptr->entityType == _EntityBullet) {
 				//line(BLANK_L, BLANK_U, BLANK_R, BLANK_D);  // 绘制垂直线
 				// 计算坐标在窗口中的位置
-				if (bullet->core.y <= MAPSIZE_Y - 1 && bullet->core.y >= 0 && bullet->core.x <= MAPSIZE_X - 1 && bullet->core.x >= 0) {
-
-					int x = BLANK_L + bullet->core.x * BLOCKSIZE;
-					int y = BLANK_U + bullet->core.y * BLOCKSIZE;
+				if (bulletptr->core.y <= MAPSIZE_Y - 1 && bulletptr->core.y >= 0 && bulletptr->core.x <= MAPSIZE_X - 1 && bulletptr->core.x >= 0) {
+					//cout << "!!!" << endl;
+					int x = BLANK_L + bulletptr->core.x * BLOCKSIZE;
+					int y = BLANK_U + bulletptr->core.y * BLOCKSIZE;
 
 					// 绘制 Block
 					setlinecolor(WHITE);
@@ -324,10 +321,10 @@ void GameLoop::PlaneBattleLoop()
 				}
 			}
 			//自机
-			else if (bullet->entityType == _EntityPlayer) {
+			else if (bulletptr->entityType == _EntityPlayer) {
 				//绘制核心
-				int corex = BLANK_L + bullet->core.x * BLOCKSIZE;
-				int corey = BLANK_U + bullet->core.y * BLOCKSIZE;
+				int corex = BLANK_L + bulletptr->core.x * BLOCKSIZE;
+				int corey = BLANK_U + bulletptr->core.y * BLOCKSIZE;
 				setlinecolor(SECONDCOLOR);
 				setfillcolor(GOLDENCOLOR);
 				solidrectangle(corex, corey, corex + BLOCKSIZE, corey + BLOCKSIZE);
@@ -335,10 +332,10 @@ void GameLoop::PlaneBattleLoop()
 				setfillcolor(BULLETCOLOR);
 				for (const auto& pair : Bullet::PlayerPlaneBlock) {
 					const Coordinate& coord = pair.first;
-					if (bullet->core.y + coord.y <= MAPSIZE_Y - 1 && bullet->core.y + coord.y >= 0 && bullet->core.x + coord.x <= MAPSIZE_X - 1 && bullet->core.x + coord.x >= 0) {
+					if (bulletptr->core.y + coord.y <= MAPSIZE_Y - 1 && bulletptr->core.y + coord.y >= 0 && bulletptr->core.x + coord.x <= MAPSIZE_X - 1 && bulletptr->core.x + coord.x >= 0) {
 						// 计算坐标在窗口中的位置
-						int x = BLANK_L + bullet->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
-						int y = BLANK_U + bullet->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
+						int x = BLANK_L + bulletptr->core.x * BLOCKSIZE + coord.x * BLOCKSIZE;
+						int y = BLANK_U + bulletptr->core.y * BLOCKSIZE + coord.y * BLOCKSIZE;
 						// 绘制 Block
 						setlinecolor(WHITE);
 						setfillcolor(BULLETCOLOR);
@@ -372,56 +369,76 @@ void GameLoop::PlaneBattleLoop()
 void GameLoop::PlaneWorkshopLoop()
 {
 	////60 X 60界面 像素10 X 10
-	const int ROW = 60;
-	const int COL = 60;
-	const int PIXEL_SIZE = 10;
+
+	//const int ROW = 60;
+	//const int COL = 60;
+	//const int PIXEL_SIZE = 10;
 	////用数组保存飞机形状
-	int pixels[ROW][COL] = { 0 };
-	initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
+	//int pixels[ROW][COL] = { 0 };
+	//initgraph(ROW * PIXEL_SIZE, COL * PIXEL_SIZE);
 
 	//// 渲染像素数组
-	for (int i = 0; i < ROW; i++)
-	{
-		for (int j = 0; j < COL; j++)
-		{
-			if (pixels[i][j]) {
-				setfillcolor(WHITE);
-			}
-			else {
-				setfillcolor(BLACK);
-			}
-			fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
-				(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
-		}
-	}
+	//for (int i = 0; i < ROW; i++)
+	//{
+	//	for (int j = 0; j < COL; j++)
+	//	{
+	//		if (pixels[i][j]) {
+	//			setfillcolor(WHITE);
+	//		}
+	//		else {
+	//			setfillcolor(BLACK);
+	//		}
+	//		fillrectangle(i * PIXEL_SIZE, j * PIXEL_SIZE,
+	//			(i + 1) * PIXEL_SIZE, (j + 1) * PIXEL_SIZE);
+	//	}
+	//}
+
 	////点击右键绘制飞机，点击左键退出
 	////循环接受鼠标信息
-	PlaneCanvas pc(WHITE);
-	while (1)
-	{
-		ExMessage emg;
-		if (peekmessage(&emg))
-		{
-			if (emg.message == WM_LBUTTONDOWN)
-			{
-				Coordinate cor(emg.x, emg.y); //鼠标的位置
-				pc.Click(cor, true);
-			}//点击esc按键退回主界面
-			else if (emg.message == WM_RBUTTONDOWN)
-			{
-				Coordinate cor(emg.x, emg.y); //鼠标的位置
-				pc.Click(cor, false);
-			}
-			else if (emg.message == WM_KEYDOWN)
-			{
-				if (emg.wParam == VK_ESCAPE) {
-					closegraph();
-					MainMenuLoop();
-				}
-			}
-		}
-	}
-	closegraph();
+	//while (1)
+	//{
+	//	settextcolor(WHITE);
+	//	settextstyle(20, 0, _T("黑体"));
+	//	outtextxy(20, 20, _T("欢迎来到飞机工坊"));
+	//	ExMessage emg;
+	//	if (peekmessage(&emg))
+	//	{
+	//		if (emg.message == WM_LBUTTONDOWN)
+	//		{
+	//			// 根据鼠标点击位置计算出对应的像素坐标
+	//			int x = emg.x / PIXEL_SIZE;
+	//			int y = emg.y / PIXEL_SIZE;
+	//			if (x >= 0 && y >= 0 && x < ROW && y < COL)
+	//			{
+	//				// 反转该像素的值
+	//				pixels[x][y] = !pixels[x][y];
+
+	//				// 根据值的变化，设置矩形的颜色
+	//				if (pixels[x][y])
+	//				{
+	//					setfillcolor(WHITE);
+	//				}
+	//				else
+	//				{
+	//					setfillcolor(BLACK);
+	//				}
+	//				// 重新绘制矩形
+	//				fillrectangle(x * PIXEL_SIZE, y * PIXEL_SIZE,
+	//					(x + 1) * PIXEL_SIZE, (y + 1) * PIXEL_SIZE);
+	//			}
+
+	//		}//点击esc按键退回主界面
+	//		else if (emg.message == WM_KEYDOWN)
+	//		{
+	//			if (emg.wParam == VK_ESCAPE) {
+	//				closegraph();
+	//				MainMenuLoop();
+	//			}
+	//		}
+
+	//	}
+	//}
+	//closegraph();
 }
 
 /********************ldy********************/
@@ -722,14 +739,6 @@ void GameLoop::BattleVictoryLoop()
 //		Sleep(150);  // 暂停250毫秒，控制刷新速度
 //	
 //	}
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 //}
-//
+

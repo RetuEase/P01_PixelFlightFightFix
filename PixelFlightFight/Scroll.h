@@ -22,7 +22,6 @@ public:
 	~Scroll();		//析构函数
 	static Scroll& GetInstance();
 
-	void Fire();				//发射
 	void GameUpdate();			//一次刷新
 
 	//void TraverseEntity(int i);		// 根据类型遍历实体 0为自机,1为子弹 2为敌机
