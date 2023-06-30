@@ -53,8 +53,9 @@ void GameLoop::MainMenuLoop()
 
 	IMAGE img;
 	loadimage(&img, _T("title.png"));
-	putimage(100, 0, &img);
-
+	//setaspectratio(0.9, 0.9);
+	putimage(0, 10, &img);
+	setaspectratio(1, 1);
 	setfillcolor(SECONDCOLOR);//设置填充色
 	setlinecolor(SECONDCOLOR);
 	//fillrectangle(353, 105, 450, 160); // 按钮背景
@@ -212,16 +213,16 @@ void GameLoop::PlaneBattleLoop()
 	BeginBatchDraw();//开始批量绘图	
 	std::cout << "!!!" << std::endl;
 
-	Plane p1({ 10,10 });//生成敌机
-	Plane p2({ 3,-15 });//生成敌机
-	Plane p3({ 18,-2 });//生成敌机
+	Plane p1({ 10,10 });
+	Plane p2({ 3,-15 });
+	Plane p3({ 18,-2 });
 
-	Bullet b1;			//生成子弹
-	PlayerPlane mp;		//生成我机
+	PlayerPlane mp;
 
 	//绘制网格
 	while (1)
 	{
+
 		setbkcolor(BGCOLOR);
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
@@ -316,7 +317,7 @@ void GameLoop::PlaneBattleLoop()
 				int corex = BLANK_L + bullet->core.x * BLOCKSIZE;
 				int corey = BLANK_U + bullet->core.y * BLOCKSIZE;
 				setlinecolor(SECONDCOLOR);
-				setfillcolor(CORECOLOR);
+				setfillcolor(GOLDENCOLOR);
 				solidrectangle(corex, corey, corex + BLOCKSIZE, corey + BLOCKSIZE);
 				//绘制副自机
 				setfillcolor(BULLETCOLOR);
