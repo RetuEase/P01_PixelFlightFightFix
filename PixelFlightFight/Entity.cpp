@@ -4,8 +4,7 @@ int I_IdCounter = 1;
 int SCORE = 0;
 int GAMEEND = 0;//1结束
 
-Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
-
+Coordinate Bullet::PLAYERPLANECORE=Coordinate(15, 35);			//默认飞机核心位置
 std::unordered_map<Coordinate, Bullet> Bullet::ENEMYMAP;			//敌机map
 std::unordered_map<Coordinate, Block> Bullet::PlayerPlaneBlock;		// 玩家飞机拥有的像素（对与核心的相对坐标)
 std::unordered_map<InsId, std::shared_ptr<Bullet>> Bullet::AllEntities;// 所有实体

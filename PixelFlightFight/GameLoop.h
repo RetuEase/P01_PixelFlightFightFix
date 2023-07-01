@@ -6,7 +6,9 @@
 // 循环单例类
 class GameLoop
 {
-	int flag;					// 所处界面编号
+	int flag;					// 所处界面编号	
+	int iintroKey;					// 所处界面编号
+
 	//bool keyDown[KEY_COUNT];	// 按键的按下状态
 	GameLoop();
 public:

@@ -1,8 +1,20 @@
 #include "GameLoop.h"
-using namespace std;
+#include <iostream>
+#include <filesystem>
+
+#ifdef UNICODE
+// 如果定义了 UNICODE 宏，将字符串字面量转换为宽字符
+#define TSTRING std::wstring
+#define TOSTRING std::to_wstring
+#else
+// 如果未定义 UNICODE 宏，将字符串字面量转换为多字节字符
+#define TSTRING std::string
+#define TOSTRING std::to_string
+#endif
 
 /********************yjl********************/
 GameLoop::GameLoop() :flag(1) {
+	iintroKey = 0;
 	//memset(keyDown, 0, sizeof(bool) * KEY_COUNT);
 }
 
@@ -19,6 +31,8 @@ GameLoop& GameLoop::GetInstance()
 
 void GameLoop::Run()
 {
+	Sleep(500);
+
 	// 主循环
 	while (true)
 	{
@@ -54,8 +68,9 @@ void GameLoop::Run()
 	}
 
 }
-void GameLoop::MainMenuLoop()
+void GameLoop::MainMenuLoop()		
 {
+	EndBatchDraw();
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(BGCOLOR);  //显示背景颜色
 	cleardevice();      //SECONDCOLOR
@@ -111,8 +126,17 @@ void GameLoop::MainMenuLoop()
 		}
 		if (Operating_instructions->state(msg)) // 介绍
 		{
-			flag = 4;
-			InstructionsLoop();
+			if (iintroKey == 0)
+			{
+				InstructionsLoop();
+				iintroKey = 1;
+				return;
+			}
+			else {
+				iintroKey = 0;
+			} 
+
+			
 		}
 		if (exit_game->state(msg)) {//退出游戏
 			flag = 0;
@@ -126,68 +150,34 @@ void GameLoop::MainMenuLoop()
 //介绍界面
 void GameLoop::InstructionsLoop()
 {
-	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
-	setbkcolor(BGCOLOR);
-	cleardevice();//显示背景颜色      
-	setbkmode(TRANSPARENT);//处理字体背景
-	setfillcolor(WHITE);//设置填充色，这里是浅青色
-	setlinecolor(WHITE); //设置当前线条的颜色为黑色
-	settextstyle(60, 0, _T("微软雅黑"));//
-	settextcolor(SECONDCOLOR);
-	LPCTSTR title = _T("游戏介绍");
-	outtextxy(525, 100, title);
-	settextcolor(GOLDENCOLOR);
+	IMAGE images[42];
+	loadimage(&images[0], _T("intro/title00.gif"));	loadimage(&images[1], _T("intro/title01.gif"));	loadimage(&images[2], _T("intro/title02.gif"));	loadimage(&images[3], _T("intro/title03.gif"));	loadimage(&images[4], _T("intro/title04.gif"));	loadimage(&images[5], _T("intro/title05.gif"));	loadimage(&images[6], _T("intro/title06.gif"));	loadimage(&images[7], _T("intro/title07.gif"));	loadimage(&images[8], _T("intro/title08.gif"));	loadimage(&images[9], _T("intro/title09.gif"));	loadimage(&images[10], _T("intro/title10.gif"));	loadimage(&images[11], _T("intro/title11.gif"));	loadimage(&images[12], _T("intro/title12.gif"));	loadimage(&images[13], _T("intro/title13.gif"));	loadimage(&images[14], _T("intro/title14.gif"));	loadimage(&images[15], _T("intro/title15.gif"));	loadimage(&images[16], _T("intro/title16.gif"));	loadimage(&images[17], _T("intro/title17.gif"));	loadimage(&images[18], _T("intro/title18.gif"));	loadimage(&images[19], _T("intro/title19.gif"));	loadimage(&images[20], _T("intro/title20.gif"));	loadimage(&images[21], _T("intro/title21.gif"));	loadimage(&images[22], _T("intro/title22.gif"));	loadimage(&images[23], _T("intro/title23.gif"));	loadimage(&images[24], _T("intro/title24.gif"));	loadimage(&images[25], _T("intro/title25.gif"));	loadimage(&images[26], _T("intro/title26.gif"));	loadimage(&images[27], _T("intro/title27.gif"));	loadimage(&images[28], _T("intro/title28.gif"));	loadimage(&images[29], _T("intro/title29.gif"));	loadimage(&images[30], _T("intro/title30.gif"));	loadimage(&images[31], _T("intro/title31.gif"));	loadimage(&images[32], _T("intro/title32.gif"));	loadimage(&images[33], _T("intro/title33.gif"));	loadimage(&images[34], _T("intro/title34.gif"));	loadimage(&images[35], _T("intro/title35.gif"));	loadimage(&images[36], _T("intro/title36.gif"));	loadimage(&images[37], _T("intro/title37.gif"));	loadimage(&images[38], _T("intro/title38.gif"));	loadimage(&images[39], _T("intro/title39.gif"));	loadimage(&images[40], _T("intro/title40.gif"));	loadimage(&images[41], _T("intro/title41.gif"));	int imgNumber = 42;	int x = 100, y = 100;// 定义图片的初始位置	
 
-
-	IMAGE images[4];
-	loadimage(&images[0], _T("intro/0.png"));
-	loadimage(&images[1], _T("intro/1.png"));
-	loadimage(&images[2], _T("intro/2.png"));
-	loadimage(&images[3], _T("intro/3.png"));
-
-	int imgNumber = 4;
-
-	int x = 300, y = 100;// 定义图片的初始位置	
 	int imageIndex = 0;// 图片的索引
 
 	// 开始绘制动画
 	BeginBatchDraw();//开始批量绘图
-	while (1) {
+
+	for(; imageIndex <imgNumber; imageIndex++)
+	{
 		// 清空绘图窗口
-		cleardevice();
+		//cleardevice();
 		// 绘制当前图片
 		putimage(x, y, &images[imageIndex]);
-		// 延时一段时间
-		Sleep(200);
-		// 前进到下一张图片
-		imageIndex = (imageIndex + 1) % imgNumber;
-		Sleep(70);
-
-		//游戏介绍:
-		//TODO
-
-		// 绘制按钮
-		setfillcolor(WHITE);
-		Button* re_main_menu;//返回菜单
-		re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
-		re_main_menu->RenderToWindows();
-		ExMessage msg;
-		bool on = 1;
-		msg = getmessage();
-		if (re_main_menu->state(msg)) // 返回菜单
-		{
-			flag = 1;
-			printf("Return to menu\n");
-			MainMenuLoop();
-		}
-		FlushBatchDraw();;
+		Sleep(400);
+		// 前进到下一张图片		
+		FlushBatchDraw();
 	}
-	//getch();
+
+	BeginBatchDraw();
 }
+
 
 
 void GameLoop::SelectLevelLoop()
 {
+	Sleep(500);
+
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
@@ -231,6 +221,8 @@ void GameLoop::SelectLevelLoop()
 
 void GameLoop::PlaneBattleLoop()
 {
+	Sleep(500);
+
 	LevelSetUp();
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口
 
@@ -425,6 +417,8 @@ void GameLoop::PlaneBattleLoop()
 
 void GameLoop::PlaneWorkshopLoop()
 {
+	Sleep(500);
+
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口并显示控制台; // 初始化图形窗口大小为800*600像素
 	setbkcolor(BGCOLOR);
 	PlaneCanvas pc;
@@ -619,12 +613,13 @@ void GameLoop::PlaneWorkshopLoop()
 
 void GameLoop::LevelSetUp()
 {
+	Sleep(500);
+
 	I_IdCounter = 1;
 	SCORE = 0;
 	GAMEEND = 0;
 
-	Coordinate PLAYERPLANECORE(15, 35);	//默认飞机核心位置
-
+	Bullet::PLAYERPLANECORE = Coordinate( 15, 35);	//默认飞机核心位置
 	Bullet::ENEMYMAP.clear();
 	Bullet::PlayerPlaneBlock.clear();
 	Bullet::AllEntities.clear();
@@ -781,6 +776,8 @@ void GameLoop::LevelSetUp()
 
 void GameLoop::BattleMenuLoop()
 {
+	Sleep(500);
+
 	//EndBatchDraw();
 	//initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
 	setbkcolor(BGCOLOR);
@@ -834,6 +831,8 @@ void GameLoop::BattleMenuLoop()
 
 void GameLoop::BattleDefeatLoop()
 {
+	Sleep(500);
+
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
 	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
@@ -893,6 +892,8 @@ void GameLoop::BattleDefeatLoop()
 
 void GameLoop::BattleVictoryLoop()
 {
+	Sleep(500);
+
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口 800*600像素
 	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      

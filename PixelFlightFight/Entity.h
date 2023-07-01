@@ -2,6 +2,7 @@
 #include "Globals.h"
 
 
+
 //单个像素,无核心坐标
 class Block
 {
@@ -20,6 +21,7 @@ public:
 class Bullet : public Block
 {
 public:
+	static Coordinate PLAYERPLANECORE;											//默认飞机核心位置
 	static std::unordered_map<Coordinate, Bullet> ENEMYMAP;						//敌机map. 碰撞检测用
 	static std::unordered_map<Coordinate, Block> PlayerPlaneBlock;				// 玩家飞机拥有的像素（对与核心的相对坐标)
 	static std::unordered_map<InsId, std::shared_ptr<Bullet>> AllEntities;		// 所有实体
