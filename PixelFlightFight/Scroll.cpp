@@ -79,7 +79,7 @@ void Scroll::GameUpdate()
 
 			bulletptr->PlayerMove(playSpeed);
 			bulletptr->CollisionDetection();
-			//bulletptr->Fracture();
+			bulletptr->Fracture();
 		}
 	}
 

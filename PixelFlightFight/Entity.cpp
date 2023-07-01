@@ -278,13 +278,13 @@ void PlayerPlane::Fracture()
 	std::queue<Coordinate> myQueue;
 	myQueue.push(this->core);//从核心位置开始BFS
 	temp[core] = 1;
-	//int step = 0;
+	int step = 0;
 	Coordinate xy;
 	while (!myQueue.empty()) {
 		xy = myQueue.front();
 		myQueue.pop();
 		count++;
-		//step = temp.find(xy)->second;
+		step = temp.find(xy)->second;
 		for (int i = 0; i < 4; i++) {
 			Coordinate xy2(xy.x + arr[i][0], xy.y + arr[i][1]);
 			auto it = temp.find(xy2);
@@ -294,16 +294,15 @@ void PlayerPlane::Fracture()
 			}
 		}
 	}
-	//std::
-	//  << count << std::endl;
-	//std::cout << temp.size() << std::endl;
+	//std::cout<<count << std::endl;
+	std::cout << temp.size() << std::endl;
 	if (count != temp.size()) {//有坐标没被搜索到则说明有断裂
 		//将BFS未搜索到的点删除
 		for (auto& pair : temp) {
 			if (!(pair.second)) {
-				//std::cout << "删除点" << pair.first.x << "," << pair.first.y << std::endl;
-				//blockMap.erase(pair.first);
-				count++;
+				std::cout << "删除点" << pair.first.x << "," << pair.first.y << std::endl;
+				PlayerPlaneBlock.erase(pair.first);
+				//count++;
 			}
 		}
 	}
