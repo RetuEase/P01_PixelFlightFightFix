@@ -265,20 +265,22 @@ void PlayerPlane::CollisionDetection()
 
 }
 
+
 /******BFS******/
 void PlayerPlane::Fracture()
 {
 	int arr[4][2] = { {0,1},{0,-1},{1,0},{-1,0} };
 	int count = 0;//用于记录BFS搜索了几个点
-	std::unordered_map<Coordinate, bool> temp;
+	std::unordered_map<Coordinate, bool> temp;	
+	temp.insert(std::make_pair(Coordinate(0,0), true));
 	for (auto& pair : PlayerPlaneBlock) {
 		temp.insert(std::make_pair(pair.first, false));//将全部点装入临时map
 	}
-	bool containCore = false;//标记BFS是否搜索到了核心
+	//bool containCore = false;//标记BFS是否搜索到了核心
 	std::queue<Coordinate> myQueue;
-	myQueue.push(this->core);//从核心位置开始BFS
-	temp[core] = 1;
-	int step = 0;
+	myQueue.push(Coordinate(0,0));//从核心位置开始BFS
+	
+	//int step = 0;
 	Coordinate xy;
 	while (!myQueue.empty()) {
 		xy = myQueue.front();
@@ -297,7 +299,7 @@ void PlayerPlane::Fracture()
 	if (count != temp.size()) {//有坐标没被搜索到则说明有断裂
 		//将BFS未搜索到的点删除
 		for (auto& pair : temp) {
-			if (!(pair.second)) {
+			if (!pair.second) {
 				//std::cout << "删除点" << pair.first.x << "," << pair.first.y << std::endl;
 				PlayerPlaneBlock.erase(pair.first);
 				count++;
@@ -305,4 +307,3 @@ void PlayerPlane::Fracture()
 		}
 	}
 }
-
