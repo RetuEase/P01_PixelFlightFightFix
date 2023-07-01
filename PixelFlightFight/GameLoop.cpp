@@ -574,7 +574,7 @@ void GameLoop::LevelSetUp()
 	Bullet::keysToDelete.clear();
 
 	//Éú³ÉµÐÈË
-	Plane* b = new Plane(Coordinate(12, -2));
+	Plane* b = new Plane(Coordinate(12, -12));
 	Plane* b1 = new Plane(Coordinate(25, -56));
 	Plane* b2 = new Plane(Coordinate(30, -192));
 	Plane* b3 = new Plane(Coordinate(25, -56));
@@ -585,9 +585,9 @@ void GameLoop::LevelSetUp()
 	Plane* b8 = new Plane(Coordinate(27, -153));
 	Plane* b9 = new Plane(Coordinate(17, -50));
 	Plane* b10 = new Plane(Coordinate(9, -184));
-	Plane* b11 = new Plane(Coordinate(11, 0));
+	Plane* b11 = new Plane(Coordinate(11, -8));
 	Plane* b12 = new Plane(Coordinate(16, -120));
-	Plane* b13 = new Plane(Coordinate(26, 0));
+	Plane* b13 = new Plane(Coordinate(26, -12));
 	Plane* b14 = new Plane(Coordinate(9, -104));
 	Plane* b15 = new Plane(Coordinate(28, -172));
 	Plane* b16 = new Plane(Coordinate(22, -120));

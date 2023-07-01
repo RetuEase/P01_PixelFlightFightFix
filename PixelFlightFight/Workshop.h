@@ -1,5 +1,6 @@
 #pragma once
-#include "Entity.h"
+#include "Globals.h"
+//#include "Entity.h"
 class PlaneTemplate
 {
 public:
