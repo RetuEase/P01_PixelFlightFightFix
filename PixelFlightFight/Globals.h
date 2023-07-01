@@ -20,12 +20,12 @@
 #define DEBUG
 
 // 界面大小
-#define WINDOWS_X	1265
+#define WINDOWS_X	1265//出口大小
 #define WINDOWS_Y	780
 
-#define MAPSIZE_X	31//游戏界面宽度  地图31*50 
-#define MAPSIZE_Y	50 //游戏页面高度
-#define BLOCKSIZE	15
+#define MAPSIZE_X	31//游戏界面长度  地图31*50 
+#define MAPSIZE_Y	50//游戏页面高度
+#define BLOCKSIZE	15//格子宽度
 
 
 #define WORKSHOP_X	10//宽	飞机工坊界面 
@@ -63,7 +63,7 @@
 #define WORKSHOPFLASH	30	//飞机工坊刷新周期间隔 ms
 
 
-#define FRAMEINTERVAL	30	//周期间隔 ms
+#define FRAMEINTERVAL	20	//周期间隔 ms
 #define UNITTIME	8	//单位时间刷新次数
 #define PLANERATE	4	//自机周期刷新率 
 #define BULLETRATE	8	//子弹周期刷新率 
