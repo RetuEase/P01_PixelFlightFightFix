@@ -166,7 +166,7 @@ void GameLoop::InstructionsLoop()
 		//cleardevice();
 		// 绘制当前图片
 		putimage(x, y, &images[imageIndex]);
-		Sleep(400);
+		Sleep(800);
 		// 前进到下一张图片		
 		FlushBatchDraw();
 	}
@@ -223,7 +223,7 @@ void GameLoop::SelectLevelLoop()
 
 void GameLoop::PlaneBattleLoop()
 {
-	Sleep(500);
+	Sleep(200);
 
 	LevelSetUp();
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口
@@ -325,7 +325,7 @@ void GameLoop::PlaneBattleLoop()
 		}
 
 		//发射子弹
-		if (fire && sc.fireCD >= 10) {
+		if (fire && sc.fireCD >= 30) {
 			if (space == 1)
 			{
 				space = 0;
