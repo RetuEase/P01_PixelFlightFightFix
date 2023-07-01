@@ -411,11 +411,19 @@ void GameLoop::PlaneWorkshopLoop()
 		settextstyle(60, 0, _T("微软雅黑"));//
 		settextcolor(GOLDENCOLOR);
 		LPCTSTR title = _T("飞机工坊");
-		outtextxy(525, 100, title);
+		outtextxy(525, 80, title);
 		settextstyle(40, 0, _T("微软雅黑"));
 		settextcolor(GOLDENCOLOR);
-		LPCTSTR intro = _T("请编辑自己的飞机 左键添加机身 中键选择核心 右键删除机身");
-		outtextxy(260, 180, intro);
+		LPCTSTR intro1 = _T("请编辑自己的飞机");
+		outtextxy(500, 140, intro1);
+		LPCTSTR intro2 = _T("左键添加机身 中键选择核心 右键删除机身");
+		outtextxy(350, 180, intro2);
+		settextstyle(30, 0, _T("微软雅黑"));
+		LPCTSTR intro4 = _T("注意: 不与核心相连的机身会断裂");
+		outtextxy(460, 230, intro4);
+		LPCTSTR intro3 = _T("只有添加了核心才能应用");
+		outtextxy(950, 620, intro3);
+
 		settextcolor(GOLDENCOLOR);
 		BeginBatchDraw();//开始批量绘图
 
