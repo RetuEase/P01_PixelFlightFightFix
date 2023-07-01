@@ -294,19 +294,15 @@ void PlayerPlane::Fracture()
 			}
 		}
 	}
-	//std::
-	//  << count << std::endl;
-	//std::cout << temp.size() << std::endl;
 	if (count != temp.size()) {//有坐标没被搜索到则说明有断裂
 		//将BFS未搜索到的点删除
 		for (auto& pair : temp) {
 			if (!(pair.second)) {
 				//std::cout << "删除点" << pair.first.x << "," << pair.first.y << std::endl;
-				//blockMap.erase(pair.first);
+				PlayerPlaneBlock.erase(pair.first);
 				count++;
 			}
 		}
 	}
-	//std::cout << count << std::endl;
 }
 
