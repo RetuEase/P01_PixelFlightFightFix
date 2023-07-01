@@ -120,7 +120,7 @@ void GameLoop::MainMenuLoop()
 		}
 	}
 }
-	//getch();
+//getch();
 
 //TODO 
 //介绍界面
@@ -137,18 +137,42 @@ void GameLoop::InstructionsLoop()
 	LPCTSTR title = _T("游戏介绍");
 	outtextxy(525, 100, title);
 	settextcolor(GOLDENCOLOR);
-	//游戏介绍:
-	//TODO
 
-	// 绘制按钮
-	setfillcolor(WHITE);
-	Button* re_main_menu;//返回菜单
-	re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
-	re_main_menu->RenderToWindows();
-	ExMessage msg;
-	bool on = 1;
-	while (on)
-	{
+
+	IMAGE images[4];
+	loadimage(&images[0], _T("intro/0.png"));
+	loadimage(&images[1], _T("intro/1.png"));
+	loadimage(&images[2], _T("intro/2.png"));
+	loadimage(&images[3], _T("intro/3.png"));
+
+	int imgNumber = 4;
+
+	int x = 300, y = 100;// 定义图片的初始位置	
+	int imageIndex = 0;// 图片的索引
+
+	// 开始绘制动画
+	BeginBatchDraw();//开始批量绘图
+	while (1) {
+		// 清空绘图窗口
+		cleardevice();
+		// 绘制当前图片
+		putimage(x, y, &images[imageIndex]);
+		// 延时一段时间
+		Sleep(200);
+		// 前进到下一张图片
+		imageIndex = (imageIndex + 1) % imgNumber;
+		Sleep(70);
+
+		//游戏介绍:
+		//TODO
+
+		// 绘制按钮
+		setfillcolor(WHITE);
+		Button* re_main_menu;//返回菜单
+		re_main_menu = new Button(OnButtonClick, 470, 680, 300, 75, L"返回菜单");
+		re_main_menu->RenderToWindows();
+		ExMessage msg;
+		bool on = 1;
 		msg = getmessage();
 		if (re_main_menu->state(msg)) // 返回菜单
 		{
@@ -156,10 +180,11 @@ void GameLoop::InstructionsLoop()
 			printf("Return to menu\n");
 			MainMenuLoop();
 		}
+		FlushBatchDraw();;
 	}
 	//getch();
-
 }
+
 
 void GameLoop::SelectLevelLoop()
 {
@@ -220,8 +245,8 @@ void GameLoop::PlaneBattleLoop()
 	int space = 1;
 	//绘制网格
 	while (1)
-
-	{	BeginBatchDraw();//开始批量绘图
+	{
+		BeginBatchDraw();//开始批量绘图
 		setbkcolor(BGCOLOR);
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
@@ -233,7 +258,7 @@ void GameLoop::PlaneBattleLoop()
 		outtextxy(615, 20, score);
 		settextcolor(GOLDENCOLOR);
 		setfillcolor(OTHERCOLOR);
-		rectangle(BLANK_L-90, BLANK_U, BLANK_L-30, BLANK_U+30);
+		rectangle(BLANK_L - 90, BLANK_U, BLANK_L - 30, BLANK_U + 30);
 		settextstyle(30, 0, _T("微软雅黑"));
 		outtextxy(BLANK_L - 80, BLANK_U, _T("ESC"));
 		setlinecolor(BACKCOLOR); //设置当前线条的颜色
@@ -243,7 +268,7 @@ void GameLoop::PlaneBattleLoop()
 		line(BLANK_L - 2, BLANK_D + 2, BLANK_R + 2, BLANK_D + 2);
 		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
 
-	
+
 
 		setlinestyle(PS_SOLID, 1);
 
@@ -298,7 +323,7 @@ void GameLoop::PlaneBattleLoop()
 			sc.playSpeed = { 0,0 };
 		}
 
-		if (space==1) {
+		if (space == 1) {
 			setfillcolor(OTHERCOLOR);
 			settextcolor(GOLDENCOLOR);
 			settextstyle(30, 0, _T("微软雅黑"));
@@ -309,7 +334,7 @@ void GameLoop::PlaneBattleLoop()
 		if (fire && sc.fireCD >= 10) {
 			if (space == 1)
 			{
-				space =  0;
+				space = 0;
 				cleardevice();  // 清空窗口
 			}
 
