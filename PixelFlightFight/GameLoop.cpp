@@ -119,8 +119,9 @@ void GameLoop::MainMenuLoop()
 			exit(0);
 		}
 	}
-	//getch();
 }
+	//getch();
+
 //TODO 
 //介绍界面
 void GameLoop::InstructionsLoop()
@@ -138,7 +139,6 @@ void GameLoop::InstructionsLoop()
 	settextcolor(GOLDENCOLOR);
 	//游戏介绍:
 	//TODO
-
 
 	// 绘制按钮
 	setfillcolor(WHITE);
@@ -208,7 +208,7 @@ void GameLoop::PlaneBattleLoop()
 {
 	LevelSetUp();
 	initgraph(WINDOWS_X, WINDOWS_Y, EW_SHOWCONSOLE);//创建窗口
-	BeginBatchDraw();//开始批量绘图
+
 	setbkcolor(BGCOLOR);
 	cleardevice();//显示背景颜色      
 	setbkmode(TRANSPARENT);//处理字体背景
@@ -217,24 +217,25 @@ void GameLoop::PlaneBattleLoop()
 	GAMEEND = false;
 	//获取Scroll信息
 	Scroll sc = Scroll::GetInstance();
-	BeginBatchDraw();//开始批量绘图	
-
-
+	int space = 1;
 	//绘制网格
 	while (1)
-	{
+
+	{	BeginBatchDraw();//开始批量绘图
 		setbkcolor(BGCOLOR);
 		cleardevice();  // 清空窗口
 		setfillcolor(OTHERCOLOR);
 		settextcolor(GOLDENCOLOR);
 		//outtextxy(20, 20, _T("分数"));
 		settextstyle(30, 15, _T("微软雅黑"));
-
 		std::wstring str = std::to_wstring(SCORE);
 		LPCTSTR score = str.c_str();//分数
 		outtextxy(615, 20, score);
 		settextcolor(GOLDENCOLOR);
-
+		setfillcolor(OTHERCOLOR);
+		rectangle(BLANK_L-90, BLANK_U, BLANK_L-30, BLANK_U+30);
+		settextstyle(30, 0, _T("微软雅黑"));
+		outtextxy(BLANK_L - 80, BLANK_U, _T("ESC"));
 		setlinecolor(BACKCOLOR); //设置当前线条的颜色
 		setlinestyle(PS_SOLID, 2);
 		line(BLANK_L - 2, BLANK_U - 2, BLANK_R + 2, BLANK_U - 2);
@@ -242,9 +243,12 @@ void GameLoop::PlaneBattleLoop()
 		line(BLANK_L - 2, BLANK_D + 2, BLANK_R + 2, BLANK_D + 2);
 		line(BLANK_R + 2, BLANK_U - 2, BLANK_R + 2, BLANK_D + 2);
 
+	
+
 		setlinestyle(PS_SOLID, 1);
 
 		++sc.fireCD;
+
 		//for (int x = BLANK_L; x <= BLANK_R; x += BLOCKSIZE)
 		//{
 		//	for (int y = BLANK_U; y <= BLANK_D; y += BLOCKSIZE)
@@ -255,11 +259,11 @@ void GameLoop::PlaneBattleLoop()
 		//}
 		bool fire = false;
 		//点击esc按键跳转到游戏主菜单
-		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000|| 
-			GetAsyncKeyState(VK_UP) & 0x8000|| 
-			GetAsyncKeyState(VK_DOWN) & 0x8000||
-			GetAsyncKeyState(VK_LEFT) & 0x8000||
-			GetAsyncKeyState(VK_RIGHT) & 0x8000||
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000 ||
+			GetAsyncKeyState(VK_UP) & 0x8000 ||
+			GetAsyncKeyState(VK_DOWN) & 0x8000 ||
+			GetAsyncKeyState(VK_LEFT) & 0x8000 ||
+			GetAsyncKeyState(VK_RIGHT) & 0x8000 ||
 			GetAsyncKeyState(VK_SPACE) & 0x8000
 			) {
 			bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
@@ -293,8 +297,22 @@ void GameLoop::PlaneBattleLoop()
 		else {
 			sc.playSpeed = { 0,0 };
 		}
+
+		if (space==1) {
+			setfillcolor(OTHERCOLOR);
+			settextcolor(GOLDENCOLOR);
+			settextstyle(30, 0, _T("微软雅黑"));
+			outtextxy(600, 720, _T("SPACE"));
+		}
+
 		//发射子弹
 		if (fire && sc.fireCD >= 10) {
+			if (space == 1)
+			{
+				space =  0;
+				cleardevice();  // 清空窗口
+			}
+
 			Bullet* b = new Bullet(1);
 			//cout << b->blockID;
 			sc.fireCD = 0;
@@ -361,7 +379,7 @@ void GameLoop::PlaneBattleLoop()
 
 			}
 		}
-		FlushBatchDraw();//执行未完成的绘制任务
+		EndBatchDraw();//执行未完成的绘制任务
 
 		if (GAMEEND)//核心被打爆
 		{
