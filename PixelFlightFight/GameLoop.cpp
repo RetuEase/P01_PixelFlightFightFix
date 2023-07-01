@@ -321,11 +321,11 @@ void GameLoop::PlaneBattleLoop()
 			setfillcolor(OTHERCOLOR);
 			settextcolor(GOLDENCOLOR);
 			settextstyle(30, 0, _T("Î¢ÈíÑÅºÚ"));
-			outtextxy(600, 720, _T("SPACE"));
+			outtextxy(600, 320, _T("SPACE"));
 		}
 
 		//·¢Éä×Óµ¯
-		if (fire && sc.fireCD >= 30) {
+		if (fire && sc.fireCD >= 15) {
 			if (space == 1)
 			{
 				space = 0;
