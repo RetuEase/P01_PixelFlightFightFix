@@ -131,6 +131,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameLoop.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scroll.h" />
     <ClInclude Include="Workshop.h" />
   </ItemGroup>
@@ -143,10 +144,14 @@
     <ClCompile Include="Workshop.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Icon.ico" />
     <Image Include="title.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PixelFlightFight.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
