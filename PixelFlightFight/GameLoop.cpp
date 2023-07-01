@@ -16,6 +16,8 @@
 GameLoop::GameLoop() :flag(1) {
 	iintroKey = 0;
 	//memset(keyDown, 0, sizeof(bool) * KEY_COUNT);
+	mciSendString(L"open \"bgm.mp3\" alias bgm", NULL, 0, NULL);
+	mciSendString(L"play bgm repeat", NULL, 0, NULL);
 }
 
 GameLoop::~GameLoop()

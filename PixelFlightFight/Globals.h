@@ -13,6 +13,9 @@
 #include <conio.h>
 //#include <Windows.h>
 #include <graphics.h>
+#include <mmsystem.h>
+
+#pragma comment(lib, "winmm.lib") 
 
 #define DEBUG
 
