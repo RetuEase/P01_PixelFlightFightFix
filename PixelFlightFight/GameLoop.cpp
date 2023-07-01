@@ -255,32 +255,42 @@ void GameLoop::PlaneBattleLoop()
 		//}
 		bool fire = false;
 		//点击esc按键跳转到游戏主菜单
-		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-			//cout << "暂停!" << endl;
-			EndBatchDraw();
-			BattleMenuLoop();//切换至菜单		
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000|| 
+			GetAsyncKeyState(VK_UP) & 0x8000|| 
+			GetAsyncKeyState(VK_DOWN) & 0x8000||
+			GetAsyncKeyState(VK_LEFT) & 0x8000||
+			GetAsyncKeyState(VK_RIGHT) & 0x8000||
+			GetAsyncKeyState(VK_SPACE) & 0x8000
+			) {
+			bool esc = GetAsyncKeyState(VK_ESCAPE) & 0x8000;
+			if (esc)
+			{
+				//cout << "暂停!" << endl;
+				EndBatchDraw();
+				BattleMenuLoop();//切换至菜单		
+			}
+			else {
+				//bool fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
+				bool up = GetAsyncKeyState(VK_UP) & 0x8000;
+				bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
+				bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
+				bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
+				fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
+				int u = 0;
+				int d = 0;
+				int l = 0;
+				int r = 0;
+				if (up) {
+					u = -1;
+				}
+				if (down) { d = 1; }
+				if (left) { l = -1; }
+				if (right) { r = 1; }
+
+				sc.playSpeed = { l + r,u + d };
+			}
 		}
 		else {
-			//bool fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
-			bool up = GetAsyncKeyState(VK_UP) & 0x8000;
-			bool down = GetAsyncKeyState(VK_DOWN) & 0x8000;
-			bool left = GetAsyncKeyState(VK_LEFT) & 0x8000;
-			bool right = GetAsyncKeyState(VK_RIGHT) & 0x8000;
-			fire = GetAsyncKeyState(VK_SPACE) & 0x8000;
-			int u = 0;
-			int d = 0;
-			int l = 0;
-			int r = 0;
-			if (up) {
-				u = -1;
-			}
-			if (down) { d = 1; }
-			if (left) { l = -1; }
-			if (right) { r = 1; }
-
-			sc.playSpeed = { l + r,u + d };
-
-
 			sc.playSpeed = { 0,0 };
 		}
 		//发射子弹

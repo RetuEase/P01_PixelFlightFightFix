@@ -301,7 +301,7 @@ void PlayerPlane::Fracture()
 		for (auto& pair : temp) {
 			if (!(pair.second)) {
 				std::cout << "É¾³ýµã" << pair.first.x << "," << pair.first.y << std::endl;
-				PlayerPlaneBlock.erase(pair.first);
+				//PlayerPlaneBlock.erase(pair.first);
 				//count++;
 			}
 		}
